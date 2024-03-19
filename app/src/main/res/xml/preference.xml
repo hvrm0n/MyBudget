@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Уведомления">
+        <SwitchPreference
+            android:key="notifications_enabled"
+            android:title="Уведомления"
+            android:summary="Включить или отключить уведомления"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Выбор основной валюты">
+        <ListPreference
+            android:key="currency_selection"
+            android:title="Выбор валюты"
+            android:summary="Выберите основную валюту"
+            android:entries="@array/currency_options"
+            android:entryValues="@array/currency_values"
+            android:defaultValue="RUB" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

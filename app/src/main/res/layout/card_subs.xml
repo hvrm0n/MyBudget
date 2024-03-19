@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="16dp"
+    tools:backgroundTint="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/subImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                tools:src="@drawable/subsicon"
+                app:tint="@color/light_green"
+                android:layout_gravity="center"
+                android:layout_margin="4dp"/>
+
+            <TextView
+                android:id="@+id/subCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/title"
+                android:textStyle="bold"
+                android:textColor="@color/dark_green"
+                tools:text="140₽"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="24dp">
+
+            <TextView
+                android:id="@+id/subName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/title"
+                android:textStyle="bold"
+                android:textColor="@color/dark_green"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
+                tools:text="Название"/>
+
+            <TextView
+                android:id="@+id/subDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/regText"
+                android:textColor="@color/dark_green"
+                android:layout_marginBottom="4dp"
+                tools:text="до 12/10/2024"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/paidSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_sub_paid"
+                    android:textSize="@dimen/regText"
+                    android:backgroundTint="@color/light_green"
+                    android:textColor="@color/dark_grey"
+                    android:layout_marginEnd="4dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_sub_cancel"
+                    android:textSize="@dimen/regText"
+                    android:backgroundTint="@color/light_orange"
+                    android:textColor="@color/dark_grey"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/notificationGoal"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/bell"
+        android:layout_gravity="top|end"
+        app:tint="@color/light_green"
+        android:layout_margin="8dp"/>
+</androidx.cardview.widget.CardView>

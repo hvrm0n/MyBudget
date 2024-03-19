@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="currency_options">
+        <item>USD - Доллар США</item>
+        <item>EUR - Евро</item>
+        <item>GBP - Фунт стерлингов</item>
+        <item>RUB - Российский рубль</item>
+        <item>UAH - Украинская гривна</item>
+        <item>KZT - Казахстанский тенге</item>
+        <item>BYN - Белорусский рубль</item>
+        <item>AZN - Азербайджанский манат</item>
+        <item>UZS - Узбекский сум</item>
+        <item>AMD - Армянский драм</item>
+        <item>RON - Румынский лей</item>
+        <item>TJS - Таджикский сомони</item>
+        <item>MDL - Молдавский леей</item>
+
+        <item>CAD - Канадский доллар</item>
+        <item>DKK - Датская крона</item>
+        <item>CZK - Чешская крона</item>
+        <item>PLN - Польский злотый</item>
+        <item>JPY - Японская йена</item>
+        <item>SGD - Сингапурский доллар</item>
+        <item>BRL - Бразильский реал</item>
+        <item>SEK - Шведская крона</item>
+        <item>TMT - Новый туркменский манат</item>
+        <item>HKD - Гонконгский доллар</item>
+        <item>BGN - Болгарский лев</item>
+        <item>KGS - Киргизкий сом</item>
+        <item>TRY - Турецкая лира</item>
+
+        <item>HUF - Венгерский форинт</item>
+        <item>KRW - Вон республики Корея</item>
+        <item>INR - Индийский рупий</item>
+        <item>NOK - Норвежская крона</item>
+        <item>CHF - Швейцарский франк</item>
+        <item>CNY - Китайский юань</item>
+        <item>AUD - Австралийский доллар</item>
+        <item>ZAR - Южноафриканский рэнд</item>
+        <item>TZS - Танзанийский шиллинг</item>
+        <item>MMK - Мьянманский кьят </item>
+        <item>NPR - Непальская рупия</item>
+        <item>PYG - Парагвайский гуарани</item>
+
+        <item>GTQ - Гватемальский кетсаль</item>
+        <item>MRU - Мавританская угия</item>
+        <item>ARS - Аргентинское песо</item>
+        <item>ISK - Исландская крона</item>
+        <item>THB - Тайский бат</item>
+        <item>PHP - Филиппинское песо</item>
+        <item>PKR - Пакистанская рупия</item>
+    </string-array>
+
+    <string-array name="currency_values">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>RUB</item>
+        <item>UAH</item>
+        <item>KZT</item>
+        <item>BYN</item>
+        <item>AZN</item>
+        <item>UZS</item>
+        <item>AMD</item>
+        <item>RON</item>
+        <item>TJS</item>
+        <item>MDL</item>
+        <item>CAD</item>
+        <item>DKK</item>
+        <item>CZK</item>
+        <item>PLN</item>
+        <item>JPY</item>
+        <item>SGD</item>
+        <item>BRL</item>
+        <item>SEK</item>
+        <item>TMT</item>
+        <item>HKD</item>
+        <item>BGN</item>
+        <item>KGS</item>
+        <item>TRY</item>
+        <item>HUF</item>
+        <item>KRW</item>
+        <item>INR</item>
+        <item>NOK</item>
+        <item>CHF</item>
+        <item>CNY</item>
+        <item>AUD</item>
+        <item>ZAR</item>
+        <item>TZS</item>
+        <item>MMK</item>
+        <item>NPR</item>
+        <item>PYG</item>
+        <item>GTQ</item>
+        <item>MRU</item>
+        <item>ARS</item>
+        <item>ISK</item>
+        <item>THB</item>
+        <item>PHP</item>
+        <item>PKR</item>
+    </string-array>
+</resources>

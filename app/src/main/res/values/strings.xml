@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">MyBudget</string>
+
+    <string name="welcome_text">С нами ты на шаг ближе к финансовой стабильности!</string>
+    <string name="sign_up_reason">Пройдите регистрацию, чтобы не потерять данные</string>
+    <string name="close">Держите информацию о финансах рядом!</string>
+
+    <string name="enter">Вход в приложение MyBudget</string>
+    <string name="newAccount">Регистрация в приложении MyBudget</string>
+    <string name="email">Почта</string>
+    <string name="emailWrong">Вы ввели адрес электронной почты в неверном формате</string>
+    <string name="passwordWrong">Пароль должен состоять минимум из 6 символов</string>
+    <string name="password">Пароль</string>
+    <string name="enter_email">Введите почту</string>
+    <string name="enter_pass">Введите пароль</string>
+    <string name="sign_up_complete">Зарегистрироваться</string>\
+    <string name="sign_up">Регистрация</string>
+    <string name="log_in">Войти</string>
+    <string name="log_in_google">Или войдите, используя</string>
+
+    <string name="title_activity_home_page">HomePageActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_subtitle">Баланс: </string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Финансы</string>
+    <string name="menu_goals">Цели</string>
+    <string name="menu_subs">Подписки</string>
+    <string name="menu_loans">Важные выплаты</string>
+    <string name="menu_setting">Настройки</string>
+
+    <string name="card_expence_rem">осталось из</string>
+
+    <string name="card_goal_put">Начисление</string>
+    <string name="card_goal_cons">Расход</string>
+
+    <string name="card_sub_paid">Оплачена</string>
+    <string name="card_sub_cancel">Отменена</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

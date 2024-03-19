@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "480721209154",
+    "firebase_url": "https://mybudget-1b117-default-rtdb.firebaseio.com",
+    "project_id": "mybudget-1b117",
+    "storage_bucket": "mybudget-1b117.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480721209154:android:1715d30d7eb024a872aadb",
+        "android_client_info": {
+          "package_name": "com.example.mybudget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480721209154-qo6vov45j566ec0t91mj2mur1p4u77tu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mybudget",
+            "certificate_hash": "ca0fe4096aee6ed8fe42fcbe7449b51c8e3efd2e"
+          }
+        },
+        {
+          "client_id": "480721209154-7s727dt7jqmnvlsvqqss5grs0h0eg5q0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLhvlzlD6LNP0KVP4YgGJpLyM4K4a-V7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480721209154-7s727dt7jqmnvlsvqqss5grs0h0eg5q0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
