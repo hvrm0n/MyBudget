@@ -13,13 +13,13 @@
 
     <PreferenceCategory
         android:title="Выбор основной валюты">
-        <ListPreference
+        <!--<ListPreference
             android:key="currency_selection"
             android:title="Выбор валюты"
             android:summary="Выберите основную валюту"
             android:entries="@array/currency_options"
             android:entryValues="@array/currency_values"
-            android:defaultValue="RUB" />
+            android:defaultValue="RUB" />-->
     </PreferenceCategory>
 
 </PreferenceScreen>

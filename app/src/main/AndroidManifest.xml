@@ -17,6 +17,7 @@
 
         <activity
             android:name=".start_pages.StartActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,7 +28,7 @@
 
         <!--Основная активность-->
         <activity
-            android:name=".start_pages.HomePageActivity"
+            android:name=".drawersection.HomePageActivity"
             android:exported="true"
             android:label="@string/title_activity_home_page">
         </activity>

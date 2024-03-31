@@ -17,6 +17,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 
 class SignUpFragment : Fragment() {
 
@@ -26,12 +28,13 @@ class SignUpFragment : Fragment() {
     private lateinit var signUpButton: Button
     private lateinit var hintEmail: TextView
     private lateinit var hintPassword: TextView
+    private lateinit var table: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.sign_up, container, false)
     }
 
@@ -97,6 +100,7 @@ class SignUpFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         auth = Firebase.auth
+        table = Firebase.database.reference
         signUpButton.setOnClickListener { emailSignUp() }
     }
 
@@ -110,10 +114,11 @@ class SignUpFragment : Fragment() {
                         "Вы успешно зарегистрировались!",
                         Snackbar.LENGTH_SHORT,
                     ).show()
-
-                    password.text.clear()
-                    email.text.clear()
-
+                    val categories = resources.getStringArray(R.array.category_default)
+                    val paths = resources.getStringArray(R.array.icons_default)
+                    for (i in categories.indices){
+                        table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").child(categories[i]).setValue(CategoryBegin(categories[i], paths[i]))
+                    }
                     updateUI()
                 } else {
                     Log.e(Constants.TAG_SIGNUP,  task.exception.toString())
@@ -123,17 +128,15 @@ class SignUpFragment : Fragment() {
                         "Не удалось создать в аккаунт, попробуйте еще раз.",
                         Snackbar.LENGTH_SHORT,
                     ).show()
-
                 }
             }
     }
 
     private fun updateUI(){
-        Navigation.findNavController(requireView()).navigate(R.id.action_signUpFragment_to_homePageActivity)
+        Navigation.findNavController(requireView()).navigate(R.id.action_signUpFragment_to_currencyFragment)
         password.text.clear()
         email.text.clear()
-        requireActivity().finishAffinity()
     }
-
-
 }
+
+data class CategoryBegin(var name:String="", var path:String="")

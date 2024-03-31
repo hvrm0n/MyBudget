@@ -18,6 +18,12 @@
         <action
             android:id="@+id/action_enterFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_enterFragment_to_signUpFragment2"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_enterFragment_to_currencyFragment"
+            app:destination="@id/currencyFragment" />
     </fragment>
     <fragment
         android:id="@+id/logInFragment"
@@ -29,7 +35,7 @@
     </fragment>
     <activity
         android:id="@+id/homePageActivity"
-        android:name="com.example.mybudget.start_pages.HomePageActivity"
+        android:name="com.example.mybudget.drawersection.HomePageActivity"
         android:label="app_bar_main"
         tools:layout="@layout/app_bar_main" />
     <fragment
@@ -37,7 +43,24 @@
         android:name="com.example.mybudget.start_pages.SignUpFragment"
         android:label="SignUpFragment" >
         <action
-            android:id="@+id/action_signUpFragment_to_homePageActivity"
+            android:id="@+id/action_signUpFragment_to_currencyFragment"
+            app:destination="@id/currencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/basicBudgetFragment"
+        android:name="com.example.mybudget.start_pages.BasicBudgetFragment"
+        android:label="BasicBudgetFragment" >
+        <action
+            android:id="@+id/action_basicBudgetFragment_to_homePageActivity"
             app:destination="@id/homePageActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/currencyFragment"
+        android:name="com.example.mybudget.start_pages.CurrencyFragment"
+        android:label="CurrencyFragment">
+        <action
+            android:id="@+id/action_currencyFragment_to_basicBudgetFragment"
+            app:destination="@id/basicBudgetFragment" />
     </fragment>
 </navigation>

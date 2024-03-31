@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:clipToPadding="false"
+    tools:context=".start_pages.CurrencyFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:text="@string/basic_currency"
+        android:layout_marginBottom="16dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:background="@drawable/listview_shadow"
+        android:elevation="8dp"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp">
+
+        <ListView
+            android:id="@+id/listViewBasicCurrencyStart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/very_light_green"
+            android:choiceMode="singleChoice"
+            android:clipToPadding="false"
+            android:layout_marginTop="64dp"
+            android:layout_alignParentTop="true"/>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchCurrencyBegin"
+            android:elevation="100dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:iconifiedByDefault="false"
+            app:queryHint="@string/enterCurrencyName" />
+    </RelativeLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonCurrencyNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/light_green"
+        android:enabled="false"
+        android:focusable="true"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/next"
+        android:textSize="@dimen/subtitle"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>

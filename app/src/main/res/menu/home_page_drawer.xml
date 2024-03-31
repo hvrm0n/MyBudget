@@ -5,26 +5,26 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/financeicon"
+            android:id="@+id/nav_finance"
+            android:icon="@drawable/wallet_24"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_goals"
-            android:icon="@drawable/goalsicon"
+            android:icon="@drawable/piggybank_24"
             android:title="@string/menu_goals" />
         <item
             android:id="@+id/nav_loans"
-            android:icon="@drawable/loansiconpng"
+            android:icon="@drawable/bank_24"
             android:title="@string/menu_loans" />
 
         <item
             android:id="@+id/nav_subs"
-            android:icon="@drawable/subsicon"
+            android:icon="@drawable/calendarclock_24"
             android:title="@string/menu_subs" />
 
         <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/settingiconpng"
+            android:icon="@drawable/settings_24"
             android:title="@string/menu_setting" />
     </group>
 </menu>

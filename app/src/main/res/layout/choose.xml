@@ -50,7 +50,7 @@
         android:backgroundTint="@color/dark_green"
 
         android:text="@string/sign_up"
-        android:textSize="@dimen/subtitle"
+        android:textSize="@dimen/regText"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -67,7 +67,7 @@
         android:layout_marginEnd="64dp"
         android:backgroundTint="@color/dark_orange"
         android:text="@string/log_in"
-        android:textSize="@dimen/subtitle"
+        android:textSize="@dimen/regText"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

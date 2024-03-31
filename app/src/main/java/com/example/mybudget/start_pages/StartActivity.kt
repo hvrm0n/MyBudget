@@ -3,6 +3,9 @@ package com.example.mybudget.start_pages
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mybudget.R
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
+import com.google.firebase.storage.storage
 
 object Constants{
     const val TAG_SIGNUP = "SignUpMyBudget"
@@ -17,6 +20,6 @@ class StartActivity:AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.start_activity)
-
+        Firebase.database.setPersistenceEnabled(true)
     }
 }

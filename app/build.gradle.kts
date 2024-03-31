@@ -44,8 +44,9 @@ android {
 dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation ("com.google.code.gson:gson:2.8.8")
     implementation("com.google.firebase:firebase-analytics")
-
+    implementation ("com.squareup.picasso:picasso:2.8")
     implementation ("com.github.bumptech.glide:glide:3.7.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.gms:play-services-auth:21.0.0")

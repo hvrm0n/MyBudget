@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_default">
+        <item>Здоровье</item>
+        <item>Дом</item>
+        <item>Семья</item>
+        <item>Образование</item>
+        <item>Продукты</item>
+        <item>Одежда</item>
+        <item>Транспорт</item>
+        <item>Спорт</item>
+        <item>Красота</item>
+        <item>Подарки</item>
+        <item>Развлечения</item>
+        <item>Рестораны и кафе</item>
+        <item>Путешествия</item>
+    </string-array>
+
+    <string-array name="icons_default">
+        <item>heart</item>
+        <item>home</item>
+        <item>family</item>
+        <item>graduation</item>
+        <item>shopping</item>
+        <item>clothes</item>
+        <item>car</item>
+        <item>gym</item>
+        <item>makeup</item>
+        <item>gift</item>
+        <item>smile</item>
+        <item>restaurant</item>
+        <item>marker</item>
+    </string-array>
+
+    <string-array name="icons_car">
+        <item>car</item>
+        <item>car1</item>
+        <item>car2</item>
+        <item>car3</item>
+        <item>car4</item>
+        <item>car5</item>
+        <item>car6</item>
+        <item>car7</item>
+    </string-array>
+
+    <string-array name="icons_family">
+        <item>family</item>
+        <item>family1</item>
+        <item>family2</item>
+        <item>family3</item>
+    </string-array>
+
+    <string-array name="icons_graduation">
+        <item>graduation</item>
+        <item>graduation1</item>
+        <item>graduation2</item>
+        <item>graduation3</item>
+    </string-array>
+
+    <string-array name="icons_gym">
+        <item>gym</item>
+        <item>gym1</item>
+        <item>gym2</item>
+        <item>gym3</item>
+        <item>gym4</item>
+        <item>gym5</item>
+        <item>gym6</item>
+    </string-array>
+
+    <string-array name="icons_heart">
+        <item>heart</item>
+        <item>heart1</item>
+        <item>heart2</item>
+        <item>heart3</item>
+        <item>heart4</item>
+        <item>heart5</item>
+    </string-array>
+
+    <string-array name="icons_home">
+        <item>home</item>
+        <item>home1</item>
+        <item>home2</item>
+        <item>home3</item>
+        <item>home4</item>
+        <item>home5</item>
+        <item>home6</item>
+        <item>home7</item>
+        <item>home8</item>
+    </string-array>
+
+    <string-array name="icons_marker">
+        <item>marker</item>
+        <item>marker1</item>
+        <item>marker2</item>
+        <item>marker3</item>
+        <item>marker4</item>
+    </string-array>
+
+    <string-array name="icons_nature">
+        <item>nature1</item>
+        <item>nature2</item>
+        <item>nature3</item>
+        <item>nature4</item>
+        <item>nature5</item>
+        <item>nature6</item>
+    </string-array>
+
+    <string-array name="icons_other">
+        <item>makeup</item>
+        <item>clothes</item>
+        <item>shopping</item>
+        <item>gift</item>
+        <item>other1</item>
+        <item>other2</item>
+        <item>other3</item>
+        <item>other4</item>
+        <item>other5</item>
+        <item>other6</item>
+        <item>other7</item>
+        <item>other8</item>
+        <item>other9</item>
+        <item>other10</item>
+        <item>other11</item>
+        <item>other12</item>
+    </string-array>
+
+    <string-array name="icons_pet">
+        <item>pet1</item>
+        <item>pet2</item>
+        <item>pet3</item>
+        <item>pet4</item>
+        <item>pet5</item>
+        <item>pet6</item>
+    </string-array>
+
+    <string-array name="icons_restaurant">
+        <item>restaurant</item>
+        <item>restaurant1</item>
+        <item>restaurant2</item>
+        <item>restaurant3</item>
+        <item>restaurant4</item>
+        <item>restaurant5</item>
+    </string-array>
+
+    <string-array name="icons_smile">
+        <item>smile</item>
+        <item>smile1</item>
+        <item>smile2</item>
+        <item>smile3</item>
+        <item>smile4</item>
+        <item>smile5</item>
+        <item>smile6</item>
+        <item>smile7</item>
+        <item>smile8</item>
+        <item>smile9</item>
+        <item>smile10</item>
+    </string-array>
+
+    <string-array name="icons_work">
+        <item>work1</item>
+        <item>work2</item>
+        <item>work3</item>
+        <item>work4</item>
+        <item>work5</item>
+        <item>work6</item>
+        <item>work7</item>
+    </string-array>
+
+    <string name="car">Транспорт</string>
+    <string name="family">Семья</string>
+    <string name="graduation">Образование</string>
+    <string name="gym">Спорт</string>
+    <string name="heart">Здоровье</string>
+    <string name="home">Дом</string>
+    <string name="marker">Путешествия</string>
+    <string name="nature">Природа</string>
+    <string name="pet">Питомцы</string>
+    <string name="restaurants">Рестораны и кафе</string>
+    <string name="smile">Развлечения</string>
+    <string name="work">Работа</string>
+    <string name="other">Другое</string>
+
+</resources>

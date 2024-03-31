@@ -1,6 +1,7 @@
 package com.example.mybudget.start_pages
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -97,13 +98,13 @@ class LogInFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         auth = Firebase.auth
-
         logInButton.setOnClickListener { logIn() }
     }
 
     private fun logIn(){
         auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnCompleteListener { task->
             if (!task.isSuccessful) {
+                Log.e(Constants.TAG_LOGIN,  task.exception.toString())
                 Snackbar.make(email, "Такой учетной записи не существует!", Snackbar.LENGTH_LONG).show()
             } else updateUI()
         }

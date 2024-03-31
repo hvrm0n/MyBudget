@@ -7,4 +7,5 @@
     <dimen name="title">22sp</dimen>
     <dimen name="subtitle">18sp</dimen>
     <dimen name="regText">14sp</dimen>
+    <dimen name="litText">10sp</dimen>
 </resources>

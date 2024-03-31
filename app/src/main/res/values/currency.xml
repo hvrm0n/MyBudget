@@ -1,101 +1,330 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="currency_options">
-        <item>USD - Доллар США</item>
-        <item>EUR - Евро</item>
-        <item>GBP - Фунт стерлингов</item>
-        <item>RUB - Российский рубль</item>
-        <item>UAH - Украинская гривна</item>
-        <item>KZT - Казахстанский тенге</item>
-        <item>BYN - Белорусский рубль</item>
-        <item>AZN - Азербайджанский манат</item>
-        <item>UZS - Узбекский сум</item>
-        <item>AMD - Армянский драм</item>
-        <item>RON - Румынский лей</item>
-        <item>TJS - Таджикский сомони</item>
-        <item>MDL - Молдавский леей</item>
-
-        <item>CAD - Канадский доллар</item>
-        <item>DKK - Датская крона</item>
-        <item>CZK - Чешская крона</item>
-        <item>PLN - Польский злотый</item>
-        <item>JPY - Японская йена</item>
-        <item>SGD - Сингапурский доллар</item>
-        <item>BRL - Бразильский реал</item>
-        <item>SEK - Шведская крона</item>
-        <item>TMT - Новый туркменский манат</item>
-        <item>HKD - Гонконгский доллар</item>
-        <item>BGN - Болгарский лев</item>
-        <item>KGS - Киргизкий сом</item>
-        <item>TRY - Турецкая лира</item>
-
-        <item>HUF - Венгерский форинт</item>
-        <item>KRW - Вон республики Корея</item>
-        <item>INR - Индийский рупий</item>
-        <item>NOK - Норвежская крона</item>
-        <item>CHF - Швейцарский франк</item>
-        <item>CNY - Китайский юань</item>
-        <item>AUD - Австралийский доллар</item>
-        <item>ZAR - Южноафриканский рэнд</item>
-        <item>TZS - Танзанийский шиллинг</item>
-        <item>MMK - Мьянманский кьят </item>
-        <item>NPR - Непальская рупия</item>
-        <item>PYG - Парагвайский гуарани</item>
-
-        <item>GTQ - Гватемальский кетсаль</item>
-        <item>MRU - Мавританская угия</item>
-        <item>ARS - Аргентинское песо</item>
-        <item>ISK - Исландская крона</item>
-        <item>THB - Тайский бат</item>
-        <item>PHP - Филиппинское песо</item>
-        <item>PKR - Пакистанская рупия</item>
-    </string-array>
+    <string name="RUB">₽</string>
+    <string name="AED">د.إ</string>
+    <string name="AFN">؋</string>
+    <string name="ALL">L</string>
+    <string name="AMD">֏</string>
+    <string name="ANG">ƒ</string>
+    <string name="AOA">Kz</string>
+    <string name="ARS">N$</string>
+    <string name="AUD">AU$</string>
+    <string name="AWG">ƒ</string>
+    <string name="AZN">₼</string>
+    <string name="BAM">КМ</string>
+    <string name="BBD">$</string>
+    <string name="BDT">৳</string>
+    <string name="BGN">лв</string>
+    <string name="BHD">د.ب.</string>
+    <string name="BIF">₣</string>
+    <string name="BMD">$</string>
+    <string name="BND">$</string>
+    <string name="BOB">Bs.</string>
+    <string name="BRL">R$</string>
+    <string name="BSD">$</string>
+    <string name="BTN">Nu.</string>
+    <string name="BWP">P</string>
+    <string name="BYN">Br</string>
+    <string name="BZD">$</string>
+    <string name="CAD">$</string>
+    <string name="CDF">₣</string>
+    <string name="CHF">CHF</string>
+    <string name="CLP">$</string>
+    <string name="CNY">¥</string>
+    <string name="COP">$</string>
+    <string name="CRC">₡</string>
+    <string name="CUP">$</string>
+    <string name="CVE">$</string>
+    <string name="CZK">Kč</string>
+    <string name="DJF">Fdj</string>
+    <string name="DKK">kr</string>
+    <string name="DOP">RD$</string>
+    <string name="DZD">د.ج</string>
+    <string name="EGP">ج.م</string>
+    <string name="ERN">Nfk</string>
+    <string name="ETB">ብር</string>
+    <string name="EUR">€</string>
+    <string name="FJD">$</string>
+    <string name="FKP">£</string>
+    <string name="FOK">kr</string>
+    <string name="GBP">£</string>
+    <string name="GEL">₾</string>
+    <string name="GGP">£</string>
+    <string name="GHS">₵</string>
+    <string name="GIP">£</string>
+    <string name="GMD">D</string>
+    <string name="GNF">₣</string>
+    <string name="GTQ">Q</string>
+    <string name="GYD">$</string>
+    <string name="HKD">$</string>
+    <string name="HNL">L</string>
+    <string name="HRK">kn</string>
+    <string name="HTG">G</string>
+    <string name="HUF">Ft</string>
+    <string name="IDR">Rp</string>
+    <string name="ILS">₪</string>
+    <string name="IMP">£</string>
+    <string name="INR">₹</string>
+    <string name="IQD">ع.د</string>
+    <string name="IRR">﷼</string>
+    <string name="ISK">kr</string>
+    <string name="JEP">£</string>
+    <string name="JMD">$</string>
+    <string name="JOD">د.ا</string>
+    <string name="JPY">¥</string>
+    <string name="KES">Sh</string>
+    <string name="KGS">сом</string>
+    <string name="KHR">៛</string>
+    <string name="KID">$</string>
+    <string name="KMF">CF</string>
+    <string name="KRW">₩</string>
+    <string name="KWD">د.ك</string>
+    <string name="KYD">$</string>
+    <string name="KZT">₸</string>
+    <string name="LAK">₭</string>
+    <string name="LBP">ل.ل</string>
+    <string name="LKR">රු</string>
+    <string name="LRD">$</string>
+    <string name="LSL">L</string>
+    <string name="LYD">ل.د</string>
+    <string name="MAD">د.م.</string>
+    <string name="MDL">L</string>
+    <string name="MGA">Ar</string>
+    <string name="MKD">ден</string>
+    <string name="MMK">K</string>
+    <string name="MNT">₮</string>
+    <string name="MOP">MOP$</string>
+    <string name="MRU">UM</string>
+    <string name="MUR">₨</string>
+    <string name="MVR">ރ.</string>
+    <string name="MWK">MK</string>
+    <string name="MXN">$</string>
+    <string name="MYR">RM</string>
+    <string name="MZN">MT</string>
+    <string name="NAD">$</string>
+    <string name="NGN">₦</string>
+    <string name="NIO">C$</string>
+    <string name="NOK">kr</string>
+    <string name="NPR">₨</string>
+    <string name="NZD">$</string>
+    <string name="OMR">ر.ع.</string>
+    <string name="PAB">B/.</string>
+    <string name="PEN">S/.</string>
+    <string name="PGK">K</string>
+    <string name="PHP">₱</string>
+    <string name="PKR">₨</string>
+    <string name="PLN">zł</string>
+    <string name="PYG">₲</string>
+    <string name="QAR">ر.ق</string>
+    <string name="RON">lei</string>
+    <string name="RSD">дин.</string>
+    <string name="RWF">FRw</string>
+    <string name="SAR">ر.س</string>
+    <string name="SBD">$</string>
+    <string name="SCR">₨</string>
+    <string name="SDG">ج.س.</string>
+    <string name="SEK">kr</string>
+    <string name="SGD">$</string>
+    <string name="SHP">£</string>
+    <string name="SLE">Le</string>
+    <string name="SLL">Le</string>
+    <string name="SOS">S</string>
+    <string name="SRD">$</string>
+    <string name="SSP">£</string>
+    <string name="STN">Db</string>
+    <string name="SYP">£</string>
+    <string name="SZL">L</string>
+    <string name="THB">฿</string>
+    <string name="TJS">ЅМ</string>
+    <string name="TMT">T</string>
+    <string name="TND">د.ت</string>
+    <string name="TOP">T$</string>
+    <string name="TRY">₺</string>
+    <string name="TTD">$</string>
+    <string name="TVD">$</string>
+    <string name="TWD">NT$</string>
+    <string name="TZS">Sh</string>
+    <string name="UAH">₴</string>
+    <string name="UGX">USh</string>
+    <string name="USD">$</string>
+    <string name="UYU">$U</string>
+    <string name="UZS">so\'m</string>
+    <string name="VES">Bs.</string>
+    <string name="VND">₫</string>
+    <string name="VUV">VT</string>
+    <string name="WST">T</string>
+    <string name="XAF">FCFA</string>
+    <string name="XCD">$</string>
+    <string name="XDR">SDR</string>
+    <string name="XOF">CFA</string>
+    <string name="XPF">₣</string>
+    <string name="YER">﷼</string>
+    <string name="ZAR">R</string>
+    <string name="ZMW">ZK</string>
+    <string name="ZWL">$</string>
 
     <string-array name="currency_values">
-        <item>USD</item>
-        <item>EUR</item>
-        <item>GBP</item>
         <item>RUB</item>
-        <item>UAH</item>
-        <item>KZT</item>
-        <item>BYN</item>
-        <item>AZN</item>
-        <item>UZS</item>
+        <item>AED</item>
+        <item>AFN</item>
+        <item>ALL</item>
         <item>AMD</item>
-        <item>RON</item>
-        <item>TJS</item>
-        <item>MDL</item>
-        <item>CAD</item>
-        <item>DKK</item>
-        <item>CZK</item>
-        <item>PLN</item>
-        <item>JPY</item>
-        <item>SGD</item>
-        <item>BRL</item>
-        <item>SEK</item>
-        <item>TMT</item>
-        <item>HKD</item>
-        <item>BGN</item>
-        <item>KGS</item>
-        <item>TRY</item>
-        <item>HUF</item>
-        <item>KRW</item>
-        <item>INR</item>
-        <item>NOK</item>
-        <item>CHF</item>
-        <item>CNY</item>
-        <item>AUD</item>
-        <item>ZAR</item>
-        <item>TZS</item>
-        <item>MMK</item>
-        <item>NPR</item>
-        <item>PYG</item>
-        <item>GTQ</item>
-        <item>MRU</item>
+        <item>ANG</item>
+        <item>AOA</item>
         <item>ARS</item>
+        <item>AUD</item>
+        <item>AWG</item>
+        <item>AZN</item>
+        <item>BAM</item>
+        <item>BBD</item>
+        <item>BDT</item>
+        <item>BGN</item>
+        <item>BHD</item>
+        <item>BIF</item>
+        <item>BMD</item>
+        <item>BND</item>
+        <item>BOB</item>
+        <item>BRL</item>
+        <item>BSD</item>
+        <item>BTN</item>
+        <item>BWP</item>
+        <item>BYN</item>
+        <item>BZD</item>
+        <item>CAD</item>
+        <item>CDF</item>
+        <item>CHF</item>
+        <item>CLP</item>
+        <item>CNY</item>
+        <item>COP</item>
+        <item>CRC</item>
+        <item>CUP</item>
+        <item>CVE</item>
+        <item>CZK</item>
+        <item>DJF</item>
+        <item>DKK</item>
+        <item>DOP</item>
+        <item>DZD</item>
+        <item>EGP</item>
+        <item>ERN</item>
+        <item>ETB</item>
+        <item>EUR</item>
+        <item>FJD</item>
+        <item>FKP</item>
+        <item>FOK</item>
+        <item>GBP</item>
+        <item>GEL</item>
+        <item>GGP</item>
+        <item>GHS</item>
+        <item>GIP</item>
+        <item>GMD</item>
+        <item>GNF</item>
+        <item>GTQ</item>
+        <item>GYD</item>
+        <item>HKD</item>
+        <item>HNL</item>
+        <item>HRK</item>
+        <item>HTG</item>
+        <item>HUF</item>
+        <item>IDR</item>
+        <item>ILS</item>
+        <item>IMP</item>
+        <item>INR</item>
+        <item>IQD</item>
+        <item>IRR</item>
         <item>ISK</item>
-        <item>THB</item>
+        <item>JEP</item>
+        <item>JMD</item>
+        <item>JOD</item>
+        <item>JPY</item>
+        <item>KES</item>
+        <item>KGS</item>
+        <item>KHR</item>
+        <item>KID</item>
+        <item>KMF</item>
+        <item>KRW</item>
+        <item>KWD</item>
+        <item>KYD</item>
+        <item>KZT</item>
+        <item>LAK</item>
+        <item>LBP</item>
+        <item>LKR</item>
+        <item>LRD</item>
+        <item>LSL</item>
+        <item>LYD</item>
+        <item>MAD</item>
+        <item>MDL</item>
+        <item>MGA</item>
+        <item>MKD</item>
+        <item>MMK</item>
+        <item>MNT</item>
+        <item>MOP</item>
+        <item>MRU</item>
+        <item>MUR</item>
+        <item>MVR</item>
+        <item>MWK</item>
+        <item>MXN</item>
+        <item>MYR</item>
+        <item>MZN</item>
+        <item>NAD</item>
+        <item>NGN</item>
+        <item>NIO</item>
+        <item>NOK</item>
+        <item>NPR</item>
+        <item>NZD</item>
+        <item>OMR</item>
+        <item>PAB</item>
+        <item>PEN</item>
+        <item>PGK</item>
         <item>PHP</item>
         <item>PKR</item>
+        <item>PLN</item>
+        <item>PYG</item>
+        <item>QAR</item>
+        <item>RON</item>
+        <item>RSD</item>
+        <item>RWF</item>
+        <item>SAR</item>
+        <item>SBD</item>
+        <item>SCR</item>
+        <item>SDG</item>
+        <item>SEK</item>
+        <item>SGD</item>
+        <item>SHP</item>
+        <item>SLE</item>
+        <item>SLL</item>
+        <item>SOS</item>
+        <item>SRD</item>
+        <item>SSP</item>
+        <item>STN</item>
+        <item>SYP</item>
+        <item>SZL</item>
+        <item>THB</item>
+        <item>TJS</item>
+        <item>TMT</item>
+        <item>TND</item>
+        <item>TOP</item>
+        <item>TRY</item>
+        <item>TTD</item>
+        <item>TVD</item>
+        <item>TWD</item>
+        <item>TZS</item>
+        <item>UAH</item>
+        <item>UGX</item>
+        <item>USD</item>
+        <item>UYU</item>
+        <item>UZS</item>
+        <item>VES</item>
+        <item>VND</item>
+        <item>VUV</item>
+        <item>WST</item>
+        <item>XAF</item>
+        <item>XCD</item>
+        <item>XDR</item>
+        <item>XOF</item>
+        <item>XPF</item>
+        <item>YER</item>
+        <item>ZAR</item>
+        <item>ZMW</item>
+        <item>ZWL</item>
     </string-array>
 </resources>

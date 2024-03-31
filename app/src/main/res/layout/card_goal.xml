@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="16dp"
-    tools:backgroundTint="@color/white">
+    android:layout_margin="8dp"
+    android:backgroundTint="@color/very_light_green">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,8 +27,8 @@
 
                 <ImageView
                     android:id="@+id/goalImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     tools:src="@drawable/financeicon"
                     app:tint="@color/light_green"
                     android:layout_gravity="center"
@@ -39,8 +40,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:indicatorSize="65dp"
-                    app:trackColor="@color/light"
-                    app:indicatorColor="@color/light_green"
+                    app:trackColor="@color/light_green"
+                    app:indicatorColor="@color/dark_green"
                     tools:progress="90"/>
 
             </FrameLayout>
@@ -55,7 +56,7 @@
                     android:id="@+id/goalVal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/subtitle"
+                    android:textSize="@dimen/regText"
                     android:textColor="@color/light_green"
                     android:layout_marginEnd="4dp"
                     tools:text="₽"/>
@@ -64,7 +65,7 @@
                     android:id="@+id/goalNow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/title"
+                    android:textSize="@dimen/subtitle"
                     android:textStyle="bold"
                     android:textColor="@color/dark_green"
                     tools:text="140"/>
@@ -73,7 +74,7 @@
                     android:id="@+id/goalTarget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/subtitle"
+                    android:textSize="@dimen/regText"
                     android:textColor="@color/dark_green"
                     tools:text="/150"/>
 
@@ -91,7 +92,7 @@
                 android:id="@+id/goalName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/title"
+                android:textSize="@dimen/subtitle"
                 android:textStyle="bold"
                 android:textColor="@color/dark_green"
                 android:layout_marginBottom="8dp"
@@ -141,11 +142,11 @@
 
     <ImageView
         android:id="@+id/notificationGoal"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:src="@drawable/bell"
         android:layout_gravity="top|end"
         app:tint="@color/light_green"
-        android:layout_margin="8dp" />
+        android:layout_margin="12dp" />
 
 </androidx.cardview.widget.CardView>

@@ -16,7 +16,12 @@
     <string name="sign_up_complete">Зарегистрироваться</string>\
     <string name="sign_up">Регистрация</string>
     <string name="log_in">Войти</string>
+    <string name="next">Далее</string>
+    <string name="finish">Готово</string>
     <string name="log_in_google">Или войдите, используя</string>
+
+    <string name="page_finance_finances">Сбережения</string>
+    <string name="page_finance_category">Категории расходов</string>
 
     <string name="title_activity_home_page">HomePageActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -32,12 +37,50 @@
     <string name="menu_setting">Настройки</string>
 
     <string name="card_expence_rem">осталось из</string>
+    <string name="card_add_basic">Сделать основным</string>
+    <string name="card_operation">Операция</string>
+    <string name="card_value">Введите сумму</string>
+    <string name="add">Добавить</string>
 
     <string name="card_goal_put">Начисление</string>
+    <string name="card_income">Доход</string>
     <string name="card_goal_cons">Расход</string>
 
+    <string name="card_new_exp_category">Категория расходов</string>
+    <string name="card_new_exp_date">Дата</string>
     <string name="card_sub_paid">Оплачена</string>
     <string name="card_sub_cancel">Отменена</string>
+
+    <string name="basic_currency">Выберите основную валюту для операций</string>
+    <string name="basic_budget">Введите информацию об основном счете</string>
+    <string name="basic_budget_name">Название</string>
+    <string name="basic_budget_savings">Накопления</string>
+    <string name="basic_budget_name_edit">Введите название</string>
+    <string name="basic_budget_savings_edit">Введите сумму накоплений</string>
+
+    <string name="basic_goals_edit">Введите сумму</string>
+    <string name="basic_budget_type">Тип счета</string>
+    <string name="budget">Счет</string>
+
+    <string name="choose_priority">Выберите приоритет</string>
+    <string name="dateExpence">Дата выплаты</string>
+
+    <string name="choose_icon">Выберите иконку</string>
+    <string name="choose">Выбрать</string>
+    <string name="basic_budget_type_spinner">Выберите тип счета..</string>
+
+    <string name="enterCurrencyName">Введите название валюты</string>
+    <!--ФИНАНСЫ-->
+    <string name="chooseCategory">Выберите категорию расходов</string>
+    <string name="fab">+</string>
+    <string name="fab_transaction">Добавить новую операцию</string>
+    <string name="fab_calculate">Распределить бюджет</string>
+
+    <string name="base">%1$s (основной)</string>
+    <string name="transaction">%1$d операций</string>
+    <string name="remaind">%1$s %2$s</string>
+    <string name="priority">Приоритет: %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

@@ -3,23 +3,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_finance">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.mybudget.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
-
-    <!--<fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.mybudget.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
+        android:id="@+id/nav_finance"
+        android:name="com.example.mybudget.drawersection.finance.FinanceFragment"
+        android:label="FinanceFragment" >
+        <action
+            android:id="@+id/action_nav_finance_to_addCategoryFragment"
+            app:destination="@id/addCategoryFragment" />
+        <action
+            android:id="@+id/action_nav_finance_to_budgetEditDialogFragment"
+            app:destination="@id/budgetEditDialogFragment" />
+        <action
+            android:id="@+id/action_nav_finance_to_newTransactionFragment"
+            app:destination="@id/newTransactionFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.mybudget.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />-->
+        android:id="@+id/nav_goals"
+        android:name="com.example.mybudget.drawersection.GoalsFragment"
+        android:label="GoalsFragment" />
+    <fragment
+        android:id="@+id/nav_loans"
+        android:name="com.example.mybudget.drawersection.LoansFragment"
+        android:label="LoansFragment" />
+    <fragment
+        android:id="@+id/nav_subs"
+        android:name="com.example.mybudget.drawersection.SubsFragment"
+        android:label="SubsFragment" />
+    <fragment
+        android:id="@+id/addCategoryFragment"
+        android:name="com.example.mybudget.drawersection.finance.category.AddCategoryFragment"
+        android:label="AddCategoryFragment" >
+        <argument
+            android:name="categories"
+            app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/budgetEditDialogFragment"
+        android:name="com.example.mybudget.drawersection.finance.BudgetEditDialogFragment"
+        android:label="BudgetEditDialogFragment" >
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="amount"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="base"
+            app:argType="boolean" />
+        <argument
+            android:name="symbol"
+            app:argType="string" />
+        <argument
+            android:name="currency"
+            app:argType="string" />
+        <argument
+            android:name="basicCurrency"
+            app:argType="string" />
+        <argument android:name="budgets"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_budgetEditDialogFragment_to_currencyDialogFragment"
+            app:destination="@id/currencyDialogFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/currencyDialogFragment"
+        android:name="com.example.mybudget.drawersection.finance.CurrencyDialogFragment"
+        android:label="CurrencyDialogFragment" >
+        <argument
+            android:name="idTextView"
+            app:argType="integer" />
+    </dialog>
+    <fragment
+        android:id="@+id/newTransactionFragment"
+        android:name="com.example.mybudget.drawersection.finance.NewTransactionFragment"
+        android:label="NewTransactionFragment" />
+
 </navigation>

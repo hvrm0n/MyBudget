@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:clipToPadding="false"
+    android:padding="8dp"
+    android:background="@drawable/listview_shadow">
+
+    <TextView
+        android:id="@+id/shortCurrency"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/nameCurrency"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/symbolCurrency"
+        android:layout_weight="0.8"
+        android:layout_width="0dp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:padding="8dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+</LinearLayout>
