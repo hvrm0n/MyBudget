@@ -36,8 +36,8 @@ class CurrencyDialogFragment : DialogFragment() {
             adapter.setSelectedPosition(position)
         }
 
-        val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-
+        val sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+        sharedViewModel.dataToPass.value = null
 
         search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?) = true

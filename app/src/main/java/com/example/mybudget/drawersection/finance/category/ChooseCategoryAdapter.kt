@@ -15,8 +15,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.IconsChooserAlertDialog
-import com.example.mybudget.start_pages.CategoryBegin
+import com.example.mybudget.start_pages.CategoryBeginWithKey
 import com.example.mybudget.start_pages.Constants
+import com.example.mybudget.start_pages._CategoryBegin
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -25,7 +26,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 
 
-class ChooseCategoryAdapter(private val context: Context, private var categories: List<CategoryBegin>, val fragment: AddCategoryFragment, val table: DatabaseReference, val auth: FirebaseAuth, val button: MaterialButton):
+class ChooseCategoryAdapter(private val context: Context, private var categories: List<CategoryBeginWithKey>, val fragment: AddCategoryFragment, val table: DatabaseReference, val auth: FirebaseAuth, val button: MaterialButton):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val TYPE_CATEGORY = 2
     private val TYPE_ADD = 1
@@ -47,7 +48,7 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
 
     fun getChose() = lastClick
 
-    fun updateData(newCategory: List<CategoryBegin>) {
+    fun updateData(newCategory: List<CategoryBeginWithKey>) {
         categories = newCategory
         notifyDataSetChanged()
     }
@@ -75,16 +76,16 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
         private val textViewName: TextView = itemView.findViewById(R.id.nameCategory)
         private val icon: ImageView = itemView.findViewById(R.id.iconCategory)
 
-        fun bind(category: CategoryBegin, position: Int) {
-            textViewName.text = category.name
-            icon.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(category.path, "drawable", context.packageName)))
+        fun bind(category: CategoryBeginWithKey, position: Int) {
+            textViewName.text = category.categoryBegin.name
+            icon.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(category.categoryBegin.path, "drawable", context.packageName)))
 
             itemView.setOnClickListener {
                 button.isEnabled = true
                 lastClick?.backgroundTintList = ColorStateList.valueOf( ContextCompat.getColor(context, R.color.very_light_green))
                 it.backgroundTintList = ColorStateList.valueOf( ContextCompat.getColor(context, R.color.light_green))
                 lastClick = it
-                fragment.changeSelectedIcon(category.path)
+                fragment.changeSelectedIcon(category.categoryBegin.path)
             }
         }
     }
@@ -117,23 +118,33 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
 
             builder.setPositiveButton("Добавить") { dialog, _ ->
                 if(newCategoryName.text.isNotEmpty()&&iconNew.tag!=null){
-                    table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").child(newCategoryName.text.toString()).addListenerForSingleValueEvent(object :
-                        ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            if (snapshot.exists()){
-                                Toast.makeText(context, "Такая категория уже существует!", Toast.LENGTH_LONG).show()
-                            } else {
-                                table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-                                    .child("Categories base").child(newCategoryName.text.toString()).setValue(CategoryBegin(newCategoryName.text.toString(), iconNew.tag.toString()))
-                                dialog.dismiss()
+                    table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base")
+                        .addListenerForSingleValueEvent(object :
+                            ValueEventListener{
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                var alreadyExist = false
+                                   snapshot.children.forEach { categories->
+                                       categories.getValue(_CategoryBegin::class.java)?.let {
+                                           if (it.name == newCategoryName.text.toString()){
+                                               alreadyExist = true
+                                               Toast.makeText(context, "Такая категория уже существует!", Toast.LENGTH_LONG).show()
+                                               return@forEach
+                                           }
+                                       }
+                                   }
+                                if(!alreadyExist){
+                                    table.child("Users").child(auth.currentUser!!.uid).child("Categories")
+                                        .child("Categories base").push().setValue(_CategoryBegin(newCategoryName.text.toString(), iconNew.tag.toString()))
+                                    dialog.dismiss()
+                                }
                             }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            Log.e(Constants.TAG_USER, error.message)
-                        }
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
 
-                    })
+                        })
+
                 } else when{
                     newCategoryName.text.isEmpty() -> Toast.makeText(context, "Вы не ввели название категории", Toast.LENGTH_LONG).show()
                     iconNew.tag==null-> Toast.makeText(context, "Вы не выбрали изображение", Toast.LENGTH_LONG).show()

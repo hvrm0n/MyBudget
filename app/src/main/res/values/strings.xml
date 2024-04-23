@@ -22,6 +22,16 @@
 
     <string name="page_finance_finances">Сбережения</string>
     <string name="page_finance_category">Категории расходов</string>
+    <string name="page_finance_history">История</string>
+    <string name="finances">Счета</string>
+    <string name="plans">Планы</string>
+    <string name="category">Категории</string>
+
+    <!--ИСТОРИЯ-->
+    <string name="history_category">Категория:\n%1$s</string>
+    <string name="history_goals">Цель:\n%1$s</string>
+    <string name="history_loans">Обязательная выплата:\n%1$s</string>
+    <string name="history_budget">Пополнение счета</string>
 
     <string name="title_activity_home_page">HomePageActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -38,9 +48,11 @@
 
     <string name="card_expence_rem">осталось из</string>
     <string name="card_add_basic">Сделать основным</string>
+    <string name="card_operation_wrong_value">Сумма должна быть положительной</string>
     <string name="card_operation">Операция</string>
     <string name="card_value">Введите сумму</string>
     <string name="add">Добавить</string>
+    <string name="plan">Запланировать</string>
 
     <string name="card_goal_put">Начисление</string>
     <string name="card_income">Доход</string>
@@ -74,7 +86,9 @@
     <string name="chooseCategory">Выберите категорию расходов</string>
     <string name="fab">+</string>
     <string name="fab_transaction">Добавить новую операцию</string>
+    <string name="fab_history">История и планы</string>
     <string name="fab_calculate">Распределить бюджет</string>
+    <string name="fab_cancel_calculate">Отменить распределение</string>
 
     <string name="base">%1$s (основной)</string>
     <string name="transaction">%1$d операций</string>

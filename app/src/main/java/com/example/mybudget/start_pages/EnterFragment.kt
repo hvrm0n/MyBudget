@@ -2,6 +2,7 @@ package com.example.mybudget.start_pages
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,8 +13,12 @@ import android.view.Window
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import com.example.mybudget.ExchangeRateManager
+import com.example.mybudget.ExchangeRateResponse
 import com.example.mybudget.R
+import com.example.mybudget.RetrofitClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -74,7 +79,8 @@ class EnterFragment : Fragment() {
             table.child("Users").child(currentUser!!.uid).get().addOnSuccessListener {
                 if(it.exists() && it!=null){
                     if(it.child("Budgets").child("Base budget").child("name").exists()){
-                        Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_homePageActivity).also { requireActivity().finish() }
+                        Log.e(Constants.TAG_CONVERT, "enter")
+                        ExchangeRateManager.request(table, auth, requireContext(), lifecycleScope, requireView(), requireActivity(), true)
                     } else Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment).also {
                         loadingDialog.dismiss()
                     }

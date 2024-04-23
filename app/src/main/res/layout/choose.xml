@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light"
-    tools:context=".EnterActivity">
+    android:background="@color/light">
 
 
     <TextView
@@ -27,11 +26,12 @@
     <TextView
         android:id="@+id/reasonText"
         android:layout_width="0dp"
-        android:layout_height="19dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="32dp"
         android:gravity="center"
+        android:inputType="textMultiLine"
         android:text="@string/sign_up_reason"
         android:textColor="@color/dark_grey"
         android:textSize="@dimen/regText"
@@ -100,13 +100,12 @@
 
     <ImageView
         android:id="@+id/keepFinanceImage"
-        android:layout_width="600dp"
-        android:layout_height="460dp"
+        android:layout_width="0dp"
+        android:layout_height="350dp"
         android:layout_marginTop="32dp"
         android:scaleType="centerCrop"
         android:src="@drawable/myimage"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="H,1.3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_button_google"

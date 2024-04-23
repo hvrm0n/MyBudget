@@ -62,10 +62,9 @@ abstract class SwipeHelper(
             val width = button.iconWidthPx / buttons.intrinsicWidth() * abs(dX)
             val left = right - width
             val rect = RectF(left, itemView.top.toFloat(), right.toFloat(), itemView.bottom.toFloat())
-            //val shadowRect = RectF(left + 10, itemView.top.toFloat() + 10, right.toFloat() + 10, itemView.bottom.toFloat() + 10)
             val cornerRadius = 30f
             val paint = Paint().apply {
-                color = recyclerView.context.getColor(R.color.dark_green)
+                color = recyclerView.context.getColor(R.color.light)
                 style = Paint.Style.FILL
                 isAntiAlias = true
             }

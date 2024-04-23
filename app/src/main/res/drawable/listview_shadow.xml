@@ -3,6 +3,8 @@
 
     <item>
         <shape android:shape="rectangle">
+            <padding android:left="16dp"/>
+            <padding android:right="16dp"/>
             <solid android:color="@color/very_light_green" />
             <corners android:radius="16dp" />
         </shape>

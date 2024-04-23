@@ -35,16 +35,17 @@
                 android:textSize="@dimen/title"
                 android:textStyle="bold" />
 
+            <!--android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"-->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/budgetsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
                 android:clipToPadding="false"
                 android:orientation="horizontal"
-                android:padding="8dp"
+                android:padding="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,23 +53,54 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="@string/page_finance_category"
                 android:textColor="@color/dark_green"
                 android:textSize="@dimen/title"
                 android:textStyle="bold" />
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"/>
+
+                <ImageButton
+                    android:id="@+id/left_nav"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center|left"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/angleleft"
+                    android:background="@color/light"
+                    app:tint="@color/light_green"/>
+
+                <ImageButton
+                    android:id="@+id/right_nav"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center|right"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/angleright"
+                    android:background="@color/light"
+                    app:tint="@color/light_green"/>
+
+            </FrameLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/categoryList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:clipToPadding="false"
-                android:padding="8dp" />
+                android:padding="16dp" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -148,6 +180,38 @@
 
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/fabNewTransaction"
+        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="@+id/floatingActionButton"
+        app:tint="@color/very_light_green" />
+
+    <TextView
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:gravity="end"
+        android:text="@string/fab_history"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/fabHistory"
+        app:layout_constraintEnd_toStartOf="@+id/fabHistory"
+        app:layout_constraintTop_toTopOf="@+id/fabHistory" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabHistory"
+        style="@style/CircularExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:backgroundTint="@color/light_green"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/history"
+
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fabCalculate"
         app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
         app:layout_constraintStart_toStartOf="@+id/floatingActionButton"
         app:tint="@color/very_light_green" />

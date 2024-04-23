@@ -1,25 +1,22 @@
-package com.example.mybudget.drawersection.finance
+package com.example.mybudget.drawersection.finance.budget
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
+import com.example.mybudget.drawersection.finance.category.CategoryAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class BudgetAdapter(private val context: Context, private var budgets: List<BudgetItem>, val scope: CoroutineScope, val table: DatabaseReference, val auth: FirebaseAuth):
+class BudgetAdapter(private val context: Context, private var budgets: List<BudgetItemWithKey>, val scope: CoroutineScope, val table: DatabaseReference, val auth: FirebaseAuth):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val TYPE_BUDGET = 2
     private val TYPE_ADD = 1
@@ -38,7 +35,7 @@ class BudgetAdapter(private val context: Context, private var budgets: List<Budg
         }
     }
 
-    fun updateData(newPurchases: List<BudgetItem>) {
+    fun updateData(newPurchases: List<BudgetItemWithKey>) {
         budgets = newPurchases
         notifyDataSetChanged()
     }
@@ -58,6 +55,8 @@ class BudgetAdapter(private val context: Context, private var budgets: List<Budg
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is BudgetViewHolder){
             holder.bind(budgets[position], position)
+        } else if( holder is AddViewHolder){
+            holder.bind()
         }
     }
 
@@ -68,19 +67,21 @@ class BudgetAdapter(private val context: Context, private var budgets: List<Budg
         private val budgetCount: TextView = itemView.findViewById(R.id.budgetCount)
         private val budgetType: TextView = itemView.findViewById(R.id.budgetType)
 
-        fun bind(budgetItem: BudgetItem, position: Int) {
-            textViewName.text = budgetItem.name
-            budgetRemainder.text = context.resources.getString(R.string.remaind,budgetItem.amount, context.resources.getString(context.resources.getIdentifier(budgetItem.currency, "string", context.packageName)))
-            budgetType.text = if(position==0) context.resources.getString(R.string.base, budgetItem.type) else budgetItem.type
-            budgetCount.text = context.resources.getString(R.string.transaction, budgetItem.count)
+        fun bind(budgetItem: BudgetItemWithKey, position: Int) {
+            textViewName.text = budgetItem.budgetItem.name
+            budgetRemainder.text = context.resources.getString(R.string.remaind,budgetItem.budgetItem.amount, context.resources.getString(context.resources.getIdentifier(budgetItem.budgetItem.currency, "string", context.packageName)))
+            budgetType.text = if(position==0) context.resources.getString(R.string.base, budgetItem.budgetItem.type) else budgetItem.budgetItem.type
+            budgetCount.text = context.resources.getString(R.string.transaction, budgetItem.budgetItem.count)
 
             card.setOnClickListener {
                 val bundle = Bundle()
-                bundle.putString("name",budgetItem.name)
-                bundle.putString("amount",budgetItem.amount)
-                bundle.putString("type",budgetItem.type)
-                bundle.putString("symbol",context.resources.getString(context.resources.getIdentifier(budgetItem.currency, "string", context.packageName)))
-                bundle.putString("currency",budgetItem.currency)
+                bundle.putString("key",budgetItem.key)
+                bundle.putString("name",budgetItem.budgetItem.name)
+                bundle.putString("amount",budgetItem.budgetItem.amount)
+                bundle.putString("type",budgetItem.budgetItem.type)
+                bundle.putString("transaction",budgetItem.budgetItem.count.toString())
+                bundle.putString("symbol",context.resources.getString(context.resources.getIdentifier(budgetItem.budgetItem.currency, "string", context.packageName)))
+                bundle.putString("currency",budgetItem.budgetItem.currency)
                 bundle.putBoolean("base", position==0)
                 itemView.findNavController().navigate(R.id.action_nav_finance_to_budgetEditDialogFragment, bundle)
             }
@@ -91,7 +92,7 @@ class BudgetAdapter(private val context: Context, private var budgets: List<Budg
     inner class AddViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val addNew: CardView = itemView.findViewById(R.id.addNew)
 
-        init {
+        fun bind() {
             val layoutParams = addNew.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             addNew.layoutParams = layoutParams
@@ -112,14 +113,12 @@ class BudgetAdapter(private val context: Context, private var budgets: List<Budg
                                         )
                                     )
                                 )
+
                                 bundle.putString("currency", dataSnapshot.value.toString())
                                 val gson = Gson()
                                 val budgetJson = gson.toJson(budgets)
                                 bundle.putString("budgets", budgetJson)
-                                itemView.findNavController().navigate(
-                                    R.id.action_nav_finance_to_budgetEditDialogFragment,
-                                    bundle
-                                )
+                                itemView.findNavController().navigate(R.id.action_nav_finance_to_budgetEditDialogFragment, bundle)
                             }
                         }
 

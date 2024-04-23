@@ -117,7 +117,7 @@ class SignUpFragment : Fragment() {
                     val categories = resources.getStringArray(R.array.category_default)
                     val paths = resources.getStringArray(R.array.icons_default)
                     for (i in categories.indices){
-                        table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").child(categories[i]).setValue(CategoryBegin(categories[i], paths[i]))
+                        table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").push().setValue(_CategoryBegin(categories[i], paths[i]))
                     }
                     updateUI()
                 } else {
@@ -139,4 +139,5 @@ class SignUpFragment : Fragment() {
     }
 }
 
-data class CategoryBegin(var name:String="", var path:String="")
+data class _CategoryBegin(var name:String="", var path:String="")
+data class CategoryBeginWithKey(var key:String="", var categoryBegin:_CategoryBegin)

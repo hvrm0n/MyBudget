@@ -13,12 +13,15 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
-import com.example.mybudget.start_pages.CategoryBegin
+import com.example.mybudget.drawersection.finance.FinanceViewModel
+import com.example.mybudget.start_pages.CategoryBeginWithKey
+import com.example.mybudget.start_pages._CategoryBegin
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -42,10 +45,12 @@ class AddCategoryFragment : Fragment() {
     private lateinit var button: MaterialButton
     private lateinit var auth: FirebaseAuth
     private lateinit var table: DatabaseReference
-    private val categoryBase = mutableListOf<CategoryBegin>()
-    private val categoryBaseLiveData: MutableLiveData<List<CategoryBegin>> = MutableLiveData()
+    private val categoryBase = mutableListOf<CategoryBeginWithKey>()
+    private val categoryBaseLiveData: MutableLiveData<List<CategoryBeginWithKey>> = MutableLiveData()
     private lateinit var categoriesAlready: Array<String>
     private var selectedIcon = ""
+
+    private lateinit var financeViewModel:FinanceViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,11 +70,14 @@ class AddCategoryFragment : Fragment() {
         super.onStart()
         auth = Firebase.auth
         table = Firebase.database.reference
+        financeViewModel = ViewModelProvider(requireActivity())[FinanceViewModel::class.java]
         val adapterPriority = ArrayAdapter.createFromResource(requireContext(), R.array.category_priority, android.R.layout.simple_spinner_item)
         adapterPriority.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPriority.adapter = adapterPriority
-        val categoriesJson = arguments?.getString("categories")
-        categoriesAlready = Gson().fromJson(categoriesJson, Array<String>::class.java)
+        categoriesAlready = financeViewModel.categoryBeginLiveData.value
+            ?.filter { it.key in financeViewModel.categoryLiveData.value!!.map { base -> base.key } }
+            ?.map { it.key }!!.toTypedArray()
+
 
         val layoutManager = GridLayoutManager(context, 4)
         recyclerCategoryChooser.layoutManager = layoutManager
@@ -82,12 +90,13 @@ class AddCategoryFragment : Fragment() {
         }
 
         updateBaseCategory()
-
         button.setOnClickListener {
+
             adapter.getChose()?.let{last->
                 val name = last.findViewById<TextView>(R.id.nameCategory)?.text.toString()
-                table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}")
-                .child("ExpenseCategories").child(name).setValue(CategoryItem(name, "0", "0", spinnerPriority.selectedItemPosition, selectedIcon)).addOnSuccessListener {
+                table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("${financeViewModel.financeDate.value!!.second}/${financeViewModel.financeDate.value!!.first}")
+                .child("ExpenseCategories").child(categoryBaseLiveData.value!!.filter { it.categoryBegin.name == name }[0].key).setValue(_CategoryItem("0", "0.00", spinnerPriority.selectedItemPosition,
+                    isPlanned = (Calendar.getInstance().get(Calendar.YEAR)<financeViewModel.financeDate.value!!.second||Calendar.getInstance().get(Calendar.MONTH)+1<financeViewModel.financeDate.value!!.first))).addOnSuccessListener {
                     view?.findNavController()?.popBackStack()
                 }.addOnFailureListener { ex->
                     Log.e("SaveError", ex.message.toString())
@@ -97,7 +106,6 @@ class AddCategoryFragment : Fragment() {
     }
 
     fun changeSelectedIcon(newIcon:String){
-        Log.e("newIcon", newIcon)
         selectedIcon = newIcon
     }
 
@@ -107,9 +115,9 @@ class AddCategoryFragment : Fragment() {
                 categoryBase.clear()
                 lifecycleScope.launch(Dispatchers.IO){
                     for (category in snapshot.children){
-                        category.getValue(CategoryBegin::class.java)?.let {categoryNew ->
-                            if (categoriesAlready.all { it !=  categoryNew.name}) {
-                                categoryBase.add(categoryNew)
+                        category.getValue(_CategoryBegin::class.java)?.let { categoryNew ->
+                            if (categoriesAlready.all { it !=  category.key}) {
+                                categoryBase.add(CategoryBeginWithKey(category.key.toString(), categoryNew))
                             }
                         }
                     }

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_finance"
         android:name="com.example.mybudget.drawersection.finance.FinanceFragment"
-        android:label="FinanceFragment" >
+        android:label="Финансы" >
         <action
             android:id="@+id/action_nav_finance_to_addCategoryFragment"
             app:destination="@id/addCategoryFragment" />
@@ -18,30 +18,33 @@
         <action
             android:id="@+id/action_nav_finance_to_newTransactionFragment"
             app:destination="@id/newTransactionFragment" />
+        <action
+            android:id="@+id/action_nav_finance_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_goals"
         android:name="com.example.mybudget.drawersection.GoalsFragment"
-        android:label="GoalsFragment" />
+        android:label="Цели" />
     <fragment
         android:id="@+id/nav_loans"
         android:name="com.example.mybudget.drawersection.LoansFragment"
-        android:label="LoansFragment" />
+        android:label="Важные выплаты" />
     <fragment
         android:id="@+id/nav_subs"
         android:name="com.example.mybudget.drawersection.SubsFragment"
-        android:label="SubsFragment" />
+        android:label="Подписки" />
     <fragment
         android:id="@+id/addCategoryFragment"
         android:name="com.example.mybudget.drawersection.finance.category.AddCategoryFragment"
-        android:label="AddCategoryFragment" >
+        android:label="Категории расходов" >
         <argument
             android:name="categories"
             app:argType="string" />
     </fragment>
     <dialog
         android:id="@+id/budgetEditDialogFragment"
-        android:name="com.example.mybudget.drawersection.finance.BudgetEditDialogFragment"
+        android:name="com.example.mybudget.drawersection.finance.budget.BudgetEditDialogFragment"
         android:label="BudgetEditDialogFragment" >
         <argument
             android:name="name"
@@ -64,11 +67,15 @@
         <argument
             android:name="basicCurrency"
             app:argType="string" />
-        <argument android:name="budgets"
-            app:argType="string" />
         <action
             android:id="@+id/action_budgetEditDialogFragment_to_currencyDialogFragment"
             app:destination="@id/currencyDialogFragment" />
+        <argument
+            android:name="transaction"
+            app:argType="string" />
+        <argument
+            android:name="key"
+            app:argType="string" />
     </dialog>
     <dialog
         android:id="@+id/currencyDialogFragment"
@@ -81,6 +88,17 @@
     <fragment
         android:id="@+id/newTransactionFragment"
         android:name="com.example.mybudget.drawersection.finance.NewTransactionFragment"
-        android:label="NewTransactionFragment" />
+        android:label="Новая операция" >
+        <action
+            android:id="@+id/action_newTransactionFragment_to_currencyDialogFragment"
+            app:destination="@id/currencyDialogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.mybudget.drawersection.finance.HistoryFragment"
+        android:label="История" >
+        <argument android:name="history" />
+        <argument android:name="plan" />
+    </fragment>
 
 </navigation>
