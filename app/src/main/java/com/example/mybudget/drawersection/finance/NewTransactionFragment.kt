@@ -26,6 +26,7 @@ import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
+import com.example.mybudget.start_pages.Constants
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -93,7 +94,8 @@ class NewTransactionFragment : Fragment() {
                 val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
                 it.text = formattedTime
             }, hour, minute, true)
-            timePickerDialog.show() }
+            timePickerDialog.show()
+        }
     }
 
     override fun onStart() {
@@ -109,7 +111,13 @@ class NewTransactionFragment : Fragment() {
             set(Calendar.DAY_OF_MONTH, 1)
             binding.calendarViewCategory.minDate = this.timeInMillis
         }
-        dateOfExpence.set(financeViewModel.financeDate.value!!.second, financeViewModel.financeDate.value!!.first-1, 1)
+
+        val day =  when{
+            (financeViewModel.financeDate.value!!.second == Calendar.getInstance().get(Calendar.YEAR)
+                    && financeViewModel.financeDate.value!!.first == Calendar.getInstance().get(Calendar.MONTH)+1)-> Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            else->1
+        }
+        dateOfExpence.set(financeViewModel.financeDate.value!!.second, financeViewModel.financeDate.value!!.first-1, day)
         periodList = requireContext().resources.getStringArray(R.array.periodicity)
         whatIsChecked()
 
@@ -122,6 +130,28 @@ class NewTransactionFragment : Fragment() {
             binding.timeOfNotifications.visibility = View.INVISIBLE
             binding.periodOfNotificationTitle.visibility = View.GONE
             binding.periodOfNotification.visibility = View.GONE
+        }
+
+        binding.periodOfNotification.onItemSelectedListener = object :OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position == 0){
+                    binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
+                    binding.timeOfNotifications.visibility = View.INVISIBLE
+                } else {
+                    binding.timeOfNotificationsTitle.visibility = View.VISIBLE
+                    binding.timeOfNotifications.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
+                binding.timeOfNotifications.visibility = View.INVISIBLE
+            }
         }
 
         binding.calendarViewCategory.setOnDateChangeListener { _, year, month, dayOfMonth ->
@@ -174,28 +204,6 @@ class NewTransactionFragment : Fragment() {
                 adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, resultList)
                 adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.periodOfNotification.adapter = adapterPeriod
-
-                binding.periodOfNotification.onItemSelectedListener = object :OnItemSelectedListener{
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        if(position == 0){
-                            binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
-                            binding.timeOfNotifications.visibility = View.INVISIBLE
-                        } else {
-                            binding.timeOfNotificationsTitle.visibility = View.VISIBLE
-                            binding.timeOfNotifications.visibility = View.VISIBLE
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-                        binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
-                        binding.timeOfNotifications.visibility = View.INVISIBLE
-                    }
-                }
                 planned = true
             } else {
                 planned = false
@@ -545,8 +553,9 @@ class NewTransactionFragment : Fragment() {
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                                 NotificationManager.notification(
                                     requireContext(),
+                                    Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
-                                    binding.spinnerCategory.selectedItem.toString(),
+                                   /* binding.spinnerCategory.selectedItem.toString(),*/
                                     binding.timeOfNotifications.text.toString(),
                                     dateOfExpence,
                                     binding.periodOfNotification.selectedItem.toString())
@@ -584,8 +593,9 @@ class NewTransactionFragment : Fragment() {
                         if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                             NotificationManager.notification(
                                 requireContext(),
+                                Constants.CHANNEL_ID_PLAN,
                                 planReferense.key.toString(),
-                                binding.spinnerCategory.selectedItem.toString(),
+                               /* binding.spinnerCategory.selectedItem.toString(),*/
                                 binding.timeOfNotifications.text.toString(),
                                 dateOfExpence,
                                 binding.periodOfNotification.selectedItem.toString())
@@ -736,8 +746,9 @@ class NewTransactionFragment : Fragment() {
                                 if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                                     NotificationManager.notification(
                                         requireContext(),
+                                        Constants.CHANNEL_ID_PLAN,
                                         planReferense.key.toString(),
-                                        binding.spinnerCategory.selectedItem.toString(),
+                                        /*binding.spinnerCategory.selectedItem.toString(),*/
                                         binding.timeOfNotifications.text.toString(),
                                         dateOfExpence,
                                         binding.periodOfNotification.selectedItem.toString())
@@ -775,8 +786,9 @@ class NewTransactionFragment : Fragment() {
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                                 NotificationManager.notification(
                                     requireContext(),
+                                    Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
-                                    binding.spinnerCategory.selectedItem.toString(),
+                                   /* binding.spinnerCategory.selectedItem.toString(),*/
                                     binding.timeOfNotifications.text.toString(),
                                     dateOfExpence,
                                     binding.periodOfNotification.selectedItem.toString())

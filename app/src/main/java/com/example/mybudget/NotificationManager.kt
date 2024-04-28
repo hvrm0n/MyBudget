@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import java.security.MessageDigest
 import java.util.Calendar
@@ -64,13 +66,13 @@ object NotificationManager {
         }
     }
 
-     fun notification(context: Context, id:String, placeName:String, time:String, dateOfExpence:Calendar, periodOfNotification:String){
-        val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra("channelID", "PLAN")
-            putExtra("notificationID", id)
-            putExtra("placeName", placeName)
-            putExtra("time",time)
-            putExtra("date", dateOfExpence)
+     fun notification(context: Context, channelID:String, id:String,/* placeName:String, */time:String, dateOfExpence:Calendar, periodOfNotification:String){
+         val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
+             putExtra("channelID", channelID)
+             /*putExtra("notificationID", id)*/
+             putExtra("placeId", id)
+             /*putExtra("time",time)*/
+             putExtra("date", dateOfExpence.timeInMillis)
         }
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, dateOfExpence.get(Calendar.YEAR))
@@ -97,6 +99,7 @@ object NotificationManager {
          updateSharedPreference(id, time, periodOfNotification, context)
 
          when(periodOfNotification){
+             periods[0]-> deleteSharedPreference(id, context)
              periods[1]-> alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis - (24 * 60 * 60 * 1000), pendingIntent)
              periods[2]-> alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis - (3 * 24 * 60 * 60 * 1000), pendingIntent)
              periods[3]-> alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis - (7 * 24 * 60 * 60 * 1000), pendingIntent)

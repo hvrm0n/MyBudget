@@ -39,6 +39,8 @@ import com.example.mybudget.drawersection.finance.category.CategoryAdapter
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
 import com.example.mybudget.drawersection.finance.category._CategoryItem
+import com.example.mybudget.drawersection.goals.GoalItem
+import com.example.mybudget.drawersection.goals.GoalItemWithKey
 import com.example.mybudget.start_pages.CategoryBeginWithKey
 import com.example.mybudget.start_pages.Constants
 import com.example.mybudget.start_pages._CategoryBegin
@@ -69,13 +71,14 @@ class FinanceFragment : Fragment() {
     private val category = mutableListOf<CategoryItemWithKey>()
     private val categoryBegin = mutableListOf<CategoryBeginWithKey>()
     private val historyList = mutableListOf<HistoryItem>()
-
     private val dateList = mutableListOf<Pair<Int, Int>>()
     private val categoryDateLive =  MutableLiveData<List<Pair<Int, Int>>>(mutableListOf(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR))))
-
     private val planList = mutableListOf<HistoryItem>()
+    private val goalList = mutableListOf<GoalItemWithKey>()
+
 
     private var isExpanded = false
+
     private val fromBottom:Animation by lazy {
         AnimationUtils.loadAnimation(context, R.anim.from_bottom_fab)
     }
@@ -125,11 +128,8 @@ class FinanceFragment : Fragment() {
         }
 
         binding.fabNewTransaction.setOnClickListener {
-            //binding.viewpager.currentItem = adapterCategory.getCurrentDate()
-            /*updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){*/
-                findNavController().navigate(R.id.action_nav_finance_to_newTransactionFragment)
-                isExpanded = false
-            /*}*/
+            findNavController().navigate(R.id.action_nav_finance_to_newTransactionFragment)
+            isExpanded = false
         }
 
         binding.fabHistory.setOnClickListener {
@@ -201,6 +201,7 @@ class FinanceFragment : Fragment() {
         financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
             adapterBudget.updateData(it.filter {budgetItemWithKey ->  !budgetItemWithKey.budgetItem.isDeleted })
         }
+
         beginCheckUpCategories()
         updateBeginCategory()
         updateBudget()
@@ -208,7 +209,7 @@ class FinanceFragment : Fragment() {
         binding.categoryList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.categoryList.adapter = adapterCategory
 
-        updateCategory(/*1,1*/)
+        updateCategory()
 
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(binding.categoryList) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
@@ -274,6 +275,8 @@ class FinanceFragment : Fragment() {
         binding.rightNav.setOnClickListener {
             binding.viewpager.currentItem += 1
         }
+
+        updateGoals()
     }
 
     private fun leftAndRightRows(){
@@ -797,9 +800,73 @@ class FinanceFragment : Fragment() {
                             category.add(CategoryItemWithKey(expenseCategory.key.toString(), it))
                         }
                     }
-                    Log.e("UPDATE_CATEGORY1", "YES")
                     financeViewModel.updateCategoryData(category.sortedByDescending { it.categoryItem.priority })
                     doAfter(Unit)
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("errorLog", error.toException().toString())
+                }
+            })
+    }
+
+    private fun updateGoals(){
+        table.child("Users").child(auth.currentUser!!.uid).child("Goals").addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    goalList.clear()
+                    for (goal in snapshot.children){
+                        goal.getValue(GoalItem::class.java)?.let {gi->
+                            goalList.add(GoalItemWithKey(goal.key.toString(), gi))
+                        }
+                    }
+                    Log.e("CheckGoals",
+
+                        goalList.asSequence()
+                            .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
+                                Calendar.getInstance().timeInMillis < Calendar.getInstance().apply {
+                                    set(
+                                        it.goalItem.date!!.split(".")[2].toInt(),
+                                        it.goalItem.date!!.split(".")[1].toInt()-1,
+                                        it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
+                            } else true}
+                            .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
+                            .sortedBy { it.goalItem.date!!.split(".")[2] }
+                            .sortedBy { it.goalItem.date!!.split(".")[1]}
+                            .sortedBy { it.goalItem.date!!.split(".")[0]}
+                            .toList().toString()
+                        )
+                    financeViewModel.updateGoalsData(
+                        goalList.asSequence()
+                                    .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
+                                            Calendar.getInstance().timeInMillis < Calendar.getInstance().apply {
+                                                set(
+                                                    it.goalItem.date!!.split(".")[2].toInt(),
+                                                    it.goalItem.date!!.split(".")[1].toInt()-1,
+                                                    it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
+                                    } else true}
+                                    .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
+                                    .sortedBy { it.goalItem.date!!.split(".")[2] }
+                                    .sortedBy { it.goalItem.date!!.split(".")[1]}
+                                    .sortedBy { it.goalItem.date!!.split(".")[0]}
+                                    .toList()
+                                +
+                                goalList
+                                    .asSequence() .filter { it.goalItem.date==null }
+                                    .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
+                                    .toList()
+                        + goalList.asSequence()
+                            .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
+                                Calendar.getInstance().timeInMillis >= Calendar.getInstance().apply {
+                                    set(
+                                        it.goalItem.date!!.split(".")[2].toInt(),
+                                        it.goalItem.date!!.split(".")[1].toInt()-1,
+                                        it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
+                            } else true}
+                            .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
+                            .sortedBy { it.goalItem.date!!.split(".")[2] }
+                            .sortedBy { it.goalItem.date!!.split(".")[1]}
+                            .sortedBy { it.goalItem.date!!.split(".")[0]}
+                            .toList()
+                    )
                 }
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("errorLog", error.toException().toString())

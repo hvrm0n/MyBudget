@@ -15,6 +15,10 @@ object Constants{
     const val TAG_USER = "UserMyBudget"
     const val TAG_GOOGLE = "GoogleMyBudget"
     const val TAG_CONVERT = "ExchangeMyBudget"
+    const val CHANNEL_ID_PLAN = "PLAN"
+    const val CHANNEL_ID_GOAL = "GOAL"
+    const val CHANNEL_ID_LOAN = "LOAN"
+    const val CHANNEL_ID_SUB = "SUB"
 }
 
 class StartActivity:AppCompatActivity() {
@@ -30,21 +34,26 @@ class StartActivity:AppCompatActivity() {
 
     private fun createNotificationChannels(){
         val channelPlan = NotificationChannel(
-            "PLAN",
+            Constants.CHANNEL_ID_PLAN,
             "Plan notification",
             NotificationManager.IMPORTANCE_DEFAULT)
 
+        val channelGoal = NotificationChannel(
+            Constants.CHANNEL_ID_GOAL,
+            "Goal notification",
+            NotificationManager.IMPORTANCE_HIGH)
+
         val channelLoan = NotificationChannel(
-            "LOAN",
+            Constants.CHANNEL_ID_LOAN,
             "Loan notification",
             NotificationManager.IMPORTANCE_HIGH)
 
         val channelSubscribe = NotificationChannel(
-            "SUB",
+            Constants.CHANNEL_ID_SUB,
             "Subscribe notification",
             NotificationManager.IMPORTANCE_DEFAULT)
 
         val notificationManager: NotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannels(listOf(channelPlan, channelLoan, channelSubscribe))
+        notificationManager.createNotificationChannels(listOf(channelPlan, channelLoan, channelSubscribe, channelGoal))
     }
 }

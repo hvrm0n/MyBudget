@@ -29,8 +29,8 @@
 
     <!--ИСТОРИЯ-->
     <string name="history_category">Категория:\n%1$s</string>
-    <string name="history_goals">Цель:\n%1$s</string>
-    <string name="history_loans">Обязательная выплата:\n%1$s</string>
+    <string name="history_goals">Цель: %1$s</string>
+    <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="history_budget">Пополнение счета</string>
 
     <string name="title_activity_home_page">HomePageActivity</string>
@@ -75,13 +75,15 @@
     <string name="budget">Счет</string>
 
     <string name="choose_priority">Выберите приоритет</string>
-    <string name="dateExpence">Дата выплаты</string>
+    <string name="dateExpence">Дата</string>
 
     <string name="choose_icon">Выберите иконку</string>
     <string name="choose">Выбрать</string>
     <string name="basic_budget_type_spinner">Выберите тип счета..</string>
 
     <string name="enterCurrencyName">Введите название валюты</string>
+    <string name="save">Сохранить</string>
+
     <!--ФИНАНСЫ-->
     <string name="chooseCategory">Выберите категорию расходов</string>
     <string name="fab">+</string>
@@ -94,7 +96,21 @@
     <string name="transaction">%1$d операций</string>
     <string name="remaind">%1$s %2$s</string>
     <string name="priority">Приоритет: %1$s</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <!--УВЕДОМЛЕНИЯ-->
+    <string name="defaultTime">12:00</string>
+    <string name="periodTitle">Периодичность напоминаний</string>
+    <string name="timeTitle">Время</string>
+
+    <!--ЦЕЛИ-->
+    <string name="withouthDate">Без срока</string>
+    <string name="withDate">Со сроком</string>
+    <string name="titleGoals">Введите желаемую сумму</string>
+    <string name="goalsName">Название цели</string>
+    <string name="titleLoans">Выплата</string>
+    <string name="titleSubs">Стоимость подписки</string>
+    <string name="target">/%1$s</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

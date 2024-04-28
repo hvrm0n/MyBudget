@@ -24,8 +24,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_goals"
-        android:name="com.example.mybudget.drawersection.GoalsFragment"
-        android:label="Цели" />
+        android:name="com.example.mybudget.drawersection.goals.GoalsFragment"
+        android:label="Цели" >
+        <action
+            android:id="@+id/action_nav_goals_to_newGLSFragment"
+            app:destination="@id/newGLSFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_loans"
         android:name="com.example.mybudget.drawersection.LoansFragment"
@@ -99,6 +103,20 @@
         android:label="История" >
         <argument android:name="history" />
         <argument android:name="plan" />
+    </fragment>
+    <fragment
+        android:id="@+id/newGLSFragment"
+        android:name="com.example.mybudget.drawersection.NewGLSFragment"
+        android:label="NewGLSFragment" >
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="key"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_newGLSFragment_to_currencyDialogFragment"
+            app:destination="@id/currencyDialogFragment" />
     </fragment>
 
 </navigation>

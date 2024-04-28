@@ -27,7 +27,7 @@
                 tools:src="@drawable/financeicon"
                 app:tint="@color/light_green"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"/>
+                android:layout_margin="16dp"/>
 
             <LinearLayout
                 android:layout_width="0dp"

@@ -60,15 +60,24 @@ class BudgetEditDialogFragment:DialogFragment() {
         val adapterType = ArrayAdapter.createFromResource(requireContext(), R.array.budget_types, android.R.layout.simple_spinner_item)
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerType.adapter = adapterType
-
         val sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
         budgetViewModel = ViewModelProvider(requireActivity())[FinanceViewModel::class.java]
+        var oldCurrency:String? = null
         sharedViewModel.dataToPass.value = null
         sharedViewModel.dataToPass.observe(this) { data ->
             if (data!=null && data.first.isNotEmpty()){
                 currency.text = data.third
+                if (requireArguments().getString("basicCurrency")==null){
+                    etAmount.setText(changeCurrencyAmount(oldCurrency?:requireArguments().getString("currency")!!,
+                        newCurrency = data.first,
+                        newAmount = etAmount.text.toString(),
+                        context = requireContext(),
+
+                        ))
+                }
                 selection = data
                 sharedViewModel.dataToPass.value = Triple("","","")
+                oldCurrency = selection.first
             }
         }
 
@@ -109,7 +118,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                 _BudgetItem(
                                                     etName.text.toString(),
                                                     changeCurrencyAmount(currencyShort!!,
-                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), key, context),
+                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*key,*/ context),
                                                     spinnerType.selectedItem.toString(),
                                                     transaction?.toInt() ?: 0,
                                                     changeCurrency(currencyShort,
@@ -174,7 +183,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                                 _BudgetItem(
                                                                                     etName.text.toString(),
                                                                                     changeCurrencyAmount(currencyShort!!,
-                                                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), "Base budget", context),
+                                                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*"Base budget",*/ context),
                                                                                     spinnerType.selectedItem.toString(),
                                                                                     transaction?.toInt() ?: 0,
                                                                                     changeCurrency(currencyShort,
@@ -214,7 +223,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                                     _BudgetItem(
                                         etName.text.toString(),
                                         changeCurrencyAmount(currencyShort!!,
-                                            selection.first.ifEmpty { currencyShort },etAmount.text.toString(), "Base budget", context),
+                                            selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*"Base budget",*/ context),
                                         spinnerType.selectedItem.toString(),
                                         transaction?.toInt() ?: 0,
                                         changeCurrency(currencyShort,
@@ -336,20 +345,20 @@ class BudgetEditDialogFragment:DialogFragment() {
 
     }
 
-    private fun changeCurrencyAmount(oldCurrency: String, newCurrency: String,newAmount:String, budgetKey: String, context: Context):String{
-        if(newAmount==budgetViewModel.budgetLiveData.value?.find { it.key == budgetKey }!!.budgetItem.amount && newCurrency!=newAmount){
+    private fun changeCurrencyAmount(oldCurrency: String, newCurrency: String,newAmount:String, /*budgetKey: String, */context: Context):String{
+        /*if(newAmount==budgetViewModel.budgetLiveData.value?.find { it.key == budgetKey }!!.budgetItem.amount && newCurrency!=newAmount){*/
             val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(context)
             if(currencyConvertor!=null){
                 return when (oldCurrency){
                     currencyConvertor.baseCode->{
-                        String.format("%.2f", budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*currencyConvertor.conversionRates[newCurrency]!!).replace(',','.')
+                        String.format("%.2f", newAmount.toDouble()/*budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*/*currencyConvertor.conversionRates[newCurrency]!!).replace(',','.')
                     }
                     else->{
-                        String.format("%.2f", budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*currencyConvertor.conversionRates[newCurrency]!!/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')
+                        String.format("%.2f", newAmount.toDouble()/*budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*/*currencyConvertor.conversionRates[newCurrency]!!/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')
                     }
                 }
             }
-        }
+       /* }*/
         return newAmount
     }
     private fun changeCurrency(oldCurrency:String, newCurrency:String, budgetKey:String, context: Context, baseChanged:Boolean):String{
@@ -528,7 +537,6 @@ class BudgetEditDialogFragment:DialogFragment() {
         }
 
         if(budgetKey == "Base budget" && currencyConvertor!=null && baseChanged){
-            Log.e("enterBB", "yes")
             val oldCurrency2 = budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
             when (oldCurrency2){
                 currencyConvertor.baseCode->{
@@ -589,12 +597,14 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 for (months in years.children){
                                     for (historyItem in months.children){
                                         historyItem.getValue(HistoryItem::class.java)?.let {
-                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                    when(it.budgetId){
-                                                        "Base budget" -> it.amount
-                                                        else ->
-                                                    String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/).replace(',','.')})
+                                                if(it.isCategory==true){
+                                                    table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                                    .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
+                                                        when(it.budgetId){
+                                                            "Base budget" -> it.amount
+                                                            else ->
+                                                        String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/).replace(',','.')})
+                                            }
                                         }
                                     }
                                 }
@@ -609,13 +619,22 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 for (months in years.children){
                                     for (historyItem in months.children){
                                         historyItem.getValue(HistoryItem::class.java)?.let {
-                                            table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                    when(it.budgetId){
-                                                        "Base budget" -> it.amount
-                                                        else ->
-                                                    String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/).replace(',','.')})
-
+                                            if(it.isCategory==true) {
+                                                table.child("Users").child(auth.currentUser!!.uid)
+                                                    .child("Plan")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString()).child(it.key)
+                                                    .child("baseAmount").setValue(
+                                                        when (it.budgetId) {
+                                                            "Base budget" -> it.amount
+                                                            else ->
+                                                                String.format(
+                                                                    "%.2f",
+                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/
+                                                                ).replace(',', '.')
+                                                        }
+                                                    )
+                                            }
                                         }
                                     }
                                 }
@@ -680,13 +699,21 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 for (months in years.children){
                                     for (historyItem in months.children){
                                         historyItem.getValue(HistoryItem::class.java)?.let {
-                                            Log.e("checkAmount", it.amount)
-                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                    when(it.budgetId){
-                                                        "Base budget" -> it.amount
-                                                        else -> String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/currencyConvertor.conversionRates[oldCurrency2]!!).replace(',','.') })
-
+                                            if (it.isCategory == true) {
+                                                table.child("Users").child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString()).child(it.key)
+                                                    .child("baseAmount").setValue(
+                                                        when (it.budgetId) {
+                                                            "Base budget" -> it.amount
+                                                            else -> String.format(
+                                                                "%.2f",
+                                                                currencyConvertor.conversionRates[newCurrency]!! * it.baseAmount.toDouble() / currencyConvertor.conversionRates[oldCurrency2]!!
+                                                            ).replace(',', '.')
+                                                        }
+                                                    )
+                                            }
                                         }
                                     }
                                 }
@@ -701,12 +728,14 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 for (months in years.children){
                                     for (historyItem in months.children){
                                         historyItem.getValue(HistoryItem::class.java)?.let {
-                                            table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                    when(it.budgetId){
-                                                    "Base budget" -> it.amount
-                                                    else ->String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/currencyConvertor.conversionRates[oldCurrency2]!!).replace(',','.')}
-                                                )
+                                            if(it.isCategory==true){
+                                                table.child("Users").child(auth.currentUser!!.uid).child("Plan")
+                                                    .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
+                                                        when(it.budgetId){
+                                                        "Base budget" -> it.amount
+                                                        else ->String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/currencyConvertor.conversionRates[oldCurrency2]!!).replace(',','.')}
+                                                    )
+                                            }
                                         }
                                     }
                                 }

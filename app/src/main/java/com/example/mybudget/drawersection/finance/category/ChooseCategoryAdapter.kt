@@ -123,15 +123,15 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
                             ValueEventListener{
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 var alreadyExist = false
-                                   snapshot.children.forEach { categories->
-                                       categories.getValue(_CategoryBegin::class.java)?.let {
-                                           if (it.name == newCategoryName.text.toString()){
-                                               alreadyExist = true
-                                               Toast.makeText(context, "Такая категория уже существует!", Toast.LENGTH_LONG).show()
-                                               return@forEach
-                                           }
-                                       }
-                                   }
+                                snapshot.children.forEach { categories->
+                                    categories.getValue(_CategoryBegin::class.java)?.let {
+                                        if (it.name == newCategoryName.text.toString()){
+                                            alreadyExist = true
+                                            Toast.makeText(context, "Такая категория уже существует!", Toast.LENGTH_LONG).show()
+                                            return@forEach
+                                        }
+                                    }
+                                }
                                 if(!alreadyExist){
                                     table.child("Users").child(auth.currentUser!!.uid).child("Categories")
                                         .child("Categories base").push().setValue(_CategoryBegin(newCategoryName.text.toString(), iconNew.tag.toString()))

@@ -7,33 +7,35 @@
     android:layout_height="match_parent"
     android:background="@color/light">
 
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scwGoals"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/menu_goals"
-            android:textSize="@dimen/title"
+            android:textSize="@dimen/subtitle"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginTop="16dp"
             android:textColor="@color/dark_green"/>
-
+-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/goalsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:padding="16dp"/>
 
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

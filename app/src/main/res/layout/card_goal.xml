@@ -1,152 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="16dp"
-    android:layout_margin="8dp"
-    android:backgroundTint="@color/very_light_green">
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:clipToPadding="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/reachedGoals"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="16dp">
+        android:textColor="@color/dark_green"
+        android:textStyle="bold"
+        android:textSize="@dimen/regText"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="Достигнутые"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardGoal"
+        app:cardCornerRadius="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/very_light_green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:clipToPadding="false">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="4dp">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp">
+
+                    <TextView
+                        android:id="@+id/goalName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_green"
+                        android:textSize="@dimen/subtitle"
+                        android:textStyle="bold"
+                        tools:text="Название" />
+
+                    <TextView
+                        android:id="@+id/goalDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/light_green"
+                        android:textSize="@dimen/regText"
+                        tools:text="12.10.2024" />
+                </LinearLayout>
+
 
                 <ImageView
                     android:id="@+id/goalImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    tools:src="@drawable/financeicon"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="16dp"
                     app:tint="@color/light_green"
-                    android:layout_gravity="center"
-                    android:layout_margin="4dp"/>
+                    android:layout_centerVertical="true"
+                    tools:src="@drawable/financeicon" />
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progressBarGoal"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:indicatorSize="65dp"
-                    app:trackColor="@color/light_green"
-                    app:indicatorColor="@color/dark_green"
-                    tools:progress="90"/>
 
-            </FrameLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/goalVal"
+                    android:id="@+id/goalCurrency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/regText"
                     android:textColor="@color/light_green"
+                    android:textSize="@dimen/regText"
                     android:layout_marginEnd="4dp"
-                    tools:text="₽"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/goalNow"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="₽" />
 
                 <TextView
                     android:id="@+id/goalNow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/dark_green"
                     android:textSize="@dimen/subtitle"
                     android:textStyle="bold"
-                    android:textColor="@color/dark_green"
-                    tools:text="140"/>
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/goalTarget"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="140" />
 
                 <TextView
                     android:id="@+id/goalTarget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/regText"
                     android:textColor="@color/dark_green"
-                    tools:text="/150"/>
+                    android:textSize="@dimen/regText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="/150" />
 
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/progressBarGoal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                tools:progress="25"
+                android:layout_marginTop="8dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/custom_progress_bar" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="24dp">
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
 
-            <TextView
-                android:id="@+id/goalName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/subtitle"
-                android:textStyle="bold"
-                android:textColor="@color/dark_green"
-                android:layout_marginBottom="8dp"
-                android:layout_gravity="center"
-                tools:text="Название"/>
+<!--
+<com.google.android.material.button.MaterialButton
+android:id="@+id/goalIncome"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="@string/card_goal_put"
+android:textSize="@dimen/regText"
+android:backgroundTint="@color/light_green"
+android:textColor="@color/very_light_green"/>
 
-            <TextView
-                android:id="@+id/goalDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/regText"
-                android:textColor="@color/dark_green"
-                android:layout_marginBottom="8dp"
-                tools:text="до 12/10/2024"
-                android:layout_gravity="center"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:padding="4dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/goalPut"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/card_goal_put"
-                    android:textSize="@dimen/regText"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/light_green"
-                    android:textColor="@color/dark_grey"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/goalCons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/card_goal_cons"
-                    android:textSize="@dimen/regText"
-                    android:backgroundTint="@color/light_orange"
-                    android:textColor="@color/dark_grey"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/notificationGoal"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/bell"
-        android:layout_gravity="top|end"
-        app:tint="@color/light_green"
-        android:layout_margin="12dp" />
-
-</androidx.cardview.widget.CardView>
+<com.google.android.material.button.MaterialButton
+android:id="@+id/goalExpence"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="@string/card_goal_cons"
+android:textSize="@dimen/regText"
+android:backgroundTint="@color/light_orange"
+android:textColor="@color/very_light_green"/>-->

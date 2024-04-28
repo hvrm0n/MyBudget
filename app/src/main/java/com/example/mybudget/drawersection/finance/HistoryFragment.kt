@@ -113,50 +113,69 @@ class HistoryFragment : Fragment() {
             spinner.visibility = View.GONE
             historyAdapter.sortByDate(startDate, endDate, historyList.sortedByDescending { it.date }.toList())
             isTransactionExists()
-        } else if (rbCategory.isChecked && financeViewModel.categoryLiveData.value!=null){
-            adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
-                .filter {place-> place.placeId.isNotEmpty()}.map {placeItem-> financeViewModel.categoryBeginLiveData.value!!.filter { it.key == placeItem.placeId }[0].categoryBegin.name})
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            if(historyList.none { place -> place.placeId != "" }){
-                historyAdapter.sortByDate(startDate, endDate, emptyList())
-            }
-            spinner.adapter = adapter
-            spinner.visibility = View.VISIBLE
-            historyAdapter.checkPlan(false)
-            isTransactionExists()
-            spinner.onItemSelectedListener = object:OnItemSelectedListener{
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    Log.e("checkWhatIsInHistory", historyList.toString())
-                    historyAdapter.sortByDate(startDate, endDate, historyList.filter {placeItem-> placeItem.placeId.isNotEmpty()}.filter {placeItem-> financeViewModel.categoryBeginLiveData.value!!.filter { it.key == placeItem.placeId }[0].categoryBegin.name == spinner.getItemAtPosition(position).toString()}.sortedByDescending { it.date}.toList())
+        } else if (rbCategory.isChecked){
+            when{
+                financeViewModel.categoryLiveData.value == null ->{
+                    Log.e("Enter", "yes")
+                    historyList = emptyList()
+                    historyAdapter.notifyDataSetChanged()
                     isTransactionExists()
+                }
+                else->{
+                    adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
+                        .filter {place-> place.placeId.isNotEmpty() && place.isCategory==true}.map {placeItem-> financeViewModel.categoryBeginLiveData.value!!.filter { it.key == placeItem.placeId }[0].categoryBegin.name})
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    if(historyList.all { place -> place.isCategory == false }){
+                        historyAdapter.sortByDate(startDate, endDate, emptyList())
+                    }
+                    spinner.adapter = adapter
+                    spinner.visibility = View.VISIBLE
+                    historyAdapter.checkPlan(false)
+                    isTransactionExists()
+                    spinner.onItemSelectedListener = object:OnItemSelectedListener{
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            historyAdapter.sortByDate(startDate, endDate, historyList.filter {placeItem-> placeItem.placeId.isNotEmpty() && placeItem.isCategory==true}.filter {placeItem-> financeViewModel.categoryBeginLiveData.value!!.filter { it.key == placeItem.placeId }[0].categoryBegin.name == spinner.getItemAtPosition(position).toString()}.sortedByDescending { it.date}.toList())
+                            isTransactionExists()
 
+                        }
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+                    }
                 }
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-        } else if (rbBudget.isChecked && financeViewModel.budgetLiveData.value!=null){
-            adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, financeViewModel.budgetLiveData.value!!.map { budget -> budget.budgetItem.name })
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = adapter
-            spinner.visibility = View.VISIBLE
-            historyAdapter.checkPlan(false)
-            isTransactionExists()
-            spinner.onItemSelectedListener = object:OnItemSelectedListener{
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    historyAdapter.sortByDate(startDate, endDate, historyList.filter {financeViewModel.budgetLiveData.value!!.filter {budget->budget.key == it.budgetId }[0].budgetItem.name == spinner.getItemAtPosition(position).toString()
-                    }.sortedByDescending { it.date }.toList())
-                    isTransactionExists()
-                }
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+        } else if (rbBudget.isChecked){
+            when {
+                    financeViewModel.budgetLiveData.value==null-> {
+                        historyList = emptyList()
+                        historyAdapter.notifyDataSetChanged()
+                        isTransactionExists()
+                    }
+                    else -> {
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, financeViewModel.budgetLiveData.value!!.map { budget -> budget.budgetItem.name })
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinner.adapter = adapter
+                        spinner.visibility = View.VISIBLE
+                        historyAdapter.checkPlan(false)
+                        isTransactionExists()
+                        spinner.onItemSelectedListener = object:OnItemSelectedListener{
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                historyAdapter.sortByDate(startDate, endDate, historyList.filter {financeViewModel.budgetLiveData.value!!.filter {budget->budget.key == it.budgetId }[0].budgetItem.name == spinner.getItemAtPosition(position).toString()
+                                }.sortedByDescending { it.date }.toList())
+                                isTransactionExists()
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+                    }
             }
         } else if(rbPlans.isChecked){
             historyAdapter.checkPlan(true)

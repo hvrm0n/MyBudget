@@ -23,7 +23,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.NotificationManager
 import com.example.mybudget.R
+import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
+import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
+import com.example.mybudget.drawersection.goals.GoalItem
+import com.example.mybudget.drawersection.goals.GoalItemWithKey
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -60,188 +64,237 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         plan = isChecked
     }
 
-    fun saveItemAtPosition(position: Int, newValue:String, valueInCurrency: String, beginValue:String,
-                           beginValueBase:String, dateBegin:Triple<Int, Int, Int>, dateNew:Triple<Int, Int, Int>,
-                            time:String, period:String){
+    //newValue - новое значение в валюте цели
+    //valueInCurrency - значение в валюте бюджета
+    //beginValue - в валюте бюджета
+    //beginValueBase - baseAmount, в валюте ЦЕЛИ
+    private fun editGoalHistory(goalItem: GoalItemWithKey?, budgetItem: BudgetItemWithKey, position: Int, newValue:String, valueInCurrency: String, beginValue:String, beginValueBase:String){
+        Log.e("editGoalHistory_newValue", newValue)
+        Log.e("editGoalHistory_valueInCurrency", valueInCurrency)
+        Log.e("editGoalHistory_beginValue", beginValue)
+        Log.e("editGoalHistory_beginValueBase", beginValueBase)
+        when {
+            goalItem == null -> Toast.makeText(
+                context,
+                "Такой цели больше нет, операцию нельзя изменить.",
+                Toast.LENGTH_SHORT
+            ).show()
 
+            (goalItem.goalItem.current.toDouble() + if (history[position].baseAmount.contains('-'))history[position].baseAmount.toDouble()+beginValueBase.toDouble()-newValue.toDouble() else 0.0)<0.0
+            -> Toast.makeText(
+                context,
+                "При изменении Вы уйдете в минус в цели!",
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> {
+                val minus = if (history[position].baseAmount.contains("-")) "-" else ""
+                budgetItem.budgetItem.amount = when {
+                    //с - снимаем с цели и переводим на бюджет
+                    history[position].amount.contains("-")-> {
+                        goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() + beginValueBase.toDouble() - newValue.toDouble()).replace(",", ".")
+                        "%.2f".format(budgetItem.budgetItem.amount.toDouble() - beginValue.toDouble() + valueInCurrency.toDouble()).replace(",", ".")
+                    }
+                    //поступление на цель
+                    else-> {
+                        goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() - beginValueBase.toDouble() + newValue.toDouble()).replace(",", ".")
+                        "%.2f".format(budgetItem.budgetItem.amount.toDouble() + beginValue.toDouble() - valueInCurrency.toDouble()).replace(",", ".")
+                    }
+                }
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .child("amount")
+                            .setValue(budgetItem.budgetItem.amount)
+
+                        history[position].amount = "$minus${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}"
+                        history[position].baseAmount = "$minus${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
+
+                        table.child("Users").child(auth.currentUser!!.uid).child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key)
+                            .setValue(history[position])
+                    }
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+
+                        history[position].amount = "$minus${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}"
+                        history[position].baseAmount = "$minus${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key)
+                            .setValue(history[position])
+                    }
+                }
+
+                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())goalItem.goalItem.isReached = false
+                else goalItem.goalItem.isReached = true
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Goals")
+                    .child(history[position].placeId)
+                    .setValue(goalItem.goalItem)
+            }
+        }
+    }
+
+    private fun editCategoryHistory(categoryItem: CategoryItemWithKey?, budgetItem: BudgetItemWithKey, position: Int, newValue:String, valueInCurrency: String, beginValue:String, beginValueBase:String){
+        when (categoryItem) {
+            null -> Toast.makeText(
+                context,
+                "Такой категории больше нет, операцию нельзя изменить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+
+                budgetItem.budgetItem.amount = "%.2f".format(budgetItem.budgetItem.amount.toDouble() + beginValue.toDouble() - valueInCurrency.toDouble()).replace(",", ".")
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .child("amount")
+                            .setValue(budgetItem.budgetItem.amount)
+
+                        history[position].amount = "-${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}"
+                        history[position].baseAmount = "-${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
+
+                        table.child("Users").child(auth.currentUser!!.uid).child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key)
+                            .setValue(history[position])
+                    }
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+
+                        history[position].amount = "-${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${
+                        history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}"
+
+                        history[position].baseAmount = "-${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key)
+                            .setValue(history[position])
+                    }
+                }
+
+                when (categoryItem.categoryItem.remainder) {
+                    "0" -> categoryItem.categoryItem.total = "%.2f".format(categoryItem.categoryItem.total.toDouble() - beginValueBase.toDouble() + newValue.toDouble()).replace(",", ".")
+                    else -> categoryItem.categoryItem.remainder = "%.2f".format(categoryItem.categoryItem.remainder.toDouble() + beginValueBase.toDouble() - newValue.toDouble()).replace(",", ".")
+                    }
+
+                    table.child("Users")
+                        .child(auth.currentUser!!.uid)
+                        .child("Categories")
+                        .child("${history[position].date.split(".")[2]}/${
+                                history[position].date.split(".")[1].toInt()}")
+                        .child("ExpenseCategories")
+                        .child(history[position].placeId)
+                        .setValue(categoryItem.categoryItem)
+            }
+        }
+    }
+
+    fun saveItemAtPosition(position: Int, newValue:String, valueInCurrency: String, beginValue:String, beginValueBase:String, dateBegin:Triple<Int, Int, Int>, dateNew:Triple<Int, Int, Int>, time:String, period:String){
         if(!plan) {
-            var save = false
-            if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true) {
-                val budgetItem =
-                    financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
-
-                if (budgetItem==null){
-                    Toast.makeText(
-                        context,
-                        "Такого бюджета больше нет, операцию нельзя изменить.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    budgetItem.budgetItem.amount =
-                        "%.2f".format(budgetItem.budgetItem.amount.toDouble() + beginValue.toDouble() - valueInCurrency.toDouble())
-                            .replace(",", ".")
-
-                    when (history[position].budgetId) {
-                        "Base budget" -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Base budget").child("amount")
-                                .setValue(budgetItem.budgetItem.amount)
-
-                            history[position].amount = "-${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${
-                                history[position].amount.filter { amount -> !amount.isDigit() }
-                                    .replace("-", "").replace(".", "")
-                            }"
-
-                            history[position].baseAmount = "-${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child(
-                                    "${history[position].date.split(".")[2]}/${
-                                        history[position].date.split(
-                                            "."
-                                        )[1].toInt()
-                                    }"
-                                )
-                                .child(history[position].key).setValue(history[position])
-                            save = true
-                        }
-
-                        else -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Other budget").child(budgetItem.key)
-                                .setValue(budgetItem.budgetItem)
-                            history[position].amount = "-${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${
-                                history[position].amount.filter { amount -> !amount.isDigit() }
-                                    .replace("-", "").replace(".", "")
-                            }"
-
-                            history[position].baseAmount = "-${"%.2f".format(newValue.toDouble()).replace(",", ".")}"
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child(
-                                    "${history[position].date.split(".")[2]}/${
-                                        history[position].date.split(
-                                            "."
-                                        )[1].toInt()
-                                    }"
-                                )
-                                .child(history[position].key).setValue(history[position])
-                            save = true
-                        }
-                    }
-                }
-                if (!save) {
-                    Toast.makeText(
-                        context,
-                        "Такого бюджета больше нет, операцию нельзя изменить.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    when {
-                        history[position].isCategory == true -> {
-                            val category =  financeViewModel.categoryLiveData.value!!.find { it.key == history[position].placeId }
-                            if(category==null){
-                                Toast.makeText(
-                                    context,
-                                    "Такой категории больше нет, операцию нельзя изменить.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            else {
-
-                                when (category.categoryItem.remainder) {
-                                    "0" -> category.categoryItem.total =
-                                        "%.2f".format(category.categoryItem.total.toDouble() - beginValueBase.toDouble() + newValue.toDouble())
-                                            .replace(",", ".")
-
-                                    else -> category.categoryItem.remainder =
-                                        "%.2f".format(category.categoryItem.remainder.toDouble() + beginValueBase.toDouble() - newValue.toDouble())
-                                            .replace(",", ".")
-                                }
-                                table.child("Users").child(auth.currentUser!!.uid)
-                                    .child("Categories")
-                                    .child(
-                                        "${history[position].date.split(".")[2]}/${
-                                            history[position].date.split(
-                                                "."
-                                            )[1].toInt()
-                                        }"
-                                    )
-                                    .child("ExpenseCategories")
-                                    .child(history[position].placeId)
-                                    .setValue(category.categoryItem)
-                            }
-                        }
-
-                        history[position].isLoan == true -> {}
-
-                        history[position].isGoal == true -> {}
-                    }
-                }
+            val budgetItem = financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
+            if (budgetItem==null){
+                Toast.makeText(
+                    context,
+                    "Такого бюджета больше нет, операцию нельзя изменить.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             else{
-                val budgetItem =
-                    financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
-                if (budgetItem == null){
-                    Toast.makeText(
-                        context,
-                        "Такого бюджета больше нет, операцию нельзя изменить.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    budgetItem.budgetItem.amount =
-                        "%.2f".format(budgetItem.budgetItem.amount.toDouble() - beginValue.toDouble() + valueInCurrency.toDouble())
-                            .replace(",", ".")
-                    when (history[position].budgetId) {
-                        "Base budget" -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Base budget").child("amount")
-                                .setValue(budgetItem.budgetItem.amount)
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child(
-                                    "${history[position].date.split(".")[2]}/${
-                                        history[position].date.split(
-                                            "."
-                                        )[1].toInt()
-                                    }"
-                                )
-                                .child(history[position].key).child("amount").setValue(
-                                    "${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${
-                                        history[position].amount.filter { amount -> !amount.isDigit() }
-                                            .replace("-", "").replace(".", "")
-                                    }"
-                                )
-                            save = true
-                        }
+                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].placeId!="") {
+                    when {
+                        history[position].isCategory == true -> editCategoryHistory(
+                            categoryItem = financeViewModel.categoryLiveData.value!!.find { it.key == history[position].placeId },
+                            budgetItem = budgetItem,
+                            position = position,
+                            newValue = newValue,
+                            valueInCurrency = valueInCurrency,
+                            beginValue = beginValue,
+                            beginValueBase = beginValueBase
+                        )
 
-                        else -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Other budget").child(budgetItem.key)
-                                .setValue(budgetItem.budgetItem)
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child(
-                                    "${history[position].date.split(".")[2]}/${
-                                        history[position].date.split(
-                                            "."
-                                        )[1].toInt()
-                                    }"
-                                )
-                                .child(history[position].key).child("amount").setValue(
-                                    "${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${
-                                        history[position].amount.filter { amount -> !amount.isDigit() }
-                                            .replace("-", "").replace(".", "")
-                                    }"
-                                )
-                            save = true
-                        }
+                        history[position].isGoal == true -> editGoalHistory(
+                            goalItem = financeViewModel.goalsData.value!!.find { it.key == history[position].placeId },
+                            budgetItem = budgetItem,
+                            position = position,
+                            newValue = newValue,
+                            valueInCurrency = valueInCurrency,
+                            beginValue = beginValue,
+                            beginValueBase = beginValueBase
+                        )
+
+                        history[position].isLoan == true ->/*removeCategoryHistory()*/ {}
+                        else ->/*removeCategoryHistory()*/ {}
                     }
                 }
 
-                if(!save){
-                    Toast.makeText(context, "Такого бюджета больше нет, операцию нельзя изменить.", Toast.LENGTH_SHORT).show()
-                }
+                else{
+                    budgetItem.budgetItem.amount = "%.2f".format(budgetItem.budgetItem.amount.toDouble() - beginValue.toDouble() + valueInCurrency.toDouble()).replace(",", ".")
+                    when (history[position].budgetId) {
+                        "Base budget" -> {
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid)
+                                .child("Budgets")
+                                .child("Base budget")
+                                .child("amount")
+                                .setValue(budgetItem.budgetItem.amount)
 
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid).child("History")
+                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                                .child(history[position].key).child("amount")
+                                .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+                        }
+
+                        else -> {
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid)
+                                .child("Budgets")
+                                .child("Other budget")
+                                .child(budgetItem.key)
+                                .setValue(budgetItem.budgetItem)
+
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid)
+                                .child("History")
+                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                                .child(history[position].key)
+                                .child("amount")
+                                .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+                        }
+                    }
+                }
             }
-        } else{
+        }
+        else{
             if(history[position].date.split(".")[2].toInt()>Calendar.getInstance().get(Calendar.YEAR)||
                 history[position].date.split(".")[1].toInt()>Calendar.getInstance().get(Calendar.MONTH)+1) {
                 val referenceCategory =
@@ -261,9 +314,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             if ((dateNew.third > Calendar.getInstance().get(Calendar.YEAR) ||
                                         dateNew.second > (Calendar.getInstance().get(Calendar.MONTH) + 1)) && category.total!="0.000"
                             ) {
-                                Log.e("ChekcValue", category.total)
-                                Log.e("ChekcValue", beginValue)
-                                Log.e("ChekcValue", newValue)
 
                                 category.total = ("%.2f".format(category.total.toDouble() - abs(beginValueBase.toDouble()) + abs(newValue.toDouble()))).replace(",", ".")
                                 table.child("Users")
@@ -356,90 +406,37 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
     fun deleteItemAtPosition(position: Int, value:String){
         if(!plan) {
-            var remove = false
-            if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true) {
-                val budgetItem =
-                    financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
+            val budgetItem = financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
 
-                if (budgetItem==null){
-                    Toast.makeText(
-                        context,
-                        "Такого бюджета больше нет, операцию нельзя удалить.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else {
-                    budgetItem.budgetItem.amount =
-                        "%.2f".format(budgetItem.budgetItem.amount.toDouble() + value.toDouble()).replace(",", ".")
-                    budgetItem.budgetItem.count -= 1
-
-                    when (history[position].budgetId) {
-                        "Base budget" -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Base budget").setValue(budgetItem.budgetItem)
-
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                                .child(history[position].key).removeValue()
-                            remove = true
-                        }
-
-                        else -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
-                                .child("Other budget").child(budgetItem.key).setValue(budgetItem.budgetItem)
-                            table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                                .child(history[position].key).removeValue()
-                            remove = true
-                        }
-                    }
-                }
-
-                if(!remove){
-                    Toast.makeText(context, "Такого бюджета больше нет, операцию нельзя удалить.", Toast.LENGTH_SHORT).show()
-                } else{
-                    when{
-                        history[position].isCategory==true->{
-                            val category =  financeViewModel.categoryLiveData.value!!.find { it.key == history[position].placeId }
-                            if(category==null){
-                                Toast.makeText(
-                                    context,
-                                    "Такой категории больше нет, операцию нельзя удалить.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else{
-                                when (category.categoryItem.remainder) {
-                                    "0"->category.categoryItem.total = "%.2f".format(category.categoryItem.total.toDouble() - abs(history[position].baseAmount.toDouble())).replace(",", ".")
-                                    else->category.categoryItem.remainder = "%.2f".format(category.categoryItem.remainder.toDouble() + abs(history[position].baseAmount.toDouble())).replace(",", ".")
-                                }
-                                table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-                                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                                    .child("ExpenseCategories").child(history[position].placeId).setValue(category.categoryItem)
-
-                            }
-                        }
-
-                        history[position].isLoan==true->{
-
-                        }
-
-                        history[position].isGoal==true->{
-
-                        }
-                    }
-                }
+            if (budgetItem==null){
+                Toast.makeText(
+                    context,
+                    "Такого бюджета больше нет, операцию нельзя удалить.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            else{
-                val budgetItem =
-                    financeViewModel.budgetLiveData.value!!.find { it.key == history[position].budgetId }
 
-                if (budgetItem == null){
-                    Toast.makeText(
-                        context,
-                        "Такого бюджета больше нет, операцию нельзя удалить.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else{
+            else{
+                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].placeId!="") {
+                    when {
+                        history[position].isCategory == true->removeCategoryHistory(
+                            budgetItem = budgetItem,
+                            categoryItem = financeViewModel.categoryLiveData.value!!.find { it.key == history[position].placeId },
+                            value = value,
+                            position = position
+                        )
+                        history[position].isGoal == true->removeGoalHistory(
+                            budgetItem = budgetItem,
+                            goalItem = financeViewModel.goalsData.value!!.find { it.key == history[position].placeId },
+                            value = value,
+                            position = position
+                        )
+                        history[position].isLoan == true->/*removeCategoryHistory()*/{}
+                        else->/*removeCategoryHistory()*/{}
+                    }
+                }
+                //пополнение бюджета
+                else{
                     budgetItem.budgetItem.amount = "%.2f".format(budgetItem.budgetItem.amount.toDouble() - value.toDouble()).replace(",", ".")
                     budgetItem.budgetItem.count-=1
 
@@ -449,7 +446,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             table.child("Users").child(auth.currentUser!!.uid).child("History")
                                 .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
                                 .child(history[position].key).removeValue()
-                            remove = true
                         }
 
                         else -> {
@@ -457,12 +453,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             table.child("Users").child(auth.currentUser!!.uid).child("History")
                                 .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
                                 .child(history[position].key).removeValue()
-                            remove = true
                         }
                     }
-                }
-                if(!remove){
-                    Toast.makeText(context, "Такого бюджета больше нет, операцию нельзя удалить.", Toast.LENGTH_SHORT).show()
                 }
             }
         } else{
@@ -500,6 +492,134 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 .child(history[position].key).removeValue()
             NotificationManager.cancelAlarmManager(context, history[position].key)
             NotificationManager.cancelAutoTransaction(context, history[position].key)
+        }
+    }
+
+    //по категории в минус не уйдем поэтому не проверяем
+    private fun removeCategoryHistory(budgetItem:BudgetItemWithKey, categoryItem: CategoryItemWithKey?, value:String, position:Int){
+        when (categoryItem) {
+            null -> Toast.makeText(
+                context,
+                "Такой категории больше нет, операцию нельзя удалить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+                budgetItem.budgetItem.amount = "%.2f".format(budgetItem.budgetItem.amount.toDouble() + value.toDouble()).replace(",", ".")
+                budgetItem.budgetItem.count -= 1
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .setValue(budgetItem.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key).removeValue()
+                    }
+
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key).removeValue()
+                    }
+                }
+                when (categoryItem.categoryItem.remainder) {
+                    "0"->categoryItem.categoryItem.total = "%.2f".format(categoryItem.categoryItem.total.toDouble() - abs(history[position].baseAmount.toDouble())).replace(",", ".")
+                    else->categoryItem.categoryItem.remainder = "%.2f".format(categoryItem.categoryItem.remainder.toDouble() + abs(history[position].baseAmount.toDouble())).replace(",", ".")
+                }
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Categories")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child("ExpenseCategories")
+                    .child(history[position].placeId)
+                    .setValue(categoryItem.categoryItem)
+            }
+        }
+    }
+
+    //можем уйти в минус по цели, проверяем
+    private fun removeGoalHistory(budgetItem:BudgetItemWithKey, goalItem: GoalItemWithKey?, value:String, position:Int){
+        when{
+            goalItem == null -> Toast.makeText(
+                context,
+                "Такой цели больше нет, операцию нельзя удалить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            (goalItem.goalItem.current.toDouble() - if (!history[position].baseAmount.contains('-'))history[position].baseAmount.toDouble() else 0.0)<0.0
+            -> Toast.makeText(
+                context,
+                "При удалении Вы уйдете в минус в цели!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+                budgetItem.budgetItem.amount = when {
+                    //с - снимаем с цели и переводим на бюджет
+                    history[position].amount.contains("-")-> "%.2f".format(budgetItem.budgetItem.amount.toDouble() - value.toDouble()).replace(",", ".")
+                    //поступление на цель
+                    else-> "%.2f".format(budgetItem.budgetItem.amount.toDouble() + value.toDouble()).replace(",", ".")
+
+                }
+                budgetItem.budgetItem.count -= 1
+                goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() - history[position].baseAmount.toDouble()).replace(",", ".")
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .setValue(budgetItem.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key).removeValue()
+                    }
+
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("History")
+                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                            .child(history[position].key).removeValue()
+                    }
+                }
+
+                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())goalItem.goalItem.isReached = false
+                else goalItem.goalItem.isReached = true
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Goals")
+                    .child(history[position].placeId)
+                    .setValue(goalItem.goalItem)
+            }
         }
     }
 
@@ -541,7 +661,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         private val income: TextView = itemView.findViewById(R.id.incomeTextView)
         private val nameBudgetForPlace: TextView = itemView.findViewById(R.id.historyNameBudget2)
         private val placeNameTextView: TextView = itemView.findViewById(R.id.historyNameCategory)
-        private val valueOfTramsaction: TextView = itemView.findViewById(R.id.valueOfTransaction)
+        private val valueOfTransaction: TextView = itemView.findViewById(R.id.valueOfTransaction)
         private val imageHistory: ImageView = itemView.findViewById(R.id.historyImage)
         private val date: TextView = itemView.findViewById(R.id.dateOfTransaction)
 
@@ -551,7 +671,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         fun bind(historyItem: HistoryItem, position: Int) {
            val financeViewModel = ViewModelProvider(activity)[FinanceViewModel::class.java]
 
-            valueOfTramsaction.text = historyItem.amount + context.resources.getString( context.resources.getIdentifier( financeViewModel.budgetLiveData.value?.find {  it.key == historyItem.budgetId}?.budgetItem?.currency, "string",  context.packageName))
+            valueOfTransaction.text = historyItem.amount + context.resources.getString( context.resources.getIdentifier( financeViewModel.budgetLiveData.value?.find {  it.key == historyItem.budgetId}?.budgetItem?.currency, "string",  context.packageName))
 
             when(historyItem.placeId){
                 ""->{
@@ -561,23 +681,47 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     placeNameTextView.visibility = View.GONE
                     imageHistory.visibility = View.GONE
                     income.visibility = View.VISIBLE
-                    valueOfTramsaction.setTextColor(context.resources.getColor(R.color.dark_green, context.theme))
+                    valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_green, context.theme))
                 }
                 else->{
-                    income.visibility = View.GONE
-                    nameBudgetTextView.visibility = View.GONE
+                    when {
+                        historyItem.isGoal == true && historyItem.amount.contains('-')-> {income.visibility = View.VISIBLE}
+                        else -> income.visibility = View.GONE
+                    }
+                    nameBudgetTextView.visibility =  when{
+                        historyItem.isGoal == true -> {
+                            nameBudgetTextView.text = context.resources.getString(
+                                R.string.history_goals,
+                                financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.name
+                            )
+                            View.VISIBLE
+                        }
+                        else -> View.GONE
+                    }
                     nameBudgetForPlace.visibility = View.VISIBLE
                     placeNameTextView.visibility = View.VISIBLE
                     imageHistory.visibility = View.VISIBLE
-
-                    nameBudgetForPlace.text = financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name
-                    valueOfTramsaction.setTextColor(context.resources.getColor(R.color.dark_orange, context.theme))
-                    Log.e("checkCategorHistory", historyItem.key)
+                    setTextColor(historyItem)
+                    nameBudgetForPlace.text =  financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name
                     placeNameTextView.text =
-                        if(historyItem.isGoal == true) context.resources.getString(R.string.history_goals, financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name)
-                        else if(historyItem.isLoan == true) context.resources.getString(R.string.history_loans, financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name)
-                        else financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.name
-                    imageHistory.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.path, "drawable", context.packageName)))
+                        if(historyItem.isLoan == true) {
+                            placeNameTextView.visibility = View.VISIBLE
+                            context.resources.getString(
+                                R.string.history_loans,
+                                financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name
+                            )
+                        }
+                        else if (historyItem.isCategory == true) {
+                            placeNameTextView.visibility = View.VISIBLE
+                            financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.name
+                        }
+                        else {placeNameTextView.visibility = View.GONE
+                            ""}
+                    imageHistory.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(when{
+                        history[position].isCategory==true->financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.path
+                        history[position].isGoal==true->financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.path
+                        else->"family"
+                    }, "drawable", context.packageName)))
                 }
             }
 
@@ -591,6 +735,17 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             card.setOnClickListener {
                 openEditOrDeleteDialog(position)
             }
+        }
+
+        private fun setTextColor(historyItem: HistoryItem){
+            when{
+                historyItem.isGoal==true -> {
+                    if (historyItem.amount.contains('-'))valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_orange, context.theme))
+                    else valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_green, context.theme))
+                }
+                else -> valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_orange, context.theme))
+            }
+
         }
 
         private fun openEditOrDeleteDialog(position: Int){
@@ -786,8 +941,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             value.setText(numberBegin)
 
             val numberBase = history[position].baseAmount.filter {string-> string.isDigit()}
-            Log.e("checkCategoryChange_bv",numberBase)
-
             val beginValueBase = numberBase.substring(0, numberBase.length-2)+"."+numberBase.substring(numberBase.length-2)
 
             builder.setPositiveButton("Сохранить"){ dialog, _->
