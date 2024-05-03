@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
@@ -37,6 +38,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
@@ -55,6 +58,7 @@ class NewTransactionFragment : Fragment() {
     private lateinit var periodList: Array<String>
 
     private lateinit var categoryList: List<CategoryItemWithKey>
+    private lateinit var budgetList: List<BudgetItemWithKey>
 
     private var dateOfExpence: Calendar = Calendar.getInstance()
     private var dateOfIncome: Calendar = Calendar.getInstance()
@@ -167,38 +171,42 @@ class NewTransactionFragment : Fragment() {
                 binding.periodOfNotificationTitle.visibility = View.VISIBLE
                 binding.periodOfNotification.visibility = View.VISIBLE
                 val resultList = mutableListOf<String>()
-                when{
-                    year>Calendar.getInstance().get(Calendar.YEAR) -> resultList.addAll(periodList)
-                    month > Calendar.getInstance().get(Calendar.MONTH) -> {
-                        for (i in 0 until 6){
+                val dateEnd = LocalDate.of(year, month, dayOfMonth)
+                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
+                when {
+                    daysBetween>=365 -> resultList.addAll(periodList)
+                    daysBetween>=30 -> {
+                        for (i in 0 until 7) {
                             resultList.add(periodList[i])
                         }
-                        if(dayOfMonth>=Calendar.getInstance().get(Calendar.MONTH)){
-                            resultList.add(periodList[6])
-                        }
                     }
-                    dayOfMonth > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)->{
-                        if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>7){
+                    daysBetween<30 ->{
+                        if (daysBetween>7){
                             for (i in 0 until 6){
                                 resultList.add(periodList[i])
                             }
-                        } else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)==7){
+                        } else if (daysBetween.toInt() ==7){
                             for (i in 0 until 5){
                                 resultList.add(periodList[i])
                             }
 
-                        }else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>=3){
+                        }else if (daysBetween>=3){
                             for (i in 0 until 3){
                                 resultList.add(periodList[i])
                             }
                             resultList.add(periodList[4])
                         }
-                        else {
+                        else if (daysBetween>=1) {
                             resultList.add(periodList[0])
                             resultList.add(periodList[1])
                             resultList.add(periodList[4])
                         }
+                        else{
+                            resultList.add(periodList[0])
+                        }
                     }
+                    else ->  resultList.add(periodList[0])
                 }
 
                 adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, resultList)
@@ -216,9 +224,29 @@ class NewTransactionFragment : Fragment() {
         }
 
         financeViewModel.budgetLiveData.observe(this)  {
-            adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
-            adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerBudget.adapter = adapterBudget
+            if (it.size > 1) binding.transfer.visibility = View.VISIBLE
+            else {
+                binding.transfer.visibility = View.GONE
+                if (binding.transfer.isChecked) binding.income.isChecked = true
+            }
+            when{
+                binding.transfer.isChecked->{
+                    adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
+                    adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.spinnerBudget.adapter = adapterBudget
+
+                    binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name }.ifEmpty {
+                        binding.income.isChecked = true
+                        it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name }
+                    }).apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
+                }
+                else->{
+                    adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
+                    adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.spinnerBudget.adapter = adapterBudget
+                }
+            }
+            budgetList = it
         }
 
         financeViewModel.categoryLiveData.observe(this){
@@ -271,18 +299,49 @@ class NewTransactionFragment : Fragment() {
             }
         }
 
-        binding.spinnerBudget.onItemSelectedListener = object : OnItemSelectedListener{
+        var islBudgetTo: OnItemSelectedListener? = null
+        var islBudget: OnItemSelectedListener? = null
+        var updatingBudget = false
+        var updatingBudgetTo = false
+
+        islBudget = object : OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                when(binding.income.isChecked){
-                    true -> {
+                when{
+                    binding.income.isChecked -> {
                         updateCurrency(false)
                         checkAllFilledIncome()
                     }
+                    binding.transfer.isChecked->{
+                        binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name } )
+                            .apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
+                        Log.e("checkSpinner", binding.spinnerBudget.selectedItem.toString())
+
+                        beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
+                        newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
+
+                        binding.currencyNew.text = requireContext().resources.getString(
+                                requireContext().resources.getIdentifier(
+                                    newCurrency,
+                                    "string",
+                                    requireContext().packageName
+                                ))
+                        binding.currencyExpence.text = requireContext().resources.getString(
+                                requireContext().resources.getIdentifier(
+                                    beginCurrency,
+                                    "string",
+                                    requireContext().packageName
+                                ))
+                        binding.currencyNew.visibility = View.VISIBLE
+                        binding.translateValueNew.visibility = View.VISIBLE
+                        binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                        updateCurrency(true)
+                    }
+
                     else -> {
                         binding.currencyNew.visibility = View.VISIBLE
                         binding.translateValueNew.visibility = View.VISIBLE
@@ -293,11 +352,49 @@ class NewTransactionFragment : Fragment() {
                         binding.currencyNew.setOnClickListener(null)
                         beginCurrency = baseCurrency
                         updateCurrency(true)
-                        checkAllFilledExpence()}
+                        checkAllFilledExpence()
+                    }
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        islBudgetTo = object : OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+
+                beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
+                newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
+
+                binding.currencyNew.text = requireContext().resources.getString(
+                    requireContext().resources.getIdentifier(
+                        newCurrency,
+                        "string",
+                        requireContext().packageName
+                    )
+                )
+                binding.currencyExpence.text = requireContext().resources.getString(
+                    requireContext().resources.getIdentifier(
+                        beginCurrency,
+                        "string",
+                        requireContext().packageName
+                    )
+                )
+                binding.currencyNew.visibility = View.VISIBLE
+                binding.translateValueNew.visibility = View.VISIBLE
+                binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                updateCurrency(true)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        binding.spinnerBudget.onItemSelectedListener = islBudget
+        binding.spinnerBudgetTo.onItemSelectedListener = islBudgetTo
+
         binding.spinnerCategory.setSelection(0)
     }
 
@@ -328,7 +425,8 @@ class NewTransactionFragment : Fragment() {
 
                                 newHistory.setValue(HistoryItem(budgetId = budget.key, amount = String.format("%.2f",valueDouble).replace(',','.')/*${
                                     requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))}"*/,
-                                        date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
+                                    baseAmount = String.format("%.2f",valueDouble).replace(',','.'),
+                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
                                findNavController().popBackStack()
                             }
                         }
@@ -350,7 +448,8 @@ class NewTransactionFragment : Fragment() {
                                     .child("${dateOfIncome.get(Calendar.YEAR)}/${dateOfIncome.get(Calendar.MONTH)+1}")
                                     .push()
                                 newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, amount = String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
-                                        date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
+                                    baseAmount = String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
+                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
                                 findNavController().popBackStack()
                             }
                         }
@@ -360,6 +459,39 @@ class NewTransactionFragment : Fragment() {
             }
         }
 
+        else if(binding.transfer.isChecked){
+            when{
+                binding.spinnerBudget.selectedItemPosition == -1 || binding.spinnerBudgetTo.selectedItemPosition == -1 -> Toast.makeText(requireContext(), "Вы не выбрали бюджет", Toast.LENGTH_LONG).show()
+                else ->{
+                    val budgetFrom = budgetList.find { it.budgetItem.name ==  binding.spinnerBudget.selectedItem.toString()}!!
+                    val budgetTo = budgetList.find { it.budgetItem.name ==  binding.spinnerBudgetTo.selectedItem.toString()}!!
+                    if (budgetFrom.budgetItem.amount.toDouble() - valueDoubleOthers < 0.0){
+                        AlertDialog.Builder(context)
+                            .setTitle("Перерасход")
+                            .setMessage("После совершения данной операции вы уйдете в минус!\nПродолжить?")
+                            .setPositiveButton("Да") { dialog2, _ ->
+                                addTransfer(
+                                    budgetFrom = budgetFrom,
+                                    budgetTo = budgetTo,
+                                    valueDoubleOthers = if (valueDoubleOthers == 0.0 ) valueDouble else valueDoubleOthers,
+                                    valueDouble = valueDouble
+                                )
+                                dialog2.dismiss()
+                            }
+                            .setNegativeButton("Нет") { dialog2, _ ->
+                                dialog2.dismiss()
+                            }.show()
+                    } else {
+                        addTransfer(
+                            budgetFrom = budgetFrom,
+                            budgetTo = budgetTo,
+                            valueDoubleOthers = if (valueDoubleOthers == 0.0 ) valueDouble else valueDoubleOthers,
+                            valueDouble = valueDouble
+                        )
+                    }
+                }
+            }
+        }
         else{
             val categoryPath = financeViewModel.categoryBeginLiveData.value!!.filter {  it.key == categoryList[binding.spinnerCategory.selectedItemPosition].key}[0].categoryBegin.path
             val nameCategory = binding.spinnerCategory.selectedItem.toString()
@@ -432,6 +564,63 @@ class NewTransactionFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun addTransfer(budgetFrom:BudgetItemWithKey, budgetTo:BudgetItemWithKey, valueDoubleOthers:Double, valueDouble:Double){
+        budgetFrom.budgetItem.count++
+        budgetTo.budgetItem.count++
+        budgetFrom.budgetItem.amount = String.format("%.2f",budgetFrom.budgetItem.amount.toDouble() - valueDoubleOthers).replace(",", ".")
+        budgetTo.budgetItem.amount = String.format("%.2f",budgetTo.budgetItem.amount.toDouble() + valueDouble).replace(",", ".")
+        val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
+            .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
+            .push()
+
+        val historyItem = HistoryItem(
+            budgetId = budgetFrom.key,
+            placeId = budgetTo.key,
+            isTransfer = true,
+            amount = valueDouble.toString(),
+            date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
+            baseAmount = valueDoubleOthers.toString(),
+            key = newHistory.key.toString()
+        )
+
+        when (budgetFrom.key){
+            "Base budget" -> {
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Budgets")
+                    .child("Base budget")
+                    .setValue(budgetFrom.budgetItem)
+            } else ->{
+            table.child("Users")
+                .child(auth.currentUser!!.uid)
+                .child("Budgets")
+                .child("Other budget")
+                .child(budgetFrom.key)
+                .setValue(budgetFrom.budgetItem)
+            }
+        }
+
+        when (budgetTo.key){
+            "Base budget" -> {
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Budgets")
+                    .child("Base budget")
+                    .setValue(budgetTo.budgetItem)
+            } else ->{
+            table.child("Users")
+                .child(auth.currentUser!!.uid)
+                .child("Budgets")
+                .child("Other budget")
+                .child(budgetTo.key)
+                .setValue(budgetTo.budgetItem)
+            }
+        }
+
+        newHistory.setValue(historyItem)
+        findNavController().popBackStack()
     }
 
     private fun addNewTransactionBase(currentBudgetItem:_BudgetItem, valueDoubleOthers:Double, valueDouble:Double, reference: DatabaseReference, nameCategory:String, nameBudget:String, budget:BudgetItemWithKey){
@@ -555,6 +744,7 @@ class NewTransactionFragment : Fragment() {
                                     requireContext(),
                                     Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
+                                    financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory } ?.get(0)!!.key,
                                    /* binding.spinnerCategory.selectedItem.toString(),*/
                                     binding.timeOfNotifications.text.toString(),
                                     dateOfExpence,
@@ -595,7 +785,7 @@ class NewTransactionFragment : Fragment() {
                                 requireContext(),
                                 Constants.CHANNEL_ID_PLAN,
                                 planReferense.key.toString(),
-                               /* binding.spinnerCategory.selectedItem.toString(),*/
+                                financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory } ?.get(0)!!.key,
                                 binding.timeOfNotifications.text.toString(),
                                 dateOfExpence,
                                 binding.periodOfNotification.selectedItem.toString())
@@ -748,7 +938,7 @@ class NewTransactionFragment : Fragment() {
                                         requireContext(),
                                         Constants.CHANNEL_ID_PLAN,
                                         planReferense.key.toString(),
-                                        /*binding.spinnerCategory.selectedItem.toString(),*/
+                                        financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory } ?.get(0)!!.key,
                                         binding.timeOfNotifications.text.toString(),
                                         dateOfExpence,
                                         binding.periodOfNotification.selectedItem.toString())
@@ -788,7 +978,7 @@ class NewTransactionFragment : Fragment() {
                                     requireContext(),
                                     Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
-                                   /* binding.spinnerCategory.selectedItem.toString(),*/
+                                    financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory } ?.get(0)!!.key,
                                     binding.timeOfNotifications.text.toString(),
                                     dateOfExpence,
                                     binding.periodOfNotification.selectedItem.toString())
@@ -916,6 +1106,7 @@ class NewTransactionFragment : Fragment() {
     private fun whatIsChecked(){
         if (binding.income.isChecked){
             binding.buttonAddIncome.text = resources.getString(R.string.add)
+            binding.budgetTitle.text = resources.getString(R.string.budget)
             binding.currencyExpence.setOnClickListener {
                 findNavController().navigate(R.id.action_newTransactionFragment_to_currencyDialogFragment)
             }
@@ -927,7 +1118,62 @@ class NewTransactionFragment : Fragment() {
             binding.timeOfNotifications.visibility = View.INVISIBLE
             binding.periodOfNotificationTitle.visibility = View.GONE
             binding.periodOfNotification.visibility = View.GONE
+            binding.budgetTitle.text = resources.getString(R.string.budget)
+            binding.spinnerBudgetTo.visibility = View.GONE
+            binding.budgetTitleTo.visibility = View.GONE
             checkAllFilledIncome()
+
+        }
+        else if(binding.transfer.isChecked){
+
+            binding.spinnerBudgetTo.visibility = View.VISIBLE
+            binding.budgetTitleTo.visibility = View.VISIBLE
+            binding.buttonAddIncome.text = resources.getString(R.string.trans)
+            binding.currencyExpence.setOnClickListener(null)
+            binding.currencyNew.setOnClickListener(null)
+            binding.calendarViewBudget.visibility = View.VISIBLE
+            binding.calendarViewCategory.visibility = View.GONE
+
+            adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
+            adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerBudget.adapter = adapterBudget
+
+            binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name } )
+                .apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
+            binding.budgetTitle.text = resources.getString(R.string.budget_transfer_from)
+            binding.categoryTitle.visibility = View.GONE
+            binding.spinnerCategory.visibility = View.GONE
+
+            binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
+            binding.timeOfNotifications.visibility = View.INVISIBLE
+            binding.periodOfNotificationTitle.visibility = View.GONE
+            binding.periodOfNotification.visibility = View.GONE
+
+            binding.currencyNew.visibility = View.VISIBLE
+            binding.translateValueNew.visibility = View.VISIBLE
+            binding.equalSymbolNewExpence.visibility = View.VISIBLE
+
+            beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
+            newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
+
+            binding.currencyNew.text = requireContext().resources.getString(
+                requireContext().resources.getIdentifier(
+                    newCurrency,
+                    "string",
+                    requireContext().packageName
+                )
+            )
+            binding.currencyExpence.text = requireContext().resources.getString(
+                requireContext().resources.getIdentifier(
+                    beginCurrency,
+                    "string",
+                    requireContext().packageName
+                )
+            )
+            updateCurrency(true)
+            checkAllFilledIncome()
+
+
         } else if(binding.expence.isChecked) {
             if(categoryList.isEmpty()){
                 Snackbar.make(binding.expence, "У вас не выбрано ни одной категории расходов!", Snackbar.LENGTH_LONG).show()
@@ -936,7 +1182,12 @@ class NewTransactionFragment : Fragment() {
                 binding.calendarViewCategory.visibility = View.GONE
                 binding.categoryTitle.visibility = View.GONE
                 binding.spinnerCategory.visibility = View.GONE
+                binding.spinnerBudgetTo.visibility = View.GONE
+                binding.budgetTitleTo.visibility = View.GONE
             } else {
+                binding.budgetTitle.text = resources.getString(R.string.budget)
+                binding.spinnerBudgetTo.visibility = View.GONE
+                binding.budgetTitleTo.visibility = View.GONE
                 binding.calendarViewBudget.visibility = View.GONE
                 binding.calendarViewCategory.visibility = View.VISIBLE
                 binding.categoryTitle.visibility = View.VISIBLE
@@ -961,7 +1212,7 @@ class NewTransactionFragment : Fragment() {
                             for (i in 0 until 6){
                                 resultList.add(periodList[i])
                             }
-                            if(1==Calendar.getInstance().get(Calendar.MONTH)){
+                            if(1==Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
                                 resultList.add(periodList[6])
                             }
                         }
@@ -973,6 +1224,9 @@ class NewTransactionFragment : Fragment() {
 
                 newCurrency =
                     financeViewModel.budgetLiveData.value!!.filter { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }[0].budgetItem.currency
+                binding.currencyExpence.setOnClickListener(null)
+                binding.currencyNew.setOnClickListener(null)
+                beginCurrency = baseCurrency
                 binding.currencyNew.text = requireContext().resources.getString(
                     requireContext().resources.getIdentifier(
                         newCurrency,
@@ -980,9 +1234,6 @@ class NewTransactionFragment : Fragment() {
                         requireContext().packageName
                     )
                 )
-                binding.currencyExpence.setOnClickListener(null)
-                binding.currencyNew.setOnClickListener(null)
-                beginCurrency = baseCurrency
                 updateCurrency(true)
                 checkAllFilledExpence()
             }
@@ -997,7 +1248,7 @@ class NewTransactionFragment : Fragment() {
             beginCurrency = financeViewModel.budgetLiveData.value!!.filter { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }[0].budgetItem.currency
             binding.currencyExpence.text = requireContext().resources.getString(requireContext().resources.getIdentifier(financeViewModel.budgetLiveData.value!!.filter { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString()}[0].budgetItem.currency, "string", requireContext().packageName))
         } else {
-            binding.currencyExpence.text = requireContext().resources.getString(requireContext().resources.getIdentifier(baseCurrency, "string", requireContext().packageName))
+            binding.currencyExpence.text = requireContext().resources.getString(requireContext().resources.getIdentifier(beginCurrency, "string", requireContext().packageName))
         }
         if(newCurrency!=beginCurrency && newCurrency.isNotEmpty() && !expence){
             binding.currencyExpence.setOnClickListener(null)
@@ -1036,5 +1287,14 @@ class NewTransactionFragment : Fragment() {
 
 }
 
-data class HistoryItem(var budgetId:String = "", var placeId: String = "", var isCategory:Boolean?=false, var isGoal:Boolean?=false, var isLoan:Boolean?=false,
-    var amount:String="", var date:String = "", var baseAmount:String = "", var key:String = "")
+data class HistoryItem(var budgetId:String = "",
+                       var placeId: String = "",
+                       var isCategory:Boolean?=false,
+                       var isGoal:Boolean?=false,
+                       var isLoan:Boolean?=false,
+                       var isSub:Boolean?=false,
+                       var isTransfer:Boolean?=false,
+                       var amount:String="",
+                       var date:String = "",
+                       var baseAmount:String = "",
+                       var key:String = "")

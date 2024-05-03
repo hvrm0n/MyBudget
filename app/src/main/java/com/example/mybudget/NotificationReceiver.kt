@@ -7,9 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.mybudget.drawersection.finance.HistoryItem
 import com.example.mybudget.drawersection.goals.GoalItem
-import com.example.mybudget.start_pages.CategoryBeginWithKey
 import com.example.mybudget.start_pages.Constants
 import com.example.mybudget.start_pages._CategoryBegin
 import com.google.firebase.auth.ktx.auth
@@ -19,6 +17,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
+import kotlin.random.Random
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -27,14 +26,20 @@ class NotificationReceiver : BroadcastReceiver() {
         val date = Calendar.getInstance()
         date.timeInMillis = intent.getLongExtra("date", 0)
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-
+        val notificationText = when(channelID){
+            Constants.CHANNEL_ID_PLAN->context.resources.getStringArray(R.array.notification_category)
+            Constants.CHANNEL_ID_GOAL->context.resources.getStringArray(R.array.notification_goal)
+            Constants.CHANNEL_ID_SUB->context.resources.getStringArray(R.array.notification_sub)
+            else -> context.resources.getStringArray(R.array.notification_loans)
+        }
         if (channelID!=null&&placeId!=null){
-            getName(channelID, placeId, date){
-            val notification:Notification = NotificationCompat.Builder(context, channelID!!)
+            getName(channelID, placeId, date, notificationText){
+                val notification:Notification = NotificationCompat.Builder(context, channelID)
                 .setSmallIcon(R.drawable.piggybank_18)
                 .setContentTitle(
                     when (channelID){
                         "PLAN" -> "Не забывайте про запланированные траты!"
+                        "GOAL" -> "Цели ждут!"
                         else ->""
                     }
                 )
@@ -46,7 +51,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun getName(channelId:String,placeId:String, dateOfExpence:Calendar, callback: (String) -> Unit){
+    private fun getName(channelId:String,placeId:String, dateOfExpence:Calendar, notificationText:Array<String>, callback: (String) -> Unit){
         when(channelId){
             Constants.CHANNEL_ID_PLAN->{
                 Firebase.database.reference
@@ -57,7 +62,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     .child(placeId).addListenerForSingleValueEvent(object :ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             snapshot.getValue(_CategoryBegin::class.java)?.let {
-                                callback("Трата по категории ${it.name} приближается!")
+                                callback(String.format(notificationText[notificationText.indices.random()], it.name))
                             }
                         }
                         override fun onCancelled(error: DatabaseError) {}
@@ -72,7 +77,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     .child(placeId).addListenerForSingleValueEvent(object :ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             snapshot.getValue(GoalItem::class.java)?.let {
-                                callback("Вдохновляйтесь и действуйте! ${it.name} - ваша цель ждет вас!")
+                                callback(String.format(notificationText[notificationText.indices.random()], it.name))
                             }
                         }
                         override fun onCancelled(error: DatabaseError) {}

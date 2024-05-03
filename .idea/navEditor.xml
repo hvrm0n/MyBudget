@@ -139,8 +139,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-469" />
+                            <option name="y" value="2285" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -154,6 +154,15 @@
                             <option name="x" value="-8" />
                             <option name="y" value="1946" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_newGLSFragment_to_currencyDialogFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

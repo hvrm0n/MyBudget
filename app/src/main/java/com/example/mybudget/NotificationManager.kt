@@ -66,11 +66,11 @@ object NotificationManager {
         }
     }
 
-     fun notification(context: Context, channelID:String, id:String,/* placeName:String, */time:String, dateOfExpence:Calendar, periodOfNotification:String){
+     fun notification(context: Context, channelID:String, id:String, placeId:String?=null, time:String, dateOfExpence:Calendar, periodOfNotification:String){
          val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
              putExtra("channelID", channelID)
              /*putExtra("notificationID", id)*/
-             putExtra("placeId", id)
+             putExtra("placeId", placeId?:id)
              /*putExtra("time",time)*/
              putExtra("date", dateOfExpence.timeInMillis)
         }

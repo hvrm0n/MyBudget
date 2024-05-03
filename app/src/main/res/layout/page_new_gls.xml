@@ -157,11 +157,33 @@
                 android:layout_marginTop="4dp"/>
 
             <TextView
-                android:id="@+id/periodTitleGLS"
+                android:id="@+id/billingPeriodTitleGLS"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
+                android:text="@string/billingPeriodTitle"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/billingPeriodGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="Каждый месяц"
+                android:textColor="@color/dark_orange"
+                android:textSize="@dimen/regText"/>
+
+            <TextView
+                android:id="@+id/periodTitleGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
                 android:text="@string/periodTitle"
                 android:textColor="@color/dark_green"
                 android:textSize="@dimen/subtitle"

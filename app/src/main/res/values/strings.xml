@@ -32,6 +32,8 @@
     <string name="history_goals">Цель: %1$s</string>
     <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="history_budget">Пополнение счета</string>
+    <string name="all_history">Общая</string>
+
 
     <string name="title_activity_home_page">HomePageActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -53,6 +55,7 @@
     <string name="card_value">Введите сумму</string>
     <string name="add">Добавить</string>
     <string name="plan">Запланировать</string>
+    <string name="trans">Перевести</string>
 
     <string name="card_goal_put">Начисление</string>
     <string name="card_income">Доход</string>
@@ -74,6 +77,9 @@
     <string name="basic_budget_type">Тип счета</string>
     <string name="budget">Счет</string>
 
+    <string name="budget_transfer_from">Перевод со счета</string>
+    <string name="budget_transfer_to">Перевод на счет</string>
+
     <string name="choose_priority">Выберите приоритет</string>
     <string name="dateExpence">Дата</string>
 
@@ -91,6 +97,7 @@
     <string name="fab_history">История и планы</string>
     <string name="fab_calculate">Распределить бюджет</string>
     <string name="fab_cancel_calculate">Отменить распределение</string>
+    <string name="transaction_transfer">Перевод</string>
 
     <string name="base">%1$s (основной)</string>
     <string name="transaction">%1$d операций</string>
@@ -108,8 +115,16 @@
     <string name="titleGoals">Введите желаемую сумму</string>
     <string name="goalsName">Название цели</string>
     <string name="titleLoans">Выплата</string>
-    <string name="titleSubs">Стоимость подписки</string>
     <string name="target">/%1$s</string>
+
+    <!--ПОДПИСКИ-->
+    <string name="billingPeriodTitle">Периодичность выплат</string>
+    <string name="titleSubs">Введите стоимость подписки</string>
+    <string name="nameSubs">Название подписки</string>
+    <string name="dateSubs">Дата начала подписки</string>
+    <string name="nameBudgetSubs">Счет: %1$s</string>
+    <string name="reSubs">Восстановить</string>
+    <string name="cancelledSubs">Отмененные подписки</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

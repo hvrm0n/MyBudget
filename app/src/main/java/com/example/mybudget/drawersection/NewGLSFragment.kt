@@ -4,18 +4,19 @@ import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.ExchangeRateResponse
@@ -28,7 +29,9 @@ import com.example.mybudget.drawersection.finance.IconsChooserAlertDialog
 import com.example.mybudget.drawersection.finance.SharedViewModel
 import com.example.mybudget.drawersection.goals.GoalItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.subs.SubItem
 import com.example.mybudget.start_pages.Constants
+import com.example.mybudget.start_pages._CategoryBegin
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -39,6 +42,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
@@ -52,10 +57,12 @@ class NewGLSFragment : Fragment() {
     private lateinit var table: DatabaseReference
     private var currencyConvertor: ExchangeRateResponse? = null
     private var selection: Triple<String, String, String> = Triple("","", "")
+    private var periodSub: Long? = null
 
     private var key: String? = null
     private var type: String? = null
     private var dateOfEnd: Calendar = Calendar.getInstance().also { it.set(Calendar.DAY_OF_MONTH, it.get(Calendar.DAY_OF_MONTH)+1) }
+    private var dateSub: Calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,27 +119,34 @@ class NewGLSFragment : Fragment() {
             timePickerDialog.show()
         }
 
-        initPeriod()
-        initCalendar()
-
         when(key){
             null->{
                 binding.currencyGLS.text = requireContext().resources.getString(requireContext().resources.getIdentifier(financeViewModel.budgetLiveData.value?.find { it.key == "Base budget" }!!.budgetItem.currency, "string", requireContext().packageName))
                 binding.buttonAddGLS.text = requireContext().resources.getString(R.string.add)
                 when (type) {
                     "goal"->{
+                        initPeriod()
+                        initCalendar()
                         initGoal()
                         setOnSelectionChanged()
+                        binding.withouthDate.isChecked = true
                         binding.buttonAddGLS.setOnClickListener { saveGoal() }
                     }
                     "loan"->{}
-                    "sub"->{}
+                    "sub"->{
+                        initSub()
+                        initPeriodSubs()
+                        initCalendarSimple()
+                        binding.buttonAddGLS.setOnClickListener { saveSub() }
+                    }
                 }
             }
             else->{
                 binding.buttonAddGLS.text = requireContext().resources.getString(R.string.save)
                 when (type) {
                     "goal"->{
+                        initPeriod()
+                        initCalendar()
                         initGoal()
                         setOnSelectionChanged()
                         fillAllGoal(financeViewModel.goalsData.value!!.find { it.key == key }!!)
@@ -142,47 +156,65 @@ class NewGLSFragment : Fragment() {
                         val day = dateOfEnd
                         financeViewModel.goalsData.value!!.find { it.key == key }!!.goalItem.date?.split(".")?.let {
                                 day.apply {
+                                    val dateEnd = LocalDate.of(it[2].toInt(), it[1].toInt()-1, it[0].toInt())
+                                    val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                                    val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                                     val resultList = mutableListOf<String>()
-                                    when{
-                                        it[2].toInt() > Calendar.getInstance().get(Calendar.YEAR) -> resultList.addAll(periodList)
-                                        it[1].toInt()-1  > Calendar.getInstance().get(Calendar.MONTH) -> {
-                                            for (i in 0 until 6){
-                                                resultList.add(periodList[i])
+                                    if(dateOfEnd>Calendar.getInstance()){
+                                        when {
+                                            daysBetween>=365 -> resultList.addAll(periodList)
+                                            daysBetween>=30 -> {
+                                                for (i in 0 until 7) {
+                                                    resultList.add(periodList[i])
+                                                }
                                             }
-                                            if(it[0].toInt()>=Calendar.getInstance().get(Calendar.MONTH)){
-                                                resultList.add(periodList[6])
+                                            daysBetween<30 ->{
+                                                if (daysBetween>7){
+                                                    for (i in 0 until 6){
+                                                        resultList.add(periodList[i])
+                                                    }
+                                                } else if (daysBetween.toInt() ==7){
+                                                    for (i in 0 until 5){
+                                                        resultList.add(periodList[i])
+                                                    }
+
+                                                }else if (daysBetween>=3){
+                                                    for (i in 0 until 3){
+                                                        resultList.add(periodList[i])
+                                                    }
+                                                    resultList.add(periodList[4])
+                                                }
+                                                else if (daysBetween>=1) {
+                                                    resultList.add(periodList[0])
+                                                    resultList.add(periodList[1])
+                                                    resultList.add(periodList[4])
+                                                }
+                                                else{
+                                                    resultList.add(periodList[0])
+                                                }
+                                            }
+                                            else ->  resultList.add(periodList[0])
+                                        }
+                                    }
+                                    if (periodBegin.isNotEmpty()){
+                                        if (resultList.indexOf(periodBegin) == -1)resultList.add(periodBegin)
+                                        when(periodList.indexOf(periodBegin)){
+                                            0 -> {
+                                                binding.timeTitleGLS.visibility = View.GONE
+                                                binding.timeOfNotificationsGLS.visibility = View.GONE
+                                            }
+                                            else -> {
+                                                binding.timeTitleGLS.visibility = View.VISIBLE
+                                                binding.timeOfNotificationsGLS.visibility = View.VISIBLE
                                             }
                                         }
-                                        it[0].toInt() > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)->{
-                                            if (it[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>7){
-                                                for (i in 0 until 6){
-                                                    resultList.add(periodList[i])
-                                                }
-                                            } else if (it[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)==7){
-                                                for (i in 0 until 5){
-                                                    resultList.add(periodList[i])
-                                                }
-                                            }else if (it[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>=3){
-                                                for (i in 0 until 3){
-                                                    resultList.add(periodList[i])
-                                                }
-                                                resultList.add(periodList[4])
-                                            }
-                                            else {
-                                                resultList.add(periodList[0])
-                                                resultList.add(periodList[1])
-                                                resultList.add(periodList[4])
-                                            }
-                                        }
+                                        binding.timeOfNotificationsGLS.text = timeBegin.ifEmpty { "12:00" }
                                     }
 
                                     adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, resultList)
                                     adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                                     binding.periodOfNotificationGLS.adapter = adapterPeriod
-                                    binding.periodOfNotificationGLS.setSelection(resultList.indexOf(periodBegin.ifEmpty {
-                                        periodList[0]
-                                    }))
-                                    binding.timeOfNotificationsGLS.text = timeBegin.ifEmpty { "12:00" }
+                                    binding.periodOfNotificationGLS.setSelection(resultList.indexOf(periodBegin.ifEmpty { periodList[0] }))
 
                                 set(Calendar.YEAR, it[2].toInt())
                                 set(Calendar.MONTH, it[1].toInt()-1)
@@ -217,7 +249,11 @@ class NewGLSFragment : Fragment() {
                         binding.buttonAddGLS.setOnClickListener { updateGoal(requireContext()) }
                     }
                     "loan"->{}
-                    "sub"->{}
+                    "sub"->{
+                        initSub()
+                        initPeriodSubs()
+                        initCalendarSimple()
+                    }
                 }
             }
         }
@@ -229,27 +265,31 @@ class NewGLSFragment : Fragment() {
         table = Firebase.database.reference
         currencyConvertor = ExchangeRateManager.getExchangeRateResponse(requireContext())
         val sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
-        var oldCurrency = financeViewModel.goalsData.value?.find { it.key == key }?.goalItem?.currency
-        sharedViewModel.dataToPass.value = null
-        sharedViewModel.dataToPass.observe(this) { data ->
-            if (data!=null && data.first.isNotEmpty()){
-                binding.currencyGLS.text = data.third
-                selection = data
-                if (key!=null){
-                    binding.glsValue.setText(changeCurrencyAmount(
-                        oldCurrency = oldCurrency!!,
-                        newCurrency = data.first,
-                        newAmount = binding.glsValue.text.toString(),
-                        context = requireContext())
-                    )
+        when (type){
+            "goal"->{
+                var oldCurrency = financeViewModel.goalsData.value?.find { it.key == key }?.goalItem?.currency
+                sharedViewModel.dataToPass.value = null
+                sharedViewModel.dataToPass.observe(this) { data ->
+                    if (data!=null && data.first.isNotEmpty()){
+                        binding.currencyGLS.text = data.third
+                        selection = data
+                        if (key!=null){
+                            binding.glsValue.setText(changeCurrencyAmount(
+                                oldCurrency = oldCurrency!!,
+                                newCurrency = data.first,
+                                newAmount = binding.glsValue.text.toString(),
+                                context = requireContext())
+                            )
+                        }
+                        sharedViewModel.dataToPass.value = Triple("","","")
+                        oldCurrency = selection.first
+                    }
                 }
-                sharedViewModel.dataToPass.value = Triple("","","")
-                oldCurrency = selection.first
-            }
-        }
 
-        binding.currencyGLS.setOnClickListener {
-            findNavController().navigate(R.id.action_newGLSFragment_to_currencyDialogFragment)
+                binding.currencyGLS.setOnClickListener {
+                    findNavController().navigate(R.id.action_newGLSFragment_to_currencyDialogFragment)
+                }
+            }
         }
 
     }
@@ -264,11 +304,77 @@ class NewGLSFragment : Fragment() {
         binding.glsValue.hint = requireContext().resources.getString(R.string.titleGoals)
         binding.timeTitleGLS.visibility = View.GONE
         binding.timeOfNotificationsGLS.visibility = View.GONE
+        binding.billingPeriodGLS.visibility = View.GONE
+        binding.billingPeriodTitleGLS.visibility = View.GONE
+    }
+
+    private fun initSub(){
+        binding.radioGroupGLS.visibility = View.GONE
+        binding.calendarViewGLS.visibility = View.VISIBLE
+        binding.budgetGLS.visibility = View.VISIBLE
+        binding.spinnerBudgetGLS.visibility = View.VISIBLE
+        binding.glsValue.hint = requireContext().resources.getString(R.string.titleSubs)
+        binding.timeTitleGLS.visibility = View.GONE
+        binding.timeOfNotificationsGLS.visibility = View.GONE
+        binding.nameGLS.text = requireContext().resources.getString(R.string.nameSubs)
+        binding.glsDate.text = requireContext().resources.getString(R.string.dateSubs)
+
+        financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
+            binding.spinnerBudgetGLS.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,
+                it.filter { budget->!budget.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name })
+                .apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
+        }
+
+        binding.spinnerBudgetGLS.onItemSelectedListener = object : OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                binding.currencyGLS.text = requireContext().resources.getString(requireContext().resources.getIdentifier(financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.budgetItem.currency, "string", requireContext().packageName))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        binding.billingPeriodGLS.setOnClickListener {
+            openBillingDialog()
+        }
     }
 
     private fun initPeriod(){
         periodList = requireContext().resources.getStringArray(R.array.periodicity)
-        adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periodList)
+        adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listOf(periodList[0], periodList[4], periodList[5], periodList[6], periodList[7]))
+        adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.periodOfNotificationGLS.adapter = adapterPeriod
+        binding.periodOfNotificationGLS.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if(position == 0){
+                    binding.timeTitleGLS.visibility = View.INVISIBLE
+                    binding.timeOfNotificationsGLS.visibility = View.INVISIBLE
+                } else {
+                    binding.timeTitleGLS.visibility = View.VISIBLE
+                    binding.timeOfNotificationsGLS.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                binding.timeTitleGLS.visibility = View.INVISIBLE
+                binding.timeOfNotificationsGLS.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun initPeriodSubs(){
+        periodList = requireContext().resources.getStringArray(R.array.periodicity)
+        adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listOf(periodList[0], periodList[1], periodList[2], periodList[3]))
         adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.periodOfNotificationGLS.adapter = adapterPeriod
         binding.periodOfNotificationGLS.onItemSelectedListener = object :
@@ -330,44 +436,58 @@ class NewGLSFragment : Fragment() {
             dateOfEnd = Calendar.getInstance().apply {
                 set(year, month, dayOfMonth)
             }
+
+            val dateEnd = LocalDate.of(year, month, dayOfMonth)
+            val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+            val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
             if(dateOfEnd>Calendar.getInstance()){
                 val resultList = mutableListOf<String>()
-                when{
-                    year>Calendar.getInstance().get(Calendar.YEAR) -> resultList.addAll(periodList)
-                    month > Calendar.getInstance().get(Calendar.MONTH) -> {
-                        for (i in 0 until 6){
+                when {
+                    daysBetween>=365 -> resultList.addAll(periodList)
+                    daysBetween>=30 -> {
+                        for (i in 0 until 7) {
                             resultList.add(periodList[i])
                         }
-                        if(dayOfMonth>=Calendar.getInstance().get(Calendar.MONTH)){
-                            resultList.add(periodList[6])
-                        }
                     }
-                    dayOfMonth > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)->{
-                        if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>7){
+                    daysBetween<30 ->{
+                        if (daysBetween>7){
                             for (i in 0 until 6){
                                 resultList.add(periodList[i])
                             }
-                        } else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)==7){
+                        } else if (daysBetween.toInt() ==7){
                             for (i in 0 until 5){
                                 resultList.add(periodList[i])
                             }
 
-                        }else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>=3){
+                        }else if (daysBetween>=3){
                             for (i in 0 until 3){
                                 resultList.add(periodList[i])
                             }
                             resultList.add(periodList[4])
                         }
-                        else {
+                        else if (daysBetween>=1) {
                             resultList.add(periodList[0])
                             resultList.add(periodList[1])
                             resultList.add(periodList[4])
                         }
+                        else{
+                            resultList.add(periodList[0])
+                        }
                     }
+                    else ->  resultList.add(periodList[0])
                 }
+
                 adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, resultList)
                 adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.periodOfNotificationGLS.adapter = adapterPeriod
+            }
+        }
+    }
+
+    private fun initCalendarSimple(){
+        binding.calendarViewGLS.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            dateSub = Calendar.getInstance().apply {
+                set(year, month, dayOfMonth)
             }
         }
     }
@@ -376,7 +496,7 @@ class NewGLSFragment : Fragment() {
         binding.radioGroupGLS.setOnCheckedChangeListener { _, _ ->
             if (binding.withouthDate.isChecked){
                 binding.calendarViewGLS.visibility = View.GONE
-                adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, periodList)
+                adapterPeriod = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listOf(periodList[0], periodList[4], periodList[5], periodList[6], periodList[7]))
                 adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.periodOfNotificationGLS.adapter = adapterPeriod
             } else if (binding.withDate.isChecked){
@@ -389,8 +509,73 @@ class NewGLSFragment : Fragment() {
                 adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 binding.periodOfNotificationGLS.adapter = adapterPeriod
             }
-            checkAllFieldsGoal()
+            when(type){
+                "goal"->checkAllFieldsGoal()
+            }
         }
+    }
+
+    private fun openBillingDialog(){
+        val dialogView = View.inflate(requireContext(), R.layout.card_billing_period, null)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(dialogView)
+
+        val count = dialogView.findViewById<NumberPicker>(R.id.numberOf)
+        val period = dialogView.findViewById<NumberPicker>(R.id.period)
+        val periodBegin = requireContext().resources.getStringArray(R.array.periodicityBegin)
+
+        count.minValue = 1
+        count.maxValue = Int.MAX_VALUE
+        count.wrapSelectorWheel = false
+
+        period.minValue = 0
+        period.maxValue = periodBegin.lastIndex
+        period.displayedValues = periodBegin
+        period.wrapSelectorWheel = false
+
+        builder.setPositiveButton("Выбрать") {dialog, _ ->
+            billingResult(count.value, period.value)
+            var result = count.value.toLong()
+            result *= when(period.value){
+                0-> 1000L * 60L * 60L * 24L
+                1-> 1000L * 60L * 60L * 24L * 7L
+                2-> 1000L * 60L * 60L * 24L * 30L
+                else->1000L * 60L * 60L * 24L * 365L
+            }
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Отмена") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawableResource(R.drawable.listview_shadow)
+        dialog.show()
+    }
+
+    private fun billingResult(count:Int, period:Int){
+        binding.billingPeriodGLS.text =
+            when(count%10){
+                1->{
+                    if (period == 1){
+                        requireContext().resources.getStringArray(R.array.periodicityBillingEvery)[2] + " " +
+                                requireContext().resources.getString(R.string.periodicityBillingweek)
+                    } else {
+                        requireContext().resources.getStringArray(R.array.periodicityBillingEvery)[0] + " " +
+                                requireContext().resources.getStringArray(R.array.periodicityBegin)[period].lowercase()
+                    }
+                }
+                2,3,4->requireContext().resources.getStringArray(R.array.periodicityBillingEvery)[1] + " $count " +
+                       requireContext().resources.getStringArray(R.array.periodicityBilling234)[period].lowercase()
+
+                else ->requireContext().resources.getStringArray(R.array.periodicityBillingEvery)[1] + " $count " +
+                        requireContext().resources.getStringArray(R.array.periodicityBillingOther)[period].lowercase()
+            }
     }
 
     //FB
@@ -447,6 +632,7 @@ class NewGLSFragment : Fragment() {
                 NotificationManager.notification(
                     context = requireContext(),
                     channelID = Constants.CHANNEL_ID_GOAL,
+                    placeId = null,
                     id = key!!,
                     time = binding.timeOfNotificationsGLS.text.toString(),
                     dateOfExpence = dateOfEnd,
@@ -511,6 +697,7 @@ class NewGLSFragment : Fragment() {
                         context = requireContext(),
                         channelID = Constants.CHANNEL_ID_GOAL,
                         id = goalReference.key.toString(),
+                        placeId = null,
                         time = binding.timeOfNotificationsGLS.text.toString(),
                         dateOfExpence = dateOfEnd,
                         periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
@@ -518,6 +705,84 @@ class NewGLSFragment : Fragment() {
                 }
                 findNavController().popBackStack()
             }
+    }
+
+    private fun saveSub(){
+
+        if (financeViewModel.subLiveData.value?.filter { !it.subItem.isDeleted }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Такая подписка уже существует!", Snackbar.LENGTH_LONG).show()
+        else if (financeViewModel.subLiveData.value?.filter { it.subItem.isDeleted }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false){
+            AlertDialog.Builder(context)
+                .setTitle("Восстановление")
+                .setMessage("У Вас уже была такая подписка!\nХотите восстановить?")
+                .setPositiveButton("Восстановить") { dialog, _ ->
+                    table.child("Users")
+                        .child(auth.currentUser!!.uid)
+                        .child("Subs")
+                        .child(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
+                        .child("deleted").setValue(false)
+                    findNavController().popBackStack()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Создать новую") { dialog, _ ->
+                    makeNewSub()
+                    dialog.dismiss()
+                }
+                .setNeutralButton("Отмена") { dialog, _ ->
+                    dialog.dismiss()
+                }.show()
+        }
+        else if (financeViewModel.subLiveData.value?.filter { it.subItem.isCancelled }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false){
+            AlertDialog.Builder(context)
+                .setTitle("Восстановление")
+                .setMessage("У Вас уже есть такая подписка, но она отменена!\nХотите возобновить?")
+                .setPositiveButton("Возобновить") { dialog, _ ->
+                    table.child("Users")
+                        .child(auth.currentUser!!.uid)
+                        .child("Subs")
+                        .child(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
+                        .child("cancelled").setValue(false)
+                    findNavController().popBackStack()
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Создать новую") { dialog, _ ->
+                    makeNewSub()
+                    dialog.dismiss()
+                }
+                .setNeutralButton("Отмена") { dialog, _ ->
+                    dialog.dismiss()
+                }.show()
+        }
+        else makeNewSub()
+    }
+
+    private fun makeNewSub(){
+        val subReference = table.child("Users")
+            .child(auth.currentUser!!.uid)
+            .child("Subs")
+            .push()
+        subReference.setValue(SubItem(
+            name = binding.nameGLSEdit.text.toString(),
+            amount = binding.glsValue.text.toString(),
+            date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateSub.time),
+            path = binding.imageOfGLM.tag.toString(),
+            budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
+            isDeleted = false,
+            isCancelled = false,
+            period = periodSub ?: (1000L * 60L * 60L * 24L * 30L))
+        ).addOnCompleteListener {
+            /*if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
+                NotificationManager.notification(
+                    context = requireContext(),
+                    channelID = Constants.CHANNEL_ID_GOAL,
+                    id = goalReference.key.toString(),
+                    placeId = null,
+                    time = binding.timeOfNotificationsGLS.text.toString(),
+                    dateOfExpence = dateOfEnd,
+                    periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
+                )
+            }*/
+            findNavController().popBackStack()
+        }
     }
 
 
@@ -531,6 +796,6 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun checkAllFieldsSub(){
-        //buttonAddGLS.isEnabled = editValue.text.isNotEmpty() && nameGLS.text.isNotEmpty() && imageOfGLM.tag!=null
+        binding.buttonAddGLS.isEnabled =  binding.glsValue.text.isNotEmpty() && binding.nameGLS.text.isNotEmpty() && binding.imageOfGLM.tag!=null
     }
 }

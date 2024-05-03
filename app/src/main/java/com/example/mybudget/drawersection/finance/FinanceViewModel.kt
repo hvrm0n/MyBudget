@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.subs.SubItemWithKey
 import com.example.mybudget.start_pages.CategoryBeginWithKey
 
 class FinanceViewModel:ViewModel() {
@@ -26,6 +27,9 @@ class FinanceViewModel:ViewModel() {
 
     private val _financeDate = MutableLiveData<Pair<Int,Int>>()
     val financeDate: LiveData<Pair<Int,Int>> get() = _financeDate
+
+    private val _subLiveData = MutableLiveData<List<SubItemWithKey>>()
+    val subLiveData: LiveData<List<SubItemWithKey>> get() = _subLiveData
 
 
     private val _goalsLiveData = MutableLiveData<List<GoalItemWithKey>>()
@@ -57,5 +61,9 @@ class FinanceViewModel:ViewModel() {
 
     fun updateGoalsData(newData: List<GoalItemWithKey>) {
         _goalsLiveData.value = newData
+    }
+
+    fun updateSubsData(newData: List<SubItemWithKey>) {
+        _subLiveData.value = newData
     }
 }

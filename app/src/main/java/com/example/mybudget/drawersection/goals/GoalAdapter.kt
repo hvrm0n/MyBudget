@@ -129,15 +129,19 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
 
             if (position!=0 && !goals[position-1].goalItem.isReached && !placeReach && goalItem.goalItem.isReached||
                 goalItem.goalItem.isReached && !placeReach){
-                Log.e("checkenter", "yes")
                 reachedGoals.visibility = View.VISIBLE
                 reachedGoals.text = "Достигнутые"
                 placeReach = true
             } else if(goalItem.goalItem.date!=null && !goalItem.goalItem.isReached && !placeNotReached){
                 val date = goalItem.goalItem.date!!.split(".")
                 val calendar = Calendar.getInstance()
-                calendar.set(date[2].toInt(), date[1].toInt()-1, date[0].toInt())
-                if (Calendar.getInstance().timeInMillis > calendar.timeInMillis){
+                calendar.set(date[2].toInt(), date[1].toInt()-1, date[0].toInt(),0, 0, 0)
+
+                if (Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY,0)
+                        set(Calendar.MINUTE,0)
+                        set(Calendar.SECOND,0)
+                }.timeInMillis > calendar.timeInMillis){
                     reachedGoals.text = "Просроченные"
                     reachedGoals.visibility = View.VISIBLE
                     placeNotReached = true

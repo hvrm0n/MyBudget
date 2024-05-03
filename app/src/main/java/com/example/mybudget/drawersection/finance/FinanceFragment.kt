@@ -41,6 +41,8 @@ import com.example.mybudget.drawersection.finance.category.SwipeHelper
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.goals.GoalItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.subs.SubItem
+import com.example.mybudget.drawersection.subs.SubItemWithKey
 import com.example.mybudget.start_pages.CategoryBeginWithKey
 import com.example.mybudget.start_pages.Constants
 import com.example.mybudget.start_pages._CategoryBegin
@@ -75,6 +77,7 @@ class FinanceFragment : Fragment() {
     private val categoryDateLive =  MutableLiveData<List<Pair<Int, Int>>>(mutableListOf(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR))))
     private val planList = mutableListOf<HistoryItem>()
     private val goalList = mutableListOf<GoalItemWithKey>()
+    private val subList = mutableListOf<SubItemWithKey>()
 
 
     private var isExpanded = false
@@ -117,7 +120,18 @@ class FinanceFragment : Fragment() {
 
         when(sharedPreferences.getBoolean("isDistributed", false)){
             false -> binding.calculate.text = resources.getString(R.string.fab_calculate)
-            else -> binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
+            else -> {
+                val time = sharedPreferences.getString("isDistributedDay", "")
+                if (time?.isNotEmpty() == true && time.split(".")[0].toInt() == Calendar.getInstance().get(Calendar.MONTH) && time.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.YEAR) ) {
+                    binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
+                } else {
+                    binding.calculate.text = resources.getString(R.string.fab_calculate)
+                    val editor = sharedPreferences.edit()
+                    editor.putBoolean("isDistributed", false)
+                    editor.putString("isDistributedDay", "")
+                    editor.apply()
+                }
+            }
         }
 
         binding.floatingActionButton.setOnClickListener {
@@ -277,6 +291,7 @@ class FinanceFragment : Fragment() {
         }
 
         updateGoals()
+        updateSubs()
     }
 
     private fun leftAndRightRows(){
@@ -435,6 +450,7 @@ class FinanceFragment : Fragment() {
                     val sharedPreferences = requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.putBoolean("isDistributed", false)
+                    editor.putString("isDistributedDay", "")
                     editor.apply()
                     binding.calculate.text = resources.getString(R.string.fab_calculate)
                 }
@@ -505,6 +521,7 @@ class FinanceFragment : Fragment() {
                         val sharedPreferences = requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
                         editor.putBoolean("isDistributed", true)
+                        editor.putString("isDistributedDay", "${Calendar.getInstance().get(Calendar.MONTH)}.${Calendar.getInstance().get(Calendar.YEAR)}")
                         editor.apply()
                         binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
 
@@ -818,53 +835,43 @@ class FinanceFragment : Fragment() {
                             goalList.add(GoalItemWithKey(goal.key.toString(), gi))
                         }
                     }
-                    Log.e("CheckGoals",
+
+                    financeViewModel.updateGoalsData(
 
                         goalList.asSequence()
                             .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
-                                Calendar.getInstance().timeInMillis < Calendar.getInstance().apply {
+                                Calendar.getInstance().apply {
+                                    set(Calendar.HOUR_OF_DAY,0)
+                                    set(Calendar.MINUTE,0)
+                                    set(Calendar.SECOND,0)
+                                }.timeInMillis <= Calendar.getInstance().apply {
                                     set(
                                         it.goalItem.date!!.split(".")[2].toInt(),
                                         it.goalItem.date!!.split(".")[1].toInt()-1,
-                                        it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
+                                        it.goalItem.date!!.split(".")[0].toInt(), 0,0,0)}.timeInMillis
                             } else true}
                             .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
-                            .sortedBy { it.goalItem.date!!.split(".")[2] }
-                            .sortedBy { it.goalItem.date!!.split(".")[1]}
-                            .sortedBy { it.goalItem.date!!.split(".")[0]}
-                            .toList().toString()
-                        )
-                    financeViewModel.updateGoalsData(
-                        goalList.asSequence()
-                                    .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
-                                            Calendar.getInstance().timeInMillis < Calendar.getInstance().apply {
-                                                set(
-                                                    it.goalItem.date!!.split(".")[2].toInt(),
-                                                    it.goalItem.date!!.split(".")[1].toInt()-1,
-                                                    it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
-                                    } else true}
-                                    .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
-                                    .sortedBy { it.goalItem.date!!.split(".")[2] }
-                                    .sortedBy { it.goalItem.date!!.split(".")[1]}
-                                    .sortedBy { it.goalItem.date!!.split(".")[0]}
-                                    .toList()
+                            .toList()
                                 +
                                 goalList
                                     .asSequence() .filter { it.goalItem.date==null }
                                     .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
                                     .toList()
-                        + goalList.asSequence()
+
+                                + goalList.asSequence()
                             .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
-                                Calendar.getInstance().timeInMillis >= Calendar.getInstance().apply {
+                                Calendar.getInstance().apply {
+                                    set(Calendar.HOUR_OF_DAY,0)
+                                    set(Calendar.MINUTE,0)
+                                    set(Calendar.SECOND,0)
+                                }.timeInMillis > Calendar.getInstance().apply {
                                     set(
                                         it.goalItem.date!!.split(".")[2].toInt(),
                                         it.goalItem.date!!.split(".")[1].toInt()-1,
-                                        it.goalItem.date!!.split(".")[0].toInt())}.timeInMillis
+                                        it.goalItem.date!!.split(".")[0].toInt(), 0,0,0)
+                                        }.timeInMillis
                             } else true}
                             .sortedByDescending { it.goalItem.target.toDouble() - it.goalItem.current.toDouble() }
-                            .sortedBy { it.goalItem.date!!.split(".")[2] }
-                            .sortedBy { it.goalItem.date!!.split(".")[1]}
-                            .sortedBy { it.goalItem.date!!.split(".")[0]}
                             .toList()
                     )
                 }
@@ -872,6 +879,27 @@ class FinanceFragment : Fragment() {
                     Log.e("errorLog", error.toException().toString())
                 }
             })
+    }
+
+    private fun updateSubs(){
+        table.child("Users").child(auth.currentUser!!.uid).child("Subs").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                subList.clear()
+                for (sub in snapshot.children){
+                    sub.getValue(SubItem::class.java)?.let {si->
+                        subList.add(SubItemWithKey(sub.key.toString(), si))
+                    }
+                }
+
+                financeViewModel.updateSubsData(
+                    subList.asSequence()
+                        .filter { !it.subItem.isCancelled  && !it.subItem.isDeleted  } .toList()
+                            + subList.asSequence() .filter { it.subItem.isCancelled }.toList())
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("errorLog", error.toException().toString())
+            }
+        })
     }
 
 }

@@ -36,8 +36,12 @@
         android:label="Важные выплаты" />
     <fragment
         android:id="@+id/nav_subs"
-        android:name="com.example.mybudget.drawersection.SubsFragment"
-        android:label="Подписки" />
+        android:name="com.example.mybudget.drawersection.subs.SubsFragment"
+        android:label="Подписки" >
+        <action
+            android:id="@+id/action_nav_subs_to_newGLSFragment"
+            app:destination="@id/newGLSFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addCategoryFragment"
         android:name="com.example.mybudget.drawersection.finance.category.AddCategoryFragment"

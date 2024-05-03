@@ -135,6 +135,14 @@
             android:text="@string/card_goal_cons"
             android:textColor="@color/dark_green"
             android:textSize="@dimen/regText" />
+
+        <RadioButton
+            android:id="@+id/transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transaction_transfer"
+            android:textColor="@color/dark_green"
+            android:textSize="@dimen/regText" />
     </RadioGroup>
 
         <TextView
@@ -196,6 +204,35 @@
         app:layout_constraintTop_toBottomOf="@+id/budgetTitle" />
 
 
+        <TextView
+            android:id="@+id/budgetTitleTo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:text="@string/budget_transfer_to"
+            android:textColor="@color/dark_green"
+            android:textSize="@dimen/subtitle"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerBudget" />
+
+
+        <Spinner
+            android:id="@+id/spinnerBudgetTo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/budgetTitleTo" />
+
+
     <TextView
         android:id="@+id/expenceIncomeDate"
         android:layout_width="0dp"
@@ -210,7 +247,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerBudget" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerBudgetTo" />
 
         <CalendarView
             android:id="@+id/calendarViewBudget"

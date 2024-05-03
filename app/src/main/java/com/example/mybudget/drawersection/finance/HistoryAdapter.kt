@@ -3,7 +3,6 @@ package com.example.mybudget.drawersection.finance
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +25,16 @@ import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
-import com.example.mybudget.drawersection.goals.GoalItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.start_pages.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
@@ -60,6 +61,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         }
     }
 
+    fun getHistory() = history
+
     fun checkPlan(isChecked:Boolean) {
         plan = isChecked
     }
@@ -69,18 +72,14 @@ class HistoryAdapter(private val context: Context, private var history: List<His
     //beginValue - в валюте бюджета
     //beginValueBase - baseAmount, в валюте ЦЕЛИ
     private fun editGoalHistory(goalItem: GoalItemWithKey?, budgetItem: BudgetItemWithKey, position: Int, newValue:String, valueInCurrency: String, beginValue:String, beginValueBase:String){
-        Log.e("editGoalHistory_newValue", newValue)
-        Log.e("editGoalHistory_valueInCurrency", valueInCurrency)
-        Log.e("editGoalHistory_beginValue", beginValue)
-        Log.e("editGoalHistory_beginValueBase", beginValueBase)
+
         when {
             goalItem == null -> Toast.makeText(
                 context,
                 "Такой цели больше нет, операцию нельзя изменить.",
                 Toast.LENGTH_SHORT
             ).show()
-
-            (goalItem.goalItem.current.toDouble() + if (history[position].baseAmount.contains('-'))history[position].baseAmount.toDouble()+beginValueBase.toDouble()-newValue.toDouble() else 0.0)<0.0
+            (goalItem.goalItem.current.toDouble() + if (history[position].baseAmount.contains('-'))(beginValueBase.toDouble()-newValue.toDouble()) else 0.0 )<-9.0E-6
             -> Toast.makeText(
                 context,
                 "При изменении Вы уйдете в минус в цели!",
@@ -146,6 +145,74 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     .child("Goals")
                     .child(history[position].placeId)
                     .setValue(goalItem.goalItem)
+            }
+        }
+    }
+
+    //newValue - новое значение в валюте бюджета с которого переводили
+    //valueInCurrency - новое значение в валюте бюджета на который перевели
+    //beginValue - значение в валюте бюджета на который перевели
+    //beginValueBase - значение в валюте бюджета с которого переводили
+    private fun editTransferHistory(budgetItemFrom: BudgetItemWithKey, budgetItemTo: BudgetItemWithKey?, position: Int, newValue:String, valueInCurrency: String, beginValue:String, beginValueBase:String){
+        when {
+            budgetItemTo == null -> Toast.makeText(
+                context,
+                "Бюджета, на который переводились средства, больше нет, операцию нельзя изменить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            (budgetItemFrom.budgetItem.amount.toDouble() - newValue.toDouble())<-9.0E-6
+            -> Toast.makeText(
+                context,
+                "При изменении Вы уйдете в минус в бюджете!",
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> {
+                budgetItemFrom.budgetItem.amount =  "%.2f".format(budgetItemFrom.budgetItem.amount.toDouble() + beginValueBase.toDouble() - newValue.toDouble()).replace(",", ".")
+                budgetItemTo.budgetItem.amount =  "%.2f".format(budgetItemTo.budgetItem.amount.toDouble() - beginValue.toDouble() + valueInCurrency.toDouble()).replace(",", ".")
+
+                when (budgetItemFrom.key) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .child("amount")
+                            .setValue(budgetItemFrom.budgetItem.amount)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItemTo.key)
+                            .setValue(budgetItemTo.budgetItem)
+                    }
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItemFrom.key)
+                            .setValue(budgetItemFrom.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .child("amount")
+                            .setValue(budgetItemTo.budgetItem.amount)
+                    }
+                }
+
+                history[position].amount = "%.2f".format(valueInCurrency.toDouble()).replace(",", ".")
+                history[position].baseAmount = "%.2f".format(newValue.toDouble()).replace(",", ".")
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key)
+                    .setValue(history[position])
             }
         }
     }
@@ -251,6 +318,16 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             beginValueBase = beginValueBase
                         )
 
+                        history[position].isTransfer == true-> editTransferHistory(
+                            budgetItemFrom = budgetItem,
+                            budgetItemTo = financeViewModel.budgetLiveData.value!!.find { it.key == history[position].placeId },
+                            position = position,
+                            newValue = newValue,
+                            valueInCurrency = valueInCurrency,
+                            beginValue = beginValue,
+                            beginValueBase = beginValueBase
+                        )
+
                         history[position].isLoan == true ->/*removeCategoryHistory()*/ {}
                         else ->/*removeCategoryHistory()*/ {}
                     }
@@ -272,6 +349,13 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                 .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
                                 .child(history[position].key).child("amount")
                                 .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid).child("History")
+                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                                .child(history[position].key).child("baseAmount")
+                                .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+
                         }
 
                         else -> {
@@ -289,6 +373,15 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                 .child(history[position].key)
                                 .child("amount")
                                 .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+
+                            table.child("Users")
+                                .child(auth.currentUser!!.uid)
+                                .child("History")
+                                .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                                .child(history[position].key)
+                                .child("baseAmount")
+                                .setValue("${"%.2f".format(valueInCurrency.toDouble()).replace(",", ".")}${history[position].amount.filter { amount -> !amount.isDigit() }.replace("-", "").replace(".", "")}")
+
                         }
                     }
                 }
@@ -362,7 +455,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
                         NotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
                             historyItem.budgetId, dateNew.third, dateNew.second, calendar, historyItem.amount, historyItem.baseAmount)
-                        NotificationManager.notification(context,  historyItem.key, financeViewModel.categoryBeginLiveData.value?.find { it.key == historyItem.placeId }!!.categoryBegin.name, time,calendar,period)
+                        NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN, historyItem.key, historyItem.placeId,time,calendar,period)
                     }
                     override fun onCancelled(error: DatabaseError) {}
                 })
@@ -398,7 +491,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
                 NotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
                     historyItem.budgetId, dateNew.third, dateNew.second, calendar, historyItem.amount, historyItem.baseAmount)
-                NotificationManager.notification(context,  historyItem.key, financeViewModel.categoryBeginLiveData.value?.find { it.key == historyItem.placeId }!!.categoryBegin.name, time,calendar,period)
+                NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN,  historyItem.key, historyItem.placeId, time,calendar,period)
 
             }
         }
@@ -429,6 +522,11 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             budgetItem = budgetItem,
                             goalItem = financeViewModel.goalsData.value!!.find { it.key == history[position].placeId },
                             value = value,
+                            position = position
+                        )
+                        history[position].isTransfer == true->removeTransferHistory(
+                            budgetItemFrom = budgetItem,
+                            budgetItemTo = financeViewModel.budgetLiveData.value!!.find { it.key == history[position].placeId },
                             position = position
                         )
                         history[position].isLoan == true->/*removeCategoryHistory()*/{}
@@ -562,7 +660,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 Toast.LENGTH_SHORT
             ).show()
 
-            (goalItem.goalItem.current.toDouble() - if (!history[position].baseAmount.contains('-'))history[position].baseAmount.toDouble() else 0.0)<0.0
+            (goalItem.goalItem.current.toDouble() - if (!history[position].baseAmount.contains('-'))history[position].baseAmount.toDouble() else 0.0)<-9.0E-6
             -> Toast.makeText(
                 context,
                 "При удалении Вы уйдете в минус в цели!",
@@ -623,32 +721,128 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         }
     }
 
+    private fun removeTransferHistory(budgetItemFrom:BudgetItemWithKey, budgetItemTo: BudgetItemWithKey?, position: Int){
+        when{
+            budgetItemTo == null -> Toast.makeText(
+                context,
+                "Такого бюджета начисления больше нет, операцию нельзя удалить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            (budgetItemTo.budgetItem.amount.toDouble() - history[position].amount.toDouble())<-9.0E-6
+            -> Toast.makeText(
+                context,
+                "При удалении Вы уйдете в минус в бюджете начисления!",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+                budgetItemFrom.budgetItem.amount =
+                    "%.2f".format(budgetItemFrom.budgetItem.amount.toDouble() + history[position].baseAmount.toDouble()).replace(",", ".")
+
+                budgetItemTo.budgetItem.amount =
+                    "%.2f".format(budgetItemTo.budgetItem.amount.toDouble() - history[position].amount.toDouble()).replace(",", ".")
+
+                budgetItemFrom.budgetItem.count -= 1
+                budgetItemTo.budgetItem.count -= 1
+
+                when (budgetItemFrom.key) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .setValue(budgetItemFrom.budgetItem)
+
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItemTo.key)
+                            .setValue(budgetItemTo.budgetItem)
+                    }
+
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItemFrom.key)
+                            .setValue(budgetItemFrom.budgetItem)
+
+                        when (budgetItemTo.key){
+                            "Base budget" -> {
+                                table.child("Users")
+                                    .child(auth.currentUser!!.uid)
+                                    .child("Budgets")
+                                    .child("Base budget")
+                                    .setValue(budgetItemTo.budgetItem)
+                            }
+                            else ->{
+                                table.child("Users")
+                                    .child(auth.currentUser!!.uid)
+                                    .child("Budgets")
+                                    .child("Other budget")
+                                    .child(budgetItemFrom.key)
+                                    .setValue(budgetItemTo.budgetItem)
+                            }
+                        }
+                    }
+                }
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key).removeValue()
+            }
+        }
+    }
+
     fun sortByDate(startDate:Calendar?, endDate:Calendar?, historyNew:List<HistoryItem> = history){
         val startDef = Calendar.getInstance()
         val endDef = Calendar.getInstance()
         startDef.set(Calendar.DAY_OF_MONTH, 1)
         endDef.set(Calendar.DAY_OF_MONTH, endDef.getActualMaximum(Calendar.DAY_OF_MONTH))
 
-        sort(historyNew.sortedByDescending { it.date}.filter { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-            .parse(it.date)?.let { calendar ->
-                val calendarFromString = Calendar.getInstance()
-                calendarFromString.time = calendar
+        sort(
+            historyNew.asSequence()
+                .filter { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    .parse(it.date)?.let { calendar ->
 
-                (calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
-                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                        calendarFromString.get(Calendar.MONTH) >= (startDate?.get(
-                    Calendar.MONTH
-                ) ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                        calendarFromString.get(Calendar.DAY_OF_MONTH) >= ((startDate?.get(Calendar.DAY_OF_MONTH))
-                    ?: startDef.get(Calendar.DAY_OF_MONTH))
-                        &&
-                        calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
-                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                        calendarFromString.get(Calendar.MONTH) <= (endDate?.get(Calendar.MONTH)
-                    ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                        calendarFromString.get(Calendar.DAY_OF_MONTH) <= ((endDate?.get(Calendar.DAY_OF_MONTH))
-                    ?: endDef.get(Calendar.DAY_OF_MONTH)))
-            } ?: false}.toList())
+                        val calendarFromString = Calendar.getInstance()
+                        calendarFromString.time = calendar
+
+                        ((calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
+                            ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                calendarFromString.get(Calendar.MONTH) >= (startDate?.get(
+                            Calendar.MONTH
+                        ) ?: Calendar.getInstance().get(Calendar.MONTH)) &&
+                                calendarFromString.get(Calendar.DAY_OF_MONTH) >= ((startDate?.get(Calendar.DAY_OF_MONTH))
+                            ?: startDef.get(Calendar.DAY_OF_MONTH)))
+                                ||
+                                (calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
+                                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                        calendarFromString.get(Calendar.MONTH) > (startDate?.get(
+                                    Calendar.MONTH
+                                ) ?: Calendar.getInstance().get(Calendar.MONTH)))
+                                ||
+                                (calendarFromString.get(Calendar.YEAR) > (startDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)) ))
+                                &&
+                                ((calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
+                                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                        calendarFromString.get(Calendar.MONTH) <= (endDate?.get(Calendar.MONTH)
+                                    ?: Calendar.getInstance().get(Calendar.MONTH)) &&
+                                        calendarFromString.get(Calendar.DAY_OF_MONTH) <= ((endDate?.get(Calendar.DAY_OF_MONTH))
+                                    ?: endDef.get(Calendar.DAY_OF_MONTH)))
+                                ||
+                                (calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
+                                            ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                                calendarFromString.get(Calendar.MONTH) < (endDate?.get(Calendar.MONTH)
+                                            ?: Calendar.getInstance().get(Calendar.MONTH))
+                                ||
+                                (calendarFromString.get(Calendar.YEAR) < (endDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)))))
+
+            } ?: false}.toList().sortedByDescending {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)})
     }
 
     private fun sort(newHistory: List<HistoryItem>){
@@ -671,7 +865,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         fun bind(historyItem: HistoryItem, position: Int) {
            val financeViewModel = ViewModelProvider(activity)[FinanceViewModel::class.java]
 
-            valueOfTransaction.text = historyItem.amount + context.resources.getString( context.resources.getIdentifier( financeViewModel.budgetLiveData.value?.find {  it.key == historyItem.budgetId}?.budgetItem?.currency, "string",  context.packageName))
+            valueOfTransaction.text = historyItem.amount + context.resources.getString( context.resources.getIdentifier( financeViewModel.budgetLiveData.value?.find {  it.key == if(historyItem.isTransfer==true) historyItem.placeId else historyItem.budgetId}?.budgetItem?.currency, "string",  context.packageName))
 
             when(historyItem.placeId){
                 ""->{
@@ -686,6 +880,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 else->{
                     when {
                         historyItem.isGoal == true && historyItem.amount.contains('-')-> {income.visibility = View.VISIBLE}
+                        historyItem.isTransfer == true -> income.visibility = View.VISIBLE
                         else -> income.visibility = View.GONE
                     }
                     nameBudgetTextView.visibility =  when{
@@ -694,6 +889,11 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                 R.string.history_goals,
                                 financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.name
                             )
+                            View.VISIBLE
+                        }
+
+                        historyItem.isTransfer==true->{
+                            nameBudgetTextView.text =  financeViewModel.budgetLiveData.value!!.find { history[position].placeId == it.key }!!.budgetItem.name
                             View.VISIBLE
                         }
                         else -> View.GONE
@@ -715,13 +915,24 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             placeNameTextView.visibility = View.VISIBLE
                             financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.name
                         }
+                        else if (historyItem.isSub == true){
+                            placeNameTextView.visibility = View.VISIBLE
+                            financeViewModel.subLiveData.value!!.find { history[position].placeId == it.key }!!.subItem.name
+                        }
                         else {placeNameTextView.visibility = View.GONE
                             ""}
-                    imageHistory.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(when{
-                        history[position].isCategory==true->financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.path
-                        history[position].isGoal==true->financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.path
-                        else->"family"
-                    }, "drawable", context.packageName)))
+                    imageHistory.visibility = when{
+                        historyItem.isTransfer == true -> View.GONE
+                        else->{
+                            imageHistory.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(when{
+                                history[position].isCategory==true->financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.path
+                                history[position].isGoal==true->financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.path
+                                history[position].isSub==true->financeViewModel.subLiveData.value!!.find { history[position].placeId == it.key }!!.subItem.path
+                                else->"family"
+                            }, "drawable", context.packageName)))
+                            View.VISIBLE
+                        }
+                    }
                 }
             }
 
@@ -743,6 +954,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     if (historyItem.amount.contains('-'))valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_orange, context.theme))
                     else valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_green, context.theme))
                 }
+                historyItem.isTransfer==true -> valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_green, context.theme))
                 else -> valueOfTransaction.setTextColor(context.resources.getColor(R.color.dark_orange, context.theme))
             }
 
@@ -807,39 +1019,43 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
             calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
                 dateNew = Triple(dayOfMonth, month+1, year)
+                val dateEnd = LocalDate.of(year, month, dayOfMonth)
+                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                 val resultList = mutableListOf<String>()
-                when{
-                    year > Calendar.getInstance().get(Calendar.YEAR) -> resultList.addAll(periodList)
-                    month > Calendar.getInstance().get(Calendar.MONTH) -> {
-                        for (i in 0 until 6){
+                when {
+                    daysBetween>=365 -> resultList.addAll(periodList)
+                    daysBetween>=30 -> {
+                        for (i in 0 until 7) {
                             resultList.add(periodList[i])
                         }
-                        if(dayOfMonth>=Calendar.getInstance().get(Calendar.MONTH)){
-                            resultList.add(periodList[6])
-                        }
                     }
-                    dayOfMonth > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)->{
-                        if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>7){
+                    daysBetween<30 ->{
+                        if (daysBetween>7){
                             for (i in 0 until 6){
                                 resultList.add(periodList[i])
                             }
-                        } else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)==7){
+                        } else if (daysBetween.toInt() ==7){
                             for (i in 0 until 5){
                                 resultList.add(periodList[i])
                             }
 
-                        }else if (dayOfMonth - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>=3){
+                        }else if (daysBetween>=3){
                             for (i in 0 until 3){
                                 resultList.add(periodList[i])
                             }
                             resultList.add(periodList[4])
                         }
-                        else {
+                        else if (daysBetween>=1) {
                             resultList.add(periodList[0])
                             resultList.add(periodList[1])
                             resultList.add(periodList[4])
                         }
+                        else{
+                            resultList.add(periodList[0])
+                        }
                     }
+                    else ->  resultList.add(periodList[0])
                 }
 
                 adapterPeriod = ArrayAdapter(context, android.R.layout.simple_spinner_item, resultList)
@@ -863,50 +1079,67 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                         set(Calendar.MONTH, history[position].date.split(".")[1].toInt()-1)
                         set(Calendar.YEAR, history[position].date.split(".")[2].toInt())
                        calendar.date = this.timeInMillis
-                    }
-
+                   }
+                    val dateEnd = LocalDate.of(history[position].date.split(".")[2].toInt(), history[position].date.split(".")[1].toInt()-1, history[position].date.split(".")[0].toInt())
+                    val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                    val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                     val resultList = mutableListOf<String>()
-                    when{
-                        history[position].date.split(".")[2].toInt()>Calendar.getInstance().get(Calendar.YEAR) -> resultList.addAll(periodList)
-                        history[position].date.split(".")[1].toInt()-1 > Calendar.getInstance().get(Calendar.MONTH) -> {
-                            for (i in 0 until 6){
+                    when {
+                        daysBetween>=365 -> resultList.addAll(periodList)
+                        daysBetween>=30 -> {
+                            for (i in 0 until 7) {
                                 resultList.add(periodList[i])
                             }
-                            if(1==Calendar.getInstance().get(Calendar.MONTH)){
-                                resultList.add(periodList[6])
-                            }
                         }
-                        history[position].date.split(".")[0].toInt() > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)->{
-                            if ( history[position].date.split(".")[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>7){
+                        daysBetween<30 ->{
+                            if (daysBetween>7){
                                 for (i in 0 until 6){
                                     resultList.add(periodList[i])
                                 }
-                            } else if ( history[position].date.split(".")[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)==7){
+                            } else if (daysBetween.toInt() ==7){
                                 for (i in 0 until 5){
                                     resultList.add(periodList[i])
                                 }
 
-                            }else if ( history[position].date.split(".")[0].toInt() - Calendar.getInstance().get(Calendar.DAY_OF_MONTH)>=3){
+                            }else if (daysBetween>=3){
                                 for (i in 0 until 3){
                                     resultList.add(periodList[i])
                                 }
                                 resultList.add(periodList[4])
                             }
-                            else {
+                            else if (daysBetween>=1) {
                                 resultList.add(periodList[0])
                                 resultList.add(periodList[1])
                                 resultList.add(periodList[4])
                             }
+                            else{
+                                resultList.add(periodList[0])
+                            }
                         }
+                        else ->  resultList.add(periodList[0])
                     }
+
+                    if (periodBegin.isNotEmpty()){
+                        if (resultList.indexOf(periodBegin) == -1)resultList.add(periodBegin)
+                        when(periodList.indexOf(periodBegin)){
+                            0 -> {
+                                timeOfNotificationsTitleHistory.visibility = View.GONE
+                                timeOfNotificationsHistory.visibility = View.GONE
+                            }
+                            else -> {
+                                timeOfNotificationsTitleHistory.visibility = View.VISIBLE
+                                timeOfNotificationsHistory.visibility = View.VISIBLE
+                            }
+                        }
+                        timeOfNotificationsHistory.text = timeBegin.ifEmpty { "12:00" }
+                    }
+
                     adapterPeriod = ArrayAdapter(context, android.R.layout.simple_spinner_item, resultList)
                     adapterPeriod.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     periodOfNotificationHistory.adapter = adapterPeriod
                     periodOfNotificationHistory.setSelection(resultList.indexOf(periodBegin.ifEmpty {
                         periodList[0]
                     }))
-
-                    timeOfNotificationsHistory.text = timeBegin.ifEmpty { "12:00" }
 
                     View.VISIBLE
                 }
@@ -936,12 +1169,10 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 }
             }
 
-            val number = history[position].amount.filter {string-> string.isDigit()}
-            val numberBegin = number.substring(0, number.length-2)+"."+number.substring(number.length-2)
+            val numberBegin = history[position].amount.filter {string-> string.isDigit() || string=='.'}
             value.setText(numberBegin)
 
-            val numberBase = history[position].baseAmount.filter {string-> string.isDigit()}
-            val beginValueBase = numberBase.substring(0, numberBase.length-2)+"."+numberBase.substring(numberBase.length-2)
+            val beginValueBase = history[position].baseAmount.filter {string-> string.isDigit() || string=='.'}
 
             builder.setPositiveButton("Сохранить"){ dialog, _->
                 val newValue = "%.2f".format((abs(history[position].baseAmount.toDouble())/numberBegin.toDouble())*value.text.toString().toDouble()).replace(",", ".")

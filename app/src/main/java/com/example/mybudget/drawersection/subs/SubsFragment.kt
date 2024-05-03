@@ -1,4 +1,4 @@
-package com.example.mybudget.drawersection.goals
+package com.example.mybudget.drawersection.subs
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -13,33 +13,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
+import com.example.mybudget.drawersection.goals.GoalsAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import java.util.Calendar
 
-class GoalsFragment : Fragment() {
+
+class SubsFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var table: DatabaseReference
     private lateinit var financeViewModel: FinanceViewModel
-    private lateinit var recyclerGoals:RecyclerView
-    private lateinit var adapterGoals: GoalsAdapter
+    private lateinit var recyclerSubs: RecyclerView
+    private lateinit var adapterSubs: SubsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.page_goals, container, false)
+        return inflater.inflate(R.layout.page_subs, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerGoals = view.findViewById(R.id.goalsList)
+        recyclerSubs = view.findViewById(R.id.subsList)
     }
 
     override fun onStart() {
@@ -47,34 +51,23 @@ class GoalsFragment : Fragment() {
         auth = Firebase.auth
         table = Firebase.database.reference
         activity?.let {financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java]}
-        adapterGoals = GoalsAdapter(requireContext(), emptyList(), table, auth, financeViewModel, this)
-        recyclerGoals.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerGoals.adapter = adapterGoals
+        adapterSubs = SubsAdapter(requireContext(), emptyList(), table, auth, financeViewModel, this)
+        recyclerSubs.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerSubs.adapter = adapterSubs
 
-        financeViewModel.goalsData.observe(viewLifecycleOwner){
-            adapterGoals.updateData(it.filter { item -> !item.goalItem.isDeleted }
-                .sortedByDescending {giwk->
-                    when (giwk.goalItem.date){
-                        null->0
-                        else->giwk.goalItem.date?.split('.')?.let {
-                            ChronoUnit.DAYS.between(LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
-                                LocalDate.of(it[2].toInt(),it[1].toInt()-1, it[0].toInt()))
-                        }
-                    }
-                }
-                .sortedBy { reach -> reach.goalItem.isReached })
-
+        financeViewModel.subLiveData.observe(viewLifecycleOwner){
+            adapterSubs.updateData(it)
         }
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerGoals) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerSubs) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
-                if(position == adapterGoals.itemCount-1){return emptyList() }
+                if(position == adapterSubs.itemCount-1){return emptyList() }
                 val deleteButton = deleteButton(position)
                 val editButton = editButton(position)
                 return listOf(deleteButton, editButton)
             }
         })
-        itemTouchHelper.attachToRecyclerView(recyclerGoals)
+        itemTouchHelper.attachToRecyclerView(recyclerSubs)
     }
 
     private fun deleteButton(position: Int) : SwipeHelper.UnderlayButton {
@@ -85,10 +78,10 @@ class GoalsFragment : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление цели")
-                        .setMessage("Вы уверены, что хотите удалить цель?")
+                        .setTitle("Удаление подписки")
+                        .setMessage("Вы уверены, что хотите удалить подписку?")
                         .setPositiveButton("Подтвердить") { dialog, _ ->
-                            adapterGoals.deleteItemAtPosition(position)
+                            adapterSubs.deleteItemAtPosition(position)
                             dialog.dismiss()
                         }
                         .setNegativeButton("Отмена") { dialog, _ ->
@@ -105,8 +98,9 @@ class GoalsFragment : Fragment() {
             R.color.dark_green,
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
-                    adapterGoals.editItemAtPosition(position)
+                    adapterSubs.editItemAtPosition(position)
                 }
             })
     }
+
 }

@@ -26,9 +26,9 @@ class StartActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.start_activity)
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             Firebase.database.setPersistenceEnabled(true)
-        }
+        }*/
         createNotificationChannels()
     }
 
