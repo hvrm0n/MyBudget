@@ -1,0 +1,174 @@
+[
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\fragment_home.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\home_page.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\home_page.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_finance.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_finance.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_budget_selection.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_budget_selection.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\fragment_gallery.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_gallery.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_loans.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_loans.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\currency_item.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\currency_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_expence.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_expence.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_add_budget.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_add_budget.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\dialog_currency.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\dialog_currency.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\nav_header_main.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\nav_header_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\dualog_budget_selection.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\dualog_budget_selection.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_new_gls.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_new_gls.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\recycler_category.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\recycler_category.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_budget.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_budget.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\choose.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\choose.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\sign_up.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\sign_up.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_add_new.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_add_new.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_new_category.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_new_category.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\item_icon.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\item_icon.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_goals_expence_income.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_goals_expence_income.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\content_main.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\content_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_default_category.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_default_category.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_new_expense.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_new_expense.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_edit_history.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_edit_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_goals.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_goals.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_history.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_choose_currency.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_choose_currency.xml"
+    },
+    {
+        "merged": "com.example.mybudget.app-mergeDebugResources-59:/layout/card_subs.xml",
+        "source": "com.example.mybudget.app-main-62:/layout/card_subs.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_basic_budget.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_basic_budget.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\log_in.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\log_in.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_goal.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_goal.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_icon_chooser.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_icon_chooser.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\start_activity.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\start_activity.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_billing_period.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_billing_period.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_loan.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_loan.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_subs.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_subs.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\loading_screen.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\loading_screen.xml"
+    },
+    {
+        "merged": "com.example.mybudget.app-mergeDebugResources-59:/layout/page_new_gls.xml",
+        "source": "com.example.mybudget.app-main-62:/layout/page_new_gls.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_subs.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_subs.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_history.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\app_bar_main.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\app_bar_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\fragment_slideshow.xml",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_slideshow.xml"
+    }
+]

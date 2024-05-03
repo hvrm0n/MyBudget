@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start_nav_graph"
+    app:startDestination="@id/enterFragment">
+
+    <fragment
+        android:id="@+id/enterFragment"
+        android:name="com.example.mybudget.start_pages.EnterFragment"
+        android:label="EnterFragment" >
+        <action
+            android:id="@+id/action_enterFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_enterFragment_to_homePageActivity"
+            app:destination="@id/homePageActivity" />
+        <action
+            android:id="@+id/action_enterFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_enterFragment_to_signUpFragment2"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_enterFragment_to_currencyFragment"
+            app:destination="@id/currencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.example.mybudget.start_pages.LogInFragment"
+        android:label="LogInFragment" >
+        <action
+            android:id="@+id/action_logInFragment_to_homePageActivity"
+            app:destination="@id/homePageActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/homePageActivity"
+        android:name="com.example.mybudget.drawersection.HomePageActivity"
+        android:label="app_bar_main"
+        tools:layout="@layout/app_bar_main" />
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.mybudget.start_pages.SignUpFragment"
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_currencyFragment"
+            app:destination="@id/currencyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/basicBudgetFragment"
+        android:name="com.example.mybudget.start_pages.BasicBudgetFragment"
+        android:label="BasicBudgetFragment" >
+        <action
+            android:id="@+id/action_basicBudgetFragment_to_homePageActivity"
+            app:destination="@id/homePageActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/currencyFragment"
+        android:name="com.example.mybudget.start_pages.CurrencyFragment"
+        android:label="CurrencyFragment">
+        <action
+            android:id="@+id/action_currencyFragment_to_basicBudgetFragment"
+            app:destination="@id/basicBudgetFragment" />
+    </fragment>
+</navigation>

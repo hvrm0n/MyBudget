@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutFinance"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutFinance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/page_finance_finances"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/title"
+                android:textStyle="bold" />
+
+            <!--android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/budgetsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/page_finance_category"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/title"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"/>
+
+                <ImageButton
+                    android:id="@+id/left_nav"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center|left"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/angleleft"
+                    android:background="@color/light"
+                    app:tint="@color/light_green"/>
+
+                <ImageButton
+                    android:id="@+id/right_nav"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center|right"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/angleright"
+                    android:background="@color/light"
+                    app:tint="@color/light_green"/>
+
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoryList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:padding="16dp" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        style="@style/CircularExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:backgroundTint="@color/light_orange"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@drawable/plus"
+        app:tint="@color/very_light_green"
+        app:layout_constraintBottom_toBottomOf="@+id/scw"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNewTransaction"
+        style="@style/CircularExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginBottom="32dp"
+        app:backgroundTint="@color/light_green"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/wallet_fab"
+
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
+        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="@+id/floatingActionButton"
+        app:tint="@color/very_light_green" />
+
+    <TextView
+        android:id="@+id/calculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:gravity="end"
+        android:text="@string/fab_calculate"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/fabCalculate"
+        app:layout_constraintEnd_toStartOf="@+id/fabCalculate"
+        app:layout_constraintTop_toTopOf="@+id/fabCalculate" />
+
+    <TextView
+        android:id="@+id/transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:gravity="end"
+        android:text="@string/fab_transaction"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/fabNewTransaction"
+        app:layout_constraintEnd_toStartOf="@+id/fabNewTransaction"
+        app:layout_constraintTop_toTopOf="@+id/fabNewTransaction" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCalculate"
+        style="@style/CircularExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:backgroundTint="@color/light_green"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/calculator"
+
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fabNewTransaction"
+        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="@+id/floatingActionButton"
+        app:tint="@color/very_light_green" />
+
+    <TextView
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:gravity="end"
+        android:text="@string/fab_history"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/regText"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/fabHistory"
+        app:layout_constraintEnd_toStartOf="@+id/fabHistory"
+        app:layout_constraintTop_toTopOf="@+id/fabHistory" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabHistory"
+        style="@style/CircularExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:backgroundTint="@color/light_green"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/history"
+
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fabCalculate"
+        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
+        app:layout_constraintStart_toStartOf="@+id/floatingActionButton"
+        app:tint="@color/very_light_green" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

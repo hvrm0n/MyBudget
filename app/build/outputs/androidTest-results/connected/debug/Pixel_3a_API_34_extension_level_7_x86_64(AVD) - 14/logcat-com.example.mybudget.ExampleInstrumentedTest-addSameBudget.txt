@@ -1,0 +1,223 @@
+04-13 22:36:09.721 14647 14677 I TestRunner: started: addSameBudget(com.example.mybudget.ExampleInstrumentedTest)
+04-13 22:36:09.744 14647 14677 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+04-13 22:36:09.792   820   869 D SplashScreenView: Build android.window.SplashScreenView{e1e314e V.E...... ......ID 0,0-0,0}
+04-13 22:36:09.792   820   869 D SplashScreenView: Icon: view: null drawable: null size: 0
+04-13 22:36:09.792   820   869 D SplashScreenView: Branding: view: android.view.View{634f26f G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+04-13 22:36:09.806 14647 14682 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+04-13 22:36:09.808 14647 14682 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+04-13 22:36:09.809 14647 14679 I FA      : App measurement initialized, version: 84002
+04-13 22:36:09.809   445   445 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+04-13 22:36:09.810 14647 14679 I FA      : To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+04-13 22:36:09.810 14647 14679 I FA      : To enable faster debug mode event logging run:
+04-13 22:36:09.810 14647 14679 I FA      :   adb shell setprop debug.firebase.analytics.app com.example.mybudget
+04-13 22:36:09.812 14647 14682 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+04-13 22:36:09.844   820   888 E OpenGLRenderer: Unable to match the desired swap behavior.
+04-13 22:36:09.865  1047  1765 D EGL_emulation: app_time_stats: avg=1662.16ms min=1662.16ms max=1662.16ms count=1
+04-13 22:36:09.901  1609  1609 I GsaVoiceInteractionSrv: Handling ACTION_STOP_HOTWORD
+04-13 22:36:09.903  1609  2119 E HwDetectorWithState: a: 3
+04-13 22:36:09.931 14647 14647 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+04-13 22:36:09.948 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: PRE_ON_CREATE
+04-13 22:36:09.949 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+04-13 22:36:09.957  7353  7353 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.measurement.START pkg=com.google.android.gms }
+04-13 22:36:09.957  7353  7353 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.measurement.START pkg=com.google.android.gms }
+04-13 22:36:10.227  1047  1047 D AutofillManager: view is not autofillable - activity denied for autofill
+04-13 22:36:10.286 14647 14647 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10204; state: ENABLED
+04-13 22:36:10.294 14647 14647 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10204; state: ENABLED
+04-13 22:36:10.305 14647 14647 W xample.mybudget: Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (unsupported, reflection, allowed)
+04-13 22:36:10.416  1410  1584 I VoiceInputManagerWrapper: VoiceInputManagerWrapper.shutdownVoiceInternal():95 shutdownVoiceInternal()
+04-13 22:36:10.448 14647 14647 W xample.mybudget: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+04-13 22:36:10.476 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: CREATED
+04-13 22:36:10.476 14647 14647 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.example.mybudget.drawersection.HomePageActivity@4f99355
+04-13 22:36:10.611 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: STARTED
+04-13 22:36:10.612 14647 14647 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.example.mybudget.drawersection.HomePageActivity@4f99355
+04-13 22:36:10.633 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: RESUMED
+04-13 22:36:10.633 14647 14647 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.example.mybudget.drawersection.HomePageActivity@4f99355
+04-13 22:36:10.636 14647 14679 I FA      : Tag Manager is not found and thus will not be used
+04-13 22:36:10.646 14647 14647 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10204; state: DISABLED
+04-13 22:36:10.648 14647 14647 W OpenGLRenderer: Unknown dataspace 0
+04-13 22:36:10.673   378 14696 I resolv  : GetAddrInfoHandler::run: {100 100 100 983140 10204 0}
+04-13 22:36:10.674   378 14697 I resolv  : res_nmkquery: (QUERY, IN, AAAA)
+04-13 22:36:10.674   378 14698 I resolv  : res_nmkquery: (QUERY, IN, A)
+04-13 22:36:10.674   378 14697 I resolv  : resolv_cache_lookup: FOUND IN CACHE entry=0x783b4f267f90
+04-13 22:36:10.674   378 14697 I resolv  : doQuery: rcode=0, ancount=1, return value=88
+04-13 22:36:10.674   378 14698 I resolv  : resolv_cache_lookup: FOUND IN CACHE entry=0x783b4f267210
+04-13 22:36:10.676   378 14698 I resolv  : doQuery: rcode=0, ancount=4, return value=124
+04-13 22:36:10.679 14647 14695 D TrafficStats: tagSocket(98) with statsTag=0xffffffff, statsUid=-1
+04-13 22:36:10.717 14647 14681 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+04-13 22:36:10.718 14647 14681 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+04-13 22:36:10.750   181   181 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+04-13 22:36:10.751 14647 14681 I Gralloc4: mapper 4.x is not supported
+04-13 22:36:10.811 14647 14681 E OpenGLRenderer: Unable to match the desired swap behavior.
+04-13 22:36:10.932   590   614 W ziparchive: Unable to open '/data/app/~~Pg34v5-gPDQGfTuFgc5gSw==/com.example.mybudget-OnvilklU8bJoqK8Y10Bxvw==/base.dm': No such file or directory
+04-13 22:36:10.939   590   614 I ActivityTaskManager: Displayed com.example.mybudget/.drawersection.HomePageActivity for user 0: +1s172ms
+04-13 22:36:10.969   820   888 D EGL_emulation: app_time_stats: avg=10949.25ms min=10949.25ms max=10949.25ms count=1
+04-13 22:36:10.975   590   608 I ImeTracker: com.example.mybudget:3c61c63c: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+04-13 22:36:10.975   590   608 I ImeTracker: com.example.mybudget:3c61c63c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+04-13 22:36:10.988  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+04-13 22:36:10.993  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+04-13 22:36:10.996  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.example.mybudget fieldId=0 fieldName=null extras=null}, false)
+04-13 22:36:10.996  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+04-13 22:36:10.998  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+04-13 22:36:11.027  1047  1951 D OneSearchSuggestProvider: Shut down the binder channel
+04-13 22:36:11.037  1047  1161 I ImeTracker: com.google.android.apps.nexuslauncher:8dacdc31: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+04-13 22:36:11.037  1047  1161 I ImeTracker: com.google.android.apps.nexuslauncher:8dacdc31: onFailed at PHASE_CLIENT_VIEW_SERVED
+04-13 22:36:11.037  1047  1087 I IPCThreadState: oneway function results for code 2 on binder at 0x71d991fa4260 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-13 22:36:11.111 14647 14677 W FileTestStorage: Output properties is not supported.
+04-13 22:36:11.115 14647 14677 I Tracing : Tracer added: class androidx.test.platform.tracing.AndroidXTracer
+04-13 22:36:11.139 14647 14677 D CompatibilityChangeReporter: Compat change id reported: 247079863; UID 10204; state: ENABLED
+04-13 22:36:11.154 14647 14677 D EventInjectionStrategy: Creating injection strategy with input manager.
+04-13 22:36:11.154 14647 14677 W xample.mybudget: Accessing hidden method Landroid/hardware/input/InputManager;->getInstance()Landroid/hardware/input/InputManager; (unsupported, reflection, allowed)
+04-13 22:36:11.155 14647 14677 W xample.mybudget: Accessing hidden method Landroid/hardware/input/InputManager;->injectInputEvent(Landroid/view/InputEvent;I)Z (unsupported, reflection, allowed)
+04-13 22:36:11.155 14647 14677 W xample.mybudget: Accessing hidden field Landroid/hardware/input/InputManager;->INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH:I (unsupported, reflection, allowed)
+04-13 22:36:11.163  7399  7743 I FontLog : Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+04-13 22:36:11.164  7399  7743 I FontLog : Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} [CONTEXT service_id=132 ]
+04-13 22:36:11.166  7399  7743 I FontLog : Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+04-13 22:36:11.171  7399  7743 I FontLog : Pulling font file for id = 34, cache size = 7 [CONTEXT service_id=132 ]
+04-13 22:36:11.178  7399  7743 I FontLog : Pulling font file for id = 34, cache size = 7 [CONTEXT service_id=132 ]
+04-13 22:36:11.197 14647 14647 W xample.mybudget: Accessing hidden method Landroid/os/MessageQueue;->next()Landroid/os/Message; (unsupported, reflection, allowed)
+04-13 22:36:11.197 14647 14647 W xample.mybudget: Accessing hidden field Landroid/os/MessageQueue;->mMessages:Landroid/os/Message; (unsupported, reflection, allowed)
+04-13 22:36:11.197 14647 14647 W xample.mybudget: Accessing hidden method Landroid/os/Message;->recycleUnchecked()V (unsupported, reflection, allowed)
+04-13 22:36:11.203 14647 14647 W xample.mybudget: Accessing hidden method Landroid/view/WindowManagerGlobal;->getInstance()Landroid/view/WindowManagerGlobal; (unsupported, reflection, allowed)
+04-13 22:36:11.203 14647 14647 W xample.mybudget: Accessing hidden field Landroid/view/WindowManagerGlobal;->mViews:Ljava/util/ArrayList; (unsupported, reflection, allowed)
+04-13 22:36:11.203 14647 14647 W xample.mybudget: Accessing hidden field Landroid/view/WindowManagerGlobal;->mParams:Ljava/util/ArrayList; (unsupported, reflection, allowed)
+04-13 22:36:11.213 14647 14647 I ViewInteraction: Checking 'MatchesViewAssertion{viewMatcher=(view has effective visibility <VISIBLE> and view.getGlobalVisibleRect() to return non-empty rectangle)}' assertion on view view.getId() is <2131296394/com.example.mybudget:id/budgetsList>
+04-13 22:36:11.217   820   866 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@cb0145a
+04-13 22:36:11.219   590   922 W InputManager-JNI: Input channel object '3a1d76e Splash Screen com.example.mybudget (client)' was disposed without first being removed with the input manager!
+04-13 22:36:11.221 14647 14677 W xample.mybudget: Accessing hidden method Landroid/view/ViewConfiguration;->getDoubleTapMinTime()I (unsupported, reflection, allowed)
+04-13 22:36:11.231 14647 14647 I ViewInteraction: Performing 'actionOnItemAtPosition performing ViewAction: single click on item at position: 1' action on view view.getId() is <2131296394/com.example.mybudget:id/budgetsList>
+04-13 22:36:11.262 14647 14677 I UiAutomation: Initialized for user 0 on display 0
+04-13 22:36:11.263   820   888 D EGL_emulation: app_time_stats: avg=259.62ms min=0.69ms max=10835.28ms count=42
+04-13 22:36:11.274  1516  1546 I AiAiEcho: Settings changed for uri: content://settings/secure/accessibility_enabled
+04-13 22:36:11.274 14647 14707 V UiAutomation: Init UiAutomation@375a33e[id=3, displayId=0, flags=0]
+04-13 22:36:11.278  1516  1608 I AiAiEcho: Predicting[0]:
+04-13 22:36:11.279  1516  1608 I AiAiEcho: EchoTargets:
+04-13 22:36:11.279  1516  1608 I AiAiEcho: Filtered by AiAi flag check:
+04-13 22:36:11.279  1516  1608 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+04-13 22:36:11.281  1516  1608 I AiAiEcho: Predicting[0]:
+04-13 22:36:11.281  1516  1608 I AiAiEcho: EchoTargets:
+04-13 22:36:11.281  1516  1608 I AiAiEcho: Filtered by AiAi flag check:
+04-13 22:36:11.282  1516  1608 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+04-13 22:36:11.282  1516  1608 I AiAiEcho: Predicting[0]:
+04-13 22:36:11.283  1516  1608 I AiAiEcho: EchoTargets:
+04-13 22:36:11.283  1516  1608 I AiAiEcho: Filtered by AiAi flag check:
+04-13 22:36:11.283  1516  1608 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+04-13 22:36:11.284  1516  1608 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface media_data_manager with targets# 0 (types=[])
+04-13 22:36:11.285  1516  1608 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+04-13 22:36:11.286   820   820 D SsMediaDataProvider: Forwarding Smartspace updates []
+04-13 22:36:11.288   820   820 W PageIndicator: Total number of pages invalid: 0. Assuming 1 page.
+04-13 22:36:11.290  1516  1608 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+04-13 22:36:11.291 14647 14647 D takeScreenshot: Found 1 global views to redraw
+04-13 22:36:11.291  1817  2173 I A       : NGA disabled since it's running Panthera and at least one a11y feature is on.
+04-13 22:36:11.293  1817  2173 I A       : Nga state changed to NgaStateDetails{state=DISABLED, isSpecialExperience=false}
+04-13 22:36:11.301  1609  2125 I A       : Unsubscribed to apa or classic variant change.
+04-13 22:36:11.302  1609  1637 I A       : APA or Classic session decision: SessionDecision(sessionVariance=CLASSIC, platformVariance=CLASSIC, justification=CURRENT_PLATFORM_VARIANCE).
+04-13 22:36:11.304  1609  1637 I A       : [Memory] eligibility: StashEligibility{4}
+04-13 22:36:11.338   181   181 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+04-13 22:36:11.339 14632 14645 I Gralloc4: mapper 4.x is not supported
+04-13 22:36:11.406 14632 14710 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+04-13 22:36:11.407 14632 14710 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+04-13 22:36:11.408 14632 14710 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+04-13 22:36:11.436 14632 14710 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+04-13 22:36:11.436 14632 14710 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+04-13 22:36:11.538  1551  1737 W MediaProvider: isAppCloneUserPair for user 0: false
+04-13 22:36:11.605  7399 14617 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService started execution. cause:9 exec_start_elapsed_seconds: 9979 [CONTEXT service_id=218 ]
+04-13 22:36:11.612  7399 14290 I NetworkScheduler.Stats: Task com.google.android.gms/com.google.android.gms.ipa.base.IpaGcmTaskService finished executing. cause:9 result: 1 elapsed_millis: 28 uptime_millis: 28 exec_start_elapsed_seconds: 9979 [CONTEXT service_id=218 ]
+04-13 22:36:11.684 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: PAUSED
+04-13 22:36:11.684 14647 14647 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.example.mybudget.drawersection.HomePageActivity@4f99355
+04-13 22:36:11.693   445   445 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+04-13 22:36:11.704 14647 14647 D LifecycleMonitor: Lifecycle status change: androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa in: PRE_ON_CREATE
+04-13 22:36:11.705 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the intent does not match. startActivityIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.example.mybudget/.drawersection.HomePageActivity }, activity.getIntent()=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }, activity=androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa
+04-13 22:36:11.716 14647 14647 D LifecycleMonitor: Lifecycle status change: androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa in: CREATED
+04-13 22:36:11.716 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the intent does not match. startActivityIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.example.mybudget/.drawersection.HomePageActivity }, activity.getIntent()=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }, activity=androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa
+04-13 22:36:11.719 14647 14647 D LifecycleMonitor: Lifecycle status change: androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa in: STARTED
+04-13 22:36:11.719 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the intent does not match. startActivityIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.example.mybudget/.drawersection.HomePageActivity }, activity.getIntent()=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }, activity=androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa
+04-13 22:36:11.723 14647 14647 D LifecycleMonitor: Lifecycle status change: androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa in: RESUMED
+04-13 22:36:11.724 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the intent does not match. startActivityIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.example.mybudget/.drawersection.HomePageActivity }, activity.getIntent()=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }, activity=androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa
+04-13 22:36:11.769 14647 14681 E OpenGLRenderer: Unable to match the desired swap behavior.
+04-13 22:36:11.813   590   614 I ActivityTaskManager: Displayed com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity for user 0: +142ms
+04-13 22:36:11.843 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: STOPPED
+04-13 22:36:11.844 14647 14647 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.example.mybudget.drawersection.HomePageActivity@4f99355
+04-13 22:36:11.870 14647 14647 D LifecycleMonitor: Lifecycle status change: com.example.mybudget.drawersection.HomePageActivity@4f99355 in: DESTROYED
+04-13 22:36:11.870 14647 14647 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+04-13 22:36:11.871 14647 14647 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@6bbd0f
+04-13 22:36:11.877   590   608 W InputManager-JNI: Input channel object 'a673fda com.example.mybudget/com.example.mybudget.drawersection.HomePageActivity (client)' was disposed without first being removed with the input manager!
+04-13 22:36:11.887   590   922 I ImeTracker: com.example.mybudget:ed573b0d: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+04-13 22:36:11.888   590   922 I ImeTracker: com.example.mybudget:ed573b0d: onCancelled at PHASE_SERVER_SHOULD_HIDE
+04-13 22:36:11.890  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+04-13 22:36:11.892  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+04-13 22:36:11.892 14647 14647 D LifecycleMonitor: Lifecycle status change: androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa in: PAUSED
+04-13 22:36:11.893 14647 14647 V ActivityScenario: Activity lifecycle changed event received but ignored because the intent does not match. startActivityIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10008000 cmp=com.example.mybudget/.drawersection.HomePageActivity }, activity.getIntent()=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.mybudget/androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity }, activity=androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity@27d04fa
+04-13 22:36:11.893  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.example.mybudget fieldId=0 fieldName=null extras=null}, false)
+04-13 22:36:11.894  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+04-13 22:36:11.894  1410  1410 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+04-13 22:36:11.894   445   445 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+04-13 22:36:11.903 14647 14677 E TestRunner: failed: addSameBudget(com.example.mybudget.ExampleInstrumentedTest)
+04-13 22:36:11.903 14647 14677 E TestRunner: ----- begin exception -----
+04-13 22:36:11.908 14647 14677 E TestRunner: androidx.test.espresso.PerformException: Error performing 'androidx.test.espresso.contrib.RecyclerViewActions$ActionOnItemAtPositionViewAction@c8b3154' on view 'Animations or transitions are enabled on the target device.
+04-13 22:36:11.908 14647 14677 E TestRunner: For more info check: https://developer.android.com/training/testing/espresso/setup#set-up-environment
+04-13 22:36:11.908 14647 14677 E TestRunner:
+04-13 22:36:11.908 14647 14677 E TestRunner: view.getId() is <2131296394/com.example.mybudget:id/budgetsList>'.
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.PerformException$Builder.build(PerformException.java:1)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.base.PerformExceptionHandler.handleSafely(PerformExceptionHandler.java:8)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.base.PerformExceptionHandler.handleSafely(PerformExceptionHandler.java:9)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler$TypedFailureHandler.handle(DefaultFailureHandler.java:4)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler.handle(DefaultFailureHandler.java:5)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction.waitForAndHandleInteractionResults(ViewInteraction.java:8)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction.desugaredPerform(ViewInteraction.java:11)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction.perform(ViewInteraction.java:8)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at com.example.mybudget.ExampleInstrumentedTest.addSameBudget(ExampleInstrumentedTest.kt:42)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:67)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:58)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:446)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2402)
+04-13 22:36:11.908 14647 14677 E TestRunner: Caused by: java.lang.IllegalStateException: No view holder at position: 1
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.contrib.RecyclerViewActions$ActionOnItemAtPositionViewAction.perform(RecyclerViewActions.java:299)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction$SingleExecutionViewAction.perform(ViewInteraction.java:2)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction.doPerform(ViewInteraction.java:25)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction.-$$Nest$mdoPerform(Unknown Source:0)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction$1.call(ViewInteraction.java:7)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at androidx.test.espresso.ViewInteraction$1.call(ViewInteraction.java:1)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at java.util.concurrent.FutureTask.run(FutureTask.java:264)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.os.Handler.handleCallback(Handler.java:958)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.os.Looper.loopOnce(Looper.java:205)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.os.Looper.loop(Looper.java:294)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at android.app.ActivityThread.main(ActivityThread.java:8177)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+04-13 22:36:11.908 14647 14677 E TestRunner: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+04-13 22:36:11.908 14647 14677 E TestRunner: ----- end exception -----
+04-13 22:36:11.914   590  1616 W AppSearchIcing: icing-search-engine.cc:283: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+04-13 22:36:11.914  1047  1047 D AutofillManager: view is not autofillable - activity denied for autofill
+04-13 22:36:11.920  1047  1951 D OneSearchSuggestProvider: Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=z1{delegate=s1{logId=157, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=X1.T@d9dcb12
+04-13 22:36:11.925 14647 14677 I TestRunner: finished: addSameBudget(com.example.mybudget.ExampleInstrumentedTest)
