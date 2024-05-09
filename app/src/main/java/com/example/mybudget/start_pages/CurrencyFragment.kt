@@ -64,9 +64,6 @@ class CurrencyFragment : Fragment() {
         viewModel.selection.value?.let {
             if (adapter.getPosition(it)!=-1 && listViewCurrency.getItemAtPosition(adapter.getPosition(it))==it) {
                 adapter.setSelectedPosition(adapter.getPosition(it))
-                Log.e("SELECTION", it.toString())
-                Log.e("SELECTION", adapter.getPosition(it).toString())
-                Log.e("SELECTION", listViewCurrency.getItemAtPosition(adapter.getPosition(it)).toString())
                 nextPageButton.isEnabled = true
             } else adapter.setSelectedPosition(-1)
 

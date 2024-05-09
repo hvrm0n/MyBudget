@@ -10,17 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-            <!--<TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/menu_subs"
-                android:textSize="@dimen/title"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/dark_green"/>-->
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/subsList"
                 android:layout_width="match_parent"

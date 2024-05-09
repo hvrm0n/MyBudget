@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.SearchView
 import android.widget.Toast
@@ -70,7 +71,7 @@ class CurrencyDialogFragment : DialogFragment() {
 
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawableResource(R.drawable.listview_shadow)
-        dialog.window?.setGravity(Gravity.BOTTOM)
+        dialog.window?.setGravity(Gravity.CENTER)
         return dialog
     }
 

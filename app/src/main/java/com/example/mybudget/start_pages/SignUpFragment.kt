@@ -13,6 +13,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.mybudget.R
+import com.example.mybudget.drawersection.finance.category._CategoryBegin
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -117,7 +118,9 @@ class SignUpFragment : Fragment() {
                     val categories = resources.getStringArray(R.array.category_default)
                     val paths = resources.getStringArray(R.array.icons_default)
                     for (i in categories.indices){
-                        table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").push().setValue(_CategoryBegin(categories[i], paths[i]))
+                        table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").push().setValue(
+                            _CategoryBegin(categories[i], paths[i])
+                        )
                     }
                     updateUI()
                 } else {
@@ -138,6 +141,3 @@ class SignUpFragment : Fragment() {
         email.text.clear()
     }
 }
-
-data class _CategoryBegin(var name:String="", var path:String="")
-data class CategoryBeginWithKey(var key:String="", var categoryBegin:_CategoryBegin)

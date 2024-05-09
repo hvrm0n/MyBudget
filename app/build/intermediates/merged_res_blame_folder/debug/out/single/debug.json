@@ -4,24 +4,24 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\piggybank_24.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_calendarclock_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\calendarclock_48.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_pet5.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\pet5.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_calendarclock_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\calendarclock_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_page_history.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_history.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_calendarclock_20.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\calendarclock_20.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_bank_24.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\bank_24.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_calendarclock_20.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\calendarclock_20.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_choose_20.png.flat",
@@ -36,16 +36,16 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\wallet_fab.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_card_new_category.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_new_category.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_piggybank_24.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\piggybank_24.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_card_new_category.xml.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_new_category.xml"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_wallet_20.png.flat",
@@ -80,12 +80,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\choose_36.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_work4.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\work4.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_add_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\add_48.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_work4.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\work4.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_nature3.png.flat",
@@ -164,12 +164,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\home4.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_bank_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\bank_48.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_nature4.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\nature4.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_bank_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\bank_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_settings_36.png.flat",
@@ -196,6 +196,10 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\navigation\\start_nav_graph.xml"
     },
     {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_rounded_selection.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\rounded_selection.xml"
+    },
+    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_other7.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\other7.png"
     },
@@ -212,12 +216,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\subsicon.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile9.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile9.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_card_edit_history.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_edit_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile9.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile9.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_piggybank_36.png.flat",
@@ -236,12 +240,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\settingiconpng.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_nature5.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\nature5.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_calendarclock_20.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\calendarclock_20.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_nature5.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\nature5.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_choose_48.png.flat",
@@ -288,16 +292,16 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\work3.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_wallet_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\wallet_48.png"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_piggybank_36.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\piggybank_36.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_settings_18.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\settings_18.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_piggybank_36.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\piggybank_36.png"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_wallet_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\wallet_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_edittext_background.xml.flat",
@@ -368,16 +372,16 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\nature2.png"
     },
     {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_gym6.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\gym6.png"
+    },
+    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_fragment_home.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_home.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_wallet_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\wallet_48.png"
-    },
-    {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_gym6.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\gym6.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_pet2.png.flat",
@@ -460,16 +464,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\other4.png"
     },
     {
-        "merged": "com.example.mybudget.app-merged_res-60:/layout_page_new_gls.xml.flat",
-        "source": "com.example.mybudget.app-main-62:/layout/page_new_gls.xml"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_wallet_24.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\wallet_24.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\menu_home_page_drawer.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\menu\\home_page_drawer.xml"
-    },
-    {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_wallet_24.xml.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\wallet_24.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_heart3.png.flat",
@@ -536,8 +536,8 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\settings_18.png"
     },
     {
-        "merged": "com.example.mybudget.app-merged_res-60:/layout_card_subs.xml.flat",
-        "source": "com.example.mybudget.app-main-62:/layout/card_subs.xml"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_selection_drawer.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\selection_drawer.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_piggybank_36.png.flat",
@@ -596,12 +596,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\choose_36.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_add_18.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\add_18.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_wallet_36.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\wallet_36.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_add_18.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\add_18.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_piggybank_20.png.flat",
@@ -616,44 +616,44 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\choose_48.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_bank_18.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\bank_18.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_marker1.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\marker1.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_bank_18.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\bank_18.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_custom_progress_bar.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\custom_progress_bar.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_home1.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\home1.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_ic_launcher_foreground.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_home1.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\home1.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_item_icon.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\item_icon.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_piggybank_18.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\piggybank_18.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-xxxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_welcome_pic.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\welcome_pic.png"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_piggybank_18.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\piggybank_18.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_calendarclock_20.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\calendarclock_20.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_welcome_pic.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\welcome_pic.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_makeup.png.flat",
@@ -700,12 +700,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\heart2.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_add_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\add_48.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_calendarclock_24.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\calendarclock_24.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_add_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\add_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_calendarclock_18.png.flat",
@@ -840,12 +840,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-xhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_calendarclock_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\calendarclock_48.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_piggybank_18.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\piggybank_18.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_calendarclock_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\calendarclock_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_wallet_48.png.flat",
@@ -904,24 +904,24 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\recycler_category.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_settings_20.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\settings_20.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_settings_20.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\settings_20.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile3.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile3.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_gym1.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\gym1.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_piggybank_36.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\piggybank_36.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_gym1.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\gym1.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_listview_shadow.xml.flat",
@@ -952,12 +952,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\other1.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_notransaction.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\notransaction.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_calendarclock_20.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\calendarclock_20.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_notransaction.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\notransaction.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_content_main.xml.flat",
@@ -974,6 +974,10 @@
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile2.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile2.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_selection_drawer_text.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\selection_drawer_text.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_settings_20.png.flat",
@@ -1030,6 +1034,10 @@
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_add_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\add_48.png"
+    },
+    {
+        "merged": "com.example.mybudget.app-merged_res-60:/drawable_selection_drawer.xml.flat",
+        "source": "com.example.mybudget.app-main-62:/drawable/selection_drawer.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_settings_48.png.flat",
@@ -1108,12 +1116,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\settings_48.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_fragment_gallery.xml.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_gallery.xml"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_wallet_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\wallet_48.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_fragment_gallery.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\fragment_gallery.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-mdpi_wallet_18.png.flat",
@@ -1160,12 +1168,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\choose_48.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_calendarclock_48.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\calendarclock_48.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_heart.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\heart.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-hdpi_calendarclock_48.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-hdpi\\calendarclock_48.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\anim_to_bg.xml.flat",
@@ -1220,6 +1228,10 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\restaurant1.png"
     },
     {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_button_background.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\button_background.xml"
+    },
+    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_card_add_new.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_add_new.xml"
     },
@@ -1268,12 +1280,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_settings_24.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\settings_24.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_wallet_36.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxhdpi\\wallet_36.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_settings_24.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\settings_24.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_car7.png.flat",
@@ -1340,16 +1352,16 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\bank_18.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_add_20.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\add_20.png"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\menu_home_page.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\menu\\home_page.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\xml_backup_rules.xml.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\xml\\backup_rules.xml"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\menu_home_page.xml.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\menu\\home_page.xml"
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_add_20.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\add_20.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_other2.png.flat",
@@ -1368,12 +1380,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\heart5.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile1.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile1.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_car2.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\car2.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_smile1.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\smile1.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\layout_card_budget_selection.xml.flat",
@@ -1388,12 +1400,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_choose_20.png.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\choose_20.png"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_bank_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\bank_48.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxxhdpi_choose_20.png.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xxxhdpi\\choose_20.png"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xxhdpi_piggybank_20.png.flat",
@@ -1508,12 +1520,12 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-mdpi\\settings_36.png"
     },
     {
-        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_financeicon.xml.flat",
-        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\financeicon.xml"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable-xhdpi_piggybank_48.png.flat",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable-xhdpi\\piggybank_48.png"
+    },
+    {
+        "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_financeicon.xml.flat",
+        "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\drawable\\financeicon.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-merged_res-60:\\drawable_settings_24.xml.flat",

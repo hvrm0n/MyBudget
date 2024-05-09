@@ -3,7 +3,6 @@ package com.example.mybudget.drawersection.finance.category
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.IconsChooserAlertDialog
-import com.example.mybudget.start_pages.CategoryBeginWithKey
-import com.example.mybudget.start_pages.Constants
-import com.example.mybudget.start_pages._CategoryBegin
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot

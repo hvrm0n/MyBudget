@@ -4,29 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
+import com.example.mybudget.drawersection.finance.category.CategoryBeginWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.loans.LoanItemWithKey
 import com.example.mybudget.drawersection.subs.SubItemWithKey
-import com.example.mybudget.start_pages.CategoryBeginWithKey
 
 class FinanceViewModel:ViewModel() {
     private val _budgetLiveData = MutableLiveData<List<BudgetItemWithKey>>()
     val budgetLiveData: LiveData<List<BudgetItemWithKey>> get() = _budgetLiveData
 
+
     private val _categoryLiveData = MutableLiveData<List<CategoryItemWithKey>>()
     val categoryLiveData: LiveData<List<CategoryItemWithKey>> get() = _categoryLiveData
+
 
     private val _categoryBeginLiveData = MutableLiveData<List<CategoryBeginWithKey>>()
     val categoryBeginLiveData: LiveData<List<CategoryBeginWithKey>> get() = _categoryBeginLiveData
 
+
     private val _historyLiveData = MutableLiveData<List<HistoryItem>>()
     val historyLiveData: LiveData<List<HistoryItem>> get() = _historyLiveData
+
 
     private val _planLiveData = MutableLiveData<List<HistoryItem>>()
     val planLiveData: LiveData<List<HistoryItem>> get() = _planLiveData
 
+
     private val _financeDate = MutableLiveData<Pair<Int,Int>>()
     val financeDate: LiveData<Pair<Int,Int>> get() = _financeDate
+
 
     private val _subLiveData = MutableLiveData<List<SubItemWithKey>>()
     val subLiveData: LiveData<List<SubItemWithKey>> get() = _subLiveData
@@ -34,6 +41,10 @@ class FinanceViewModel:ViewModel() {
 
     private val _goalsLiveData = MutableLiveData<List<GoalItemWithKey>>()
     val goalsData: LiveData<List<GoalItemWithKey>> get() = _goalsLiveData
+
+
+    private val _loansLiveData = MutableLiveData<List<LoanItemWithKey>>()
+    val loansLiveData: LiveData<List<LoanItemWithKey>> get() = _loansLiveData
 
     fun updateBudgetData(newData: List<BudgetItemWithKey>) {
         _budgetLiveData.value = newData
@@ -65,5 +76,9 @@ class FinanceViewModel:ViewModel() {
 
     fun updateSubsData(newData: List<SubItemWithKey>) {
         _subLiveData.value = newData
+    }
+
+    fun updateLoansData(newData: List<LoanItemWithKey>) {
+        _loansLiveData.value = newData
     }
 }

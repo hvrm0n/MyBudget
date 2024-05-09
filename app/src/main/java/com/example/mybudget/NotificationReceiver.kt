@@ -5,11 +5,12 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.mybudget.drawersection.finance.category._CategoryBegin
 import com.example.mybudget.drawersection.goals.GoalItem
+import com.example.mybudget.drawersection.loans.LoanItem
+import com.example.mybudget.drawersection.subs.SubItem
 import com.example.mybudget.start_pages.Constants
-import com.example.mybudget.start_pages._CategoryBegin
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,7 +18,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
-import kotlin.random.Random
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,25 +33,25 @@ class NotificationReceiver : BroadcastReceiver() {
             else -> context.resources.getStringArray(R.array.notification_loans)
         }
         if (channelID!=null&&placeId!=null){
-            getName(channelID, placeId, date, notificationText){
+            getName(channelID, placeId,/* date,*/ notificationText){
                 val notification:Notification = NotificationCompat.Builder(context, channelID)
                 .setSmallIcon(R.drawable.piggybank_18)
                 .setContentTitle(
                     when (channelID){
-                        "PLAN" -> "Не забывайте про запланированные траты!"
-                        "GOAL" -> "Цели ждут!"
-                        else ->""
+                        Constants.CHANNEL_ID_PLAN -> "Не забывайте про запланированные траты!"
+                        Constants.CHANNEL_ID_GOAL -> "Цели ждут!"
+                        Constants.CHANNEL_ID_SUB -> "Не забывайте о подписках!"
+                        else ->"Важные выплаты приближаются!"
                     }
                 )
                 .setContentText(it)
                 .build()
-                Log.e("CheckNotification", "Yes")
                 notificationManager.notify(42, notification)
             }
         }
     }
 
-    private fun getName(channelId:String,placeId:String, dateOfExpence:Calendar, notificationText:Array<String>, callback: (String) -> Unit){
+    private fun getName(channelId:String,placeId:String/*, dateOfExpence:Calendar*/, notificationText:Array<String>, callback: (String) -> Unit){
         when(channelId){
             Constants.CHANNEL_ID_PLAN->{
                 Firebase.database.reference
@@ -78,6 +78,36 @@ class NotificationReceiver : BroadcastReceiver() {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             snapshot.getValue(GoalItem::class.java)?.let {
                                 callback(String.format(notificationText[notificationText.indices.random()], it.name))
+                            }
+                        }
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+            }
+            Constants.CHANNEL_ID_SUB->{
+                Firebase.database.reference
+                    .child("Users")
+                    .child(Firebase.auth.currentUser!!.uid)
+                    .child("Subs")
+                    .child(placeId).addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            snapshot.getValue(SubItem::class.java)?.let {
+                                callback(String.format(notificationText[notificationText.indices.random()], it.name))
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+            }
+
+            Constants.CHANNEL_ID_LOAN->{
+                Firebase.database.reference
+                    .child("Users")
+                    .child(Firebase.auth.currentUser!!.uid)
+                    .child("Loans")
+                    .child(placeId).addListenerForSingleValueEvent(object : ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            snapshot.getValue(LoanItem::class.java)?.let {
+                                callback(String.format(notificationText[notificationText.indices.random()], it.name, it.dateNext?:it.dateOfEnd))
                             }
                         }
                         override fun onCancelled(error: DatabaseError) {}

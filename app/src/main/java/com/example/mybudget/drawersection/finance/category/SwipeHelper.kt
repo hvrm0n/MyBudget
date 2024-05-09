@@ -11,12 +11,17 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
+import com.example.mybudget.drawersection.goals.GoalsAdapter
+import com.example.mybudget.drawersection.loans.LoansAdapter
+import com.example.mybudget.drawersection.subs.SubsAdapter
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 
 abstract class SwipeHelper(
-    private val recyclerView: RecyclerView
+    private val recyclerView: RecyclerView,
+    private val adapter: RecyclerView.Adapter<*>,
+    private val type: String
 ) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE,
     ItemTouchHelper.LEFT
@@ -47,6 +52,17 @@ abstract class SwipeHelper(
     private fun recoverSwipedItem() {
         while (!recoverQueue.isEmpty()) {
             val position = recoverQueue.poll() ?: return
+            when(type){
+                "loan" -> {
+                    adapter as LoansAdapter
+                }
+                "sub" -> {
+                    adapter as SubsAdapter
+                }
+                "goal"->{
+                    adapter as GoalsAdapter
+                }
+            }
             recyclerView.adapter?.notifyItemChanged(position)
         }
     }

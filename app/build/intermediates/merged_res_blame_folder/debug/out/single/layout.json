@@ -112,10 +112,6 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_choose_currency.xml"
     },
     {
-        "merged": "com.example.mybudget.app-mergeDebugResources-59:/layout/card_subs.xml",
-        "source": "com.example.mybudget.app-main-62:/layout/card_subs.xml"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\page_basic_budget.xml",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\page_basic_budget.xml"
     },
@@ -152,10 +148,6 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\loading_screen.xml"
     },
     {
-        "merged": "com.example.mybudget.app-mergeDebugResources-59:/layout/page_new_gls.xml",
-        "source": "com.example.mybudget.app-main-62:/layout/page_new_gls.xml"
-    },
-    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\card_subs.xml",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\card_subs.xml"
     },
@@ -166,6 +158,10 @@
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\app_bar_main.xml",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-62:\\layout\\app_bar_main.xml"
+    },
+    {
+        "merged": "com.example.mybudget.app-mergeDebugResources-59:/layout/home_page.xml",
+        "source": "com.example.mybudget.app-main-62:/layout/home_page.xml"
     },
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-59:\\layout\\fragment_slideshow.xml",

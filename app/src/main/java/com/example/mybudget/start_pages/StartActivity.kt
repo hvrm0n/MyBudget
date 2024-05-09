@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mybudget.R
 import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.database.database
 
 object Constants{
@@ -25,32 +26,32 @@ class StartActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.hasExtra("exit")){
+            Firebase.auth.signOut()
+        }
         setContentView(R.layout.start_activity)
-        /*if (savedInstanceState == null) {
-            Firebase.database.setPersistenceEnabled(true)
-        }*/
         createNotificationChannels()
     }
 
     private fun createNotificationChannels(){
         val channelPlan = NotificationChannel(
             Constants.CHANNEL_ID_PLAN,
-            "Plan notification",
+            getString(R.string.plan_notification),
             NotificationManager.IMPORTANCE_DEFAULT)
 
         val channelGoal = NotificationChannel(
             Constants.CHANNEL_ID_GOAL,
-            "Goal notification",
+            getString(R.string.goal_notification),
             NotificationManager.IMPORTANCE_HIGH)
 
         val channelLoan = NotificationChannel(
             Constants.CHANNEL_ID_LOAN,
-            "Loan notification",
+            getString(R.string.loan_notification),
             NotificationManager.IMPORTANCE_HIGH)
 
         val channelSubscribe = NotificationChannel(
             Constants.CHANNEL_ID_SUB,
-            "Subscribe notification",
+            getString(R.string.subscribe_notification),
             NotificationManager.IMPORTANCE_DEFAULT)
 
         val notificationManager: NotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

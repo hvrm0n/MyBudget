@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,13 +19,34 @@ import java.lang.String;
 
 public final class CardLoanBinding implements ViewBinding {
   @NonNull
-  private final CardView rootView;
+  private final LinearLayout rootView;
 
   @NonNull
-  public final TextView loanCurrent;
+  public final CardView cardLoan;
+
+  @NonNull
+  public final LinearLayout linearLayout3;
+
+  @NonNull
+  public final LinearLayout linearLayout4;
+
+  @NonNull
+  public final LinearLayout linearLayout5;
+
+  @NonNull
+  public final TextView loanAmount;
+
+  @NonNull
+  public final TextView loanCurrency;
 
   @NonNull
   public final TextView loanDate;
+
+  @NonNull
+  public final TextView loanDateEnd;
+
+  @NonNull
+  public final TextView loanFinished;
 
   @NonNull
   public final ImageView loanImage;
@@ -33,40 +54,28 @@ public final class CardLoanBinding implements ViewBinding {
   @NonNull
   public final TextView loanName;
 
-  @NonNull
-  public final TextView loanTarget;
-
-  @NonNull
-  public final TextView loanVal;
-
-  @NonNull
-  public final TextView loanValCurrent;
-
-  @NonNull
-  public final ImageView notificationLoan;
-
-  @NonNull
-  public final ProgressBar progressBarLoan;
-
-  private CardLoanBinding(@NonNull CardView rootView, @NonNull TextView loanCurrent,
-      @NonNull TextView loanDate, @NonNull ImageView loanImage, @NonNull TextView loanName,
-      @NonNull TextView loanTarget, @NonNull TextView loanVal, @NonNull TextView loanValCurrent,
-      @NonNull ImageView notificationLoan, @NonNull ProgressBar progressBarLoan) {
+  private CardLoanBinding(@NonNull LinearLayout rootView, @NonNull CardView cardLoan,
+      @NonNull LinearLayout linearLayout3, @NonNull LinearLayout linearLayout4,
+      @NonNull LinearLayout linearLayout5, @NonNull TextView loanAmount,
+      @NonNull TextView loanCurrency, @NonNull TextView loanDate, @NonNull TextView loanDateEnd,
+      @NonNull TextView loanFinished, @NonNull ImageView loanImage, @NonNull TextView loanName) {
     this.rootView = rootView;
-    this.loanCurrent = loanCurrent;
+    this.cardLoan = cardLoan;
+    this.linearLayout3 = linearLayout3;
+    this.linearLayout4 = linearLayout4;
+    this.linearLayout5 = linearLayout5;
+    this.loanAmount = loanAmount;
+    this.loanCurrency = loanCurrency;
     this.loanDate = loanDate;
+    this.loanDateEnd = loanDateEnd;
+    this.loanFinished = loanFinished;
     this.loanImage = loanImage;
     this.loanName = loanName;
-    this.loanTarget = loanTarget;
-    this.loanVal = loanVal;
-    this.loanValCurrent = loanValCurrent;
-    this.notificationLoan = notificationLoan;
-    this.progressBarLoan = progressBarLoan;
   }
 
   @Override
   @NonNull
-  public CardView getRoot() {
+  public LinearLayout getRoot() {
     return rootView;
   }
 
@@ -91,15 +100,57 @@ public final class CardLoanBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.loanCurrent;
-      TextView loanCurrent = ViewBindings.findChildViewById(rootView, id);
-      if (loanCurrent == null) {
+      id = R.id.cardLoan;
+      CardView cardLoan = ViewBindings.findChildViewById(rootView, id);
+      if (cardLoan == null) {
+        break missingId;
+      }
+
+      id = R.id.linearLayout3;
+      LinearLayout linearLayout3 = ViewBindings.findChildViewById(rootView, id);
+      if (linearLayout3 == null) {
+        break missingId;
+      }
+
+      id = R.id.linearLayout4;
+      LinearLayout linearLayout4 = ViewBindings.findChildViewById(rootView, id);
+      if (linearLayout4 == null) {
+        break missingId;
+      }
+
+      id = R.id.linearLayout5;
+      LinearLayout linearLayout5 = ViewBindings.findChildViewById(rootView, id);
+      if (linearLayout5 == null) {
+        break missingId;
+      }
+
+      id = R.id.loanAmount;
+      TextView loanAmount = ViewBindings.findChildViewById(rootView, id);
+      if (loanAmount == null) {
+        break missingId;
+      }
+
+      id = R.id.loanCurrency;
+      TextView loanCurrency = ViewBindings.findChildViewById(rootView, id);
+      if (loanCurrency == null) {
         break missingId;
       }
 
       id = R.id.loanDate;
       TextView loanDate = ViewBindings.findChildViewById(rootView, id);
       if (loanDate == null) {
+        break missingId;
+      }
+
+      id = R.id.loanDateEnd;
+      TextView loanDateEnd = ViewBindings.findChildViewById(rootView, id);
+      if (loanDateEnd == null) {
+        break missingId;
+      }
+
+      id = R.id.loanFinished;
+      TextView loanFinished = ViewBindings.findChildViewById(rootView, id);
+      if (loanFinished == null) {
         break missingId;
       }
 
@@ -115,38 +166,9 @@ public final class CardLoanBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.loanTarget;
-      TextView loanTarget = ViewBindings.findChildViewById(rootView, id);
-      if (loanTarget == null) {
-        break missingId;
-      }
-
-      id = R.id.loanVal;
-      TextView loanVal = ViewBindings.findChildViewById(rootView, id);
-      if (loanVal == null) {
-        break missingId;
-      }
-
-      id = R.id.loanValCurrent;
-      TextView loanValCurrent = ViewBindings.findChildViewById(rootView, id);
-      if (loanValCurrent == null) {
-        break missingId;
-      }
-
-      id = R.id.notificationLoan;
-      ImageView notificationLoan = ViewBindings.findChildViewById(rootView, id);
-      if (notificationLoan == null) {
-        break missingId;
-      }
-
-      id = R.id.progressBarLoan;
-      ProgressBar progressBarLoan = ViewBindings.findChildViewById(rootView, id);
-      if (progressBarLoan == null) {
-        break missingId;
-      }
-
-      return new CardLoanBinding((CardView) rootView, loanCurrent, loanDate, loanImage, loanName,
-          loanTarget, loanVal, loanValCurrent, notificationLoan, progressBarLoan);
+      return new CardLoanBinding((LinearLayout) rootView, cardLoan, linearLayout3, linearLayout4,
+          linearLayout5, loanAmount, loanCurrency, loanDate, loanDateEnd, loanFinished, loanImage,
+          loanName);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

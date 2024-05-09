@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
-import com.example.mybudget.drawersection.goals.GoalsAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -56,10 +55,10 @@ class SubsFragment : Fragment() {
         recyclerSubs.adapter = adapterSubs
 
         financeViewModel.subLiveData.observe(viewLifecycleOwner){
-            adapterSubs.updateData(it)
+            adapterSubs.updateData(it.filter { item-> !item.subItem.isDeleted })
         }
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerSubs) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerSubs, adapterSubs, "sub") {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 if(position == adapterSubs.itemCount-1){return emptyList() }
                 val deleteButton = deleteButton(position)

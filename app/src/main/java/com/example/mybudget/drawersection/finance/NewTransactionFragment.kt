@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
@@ -171,8 +170,8 @@ class NewTransactionFragment : Fragment() {
                 binding.periodOfNotificationTitle.visibility = View.VISIBLE
                 binding.periodOfNotification.visibility = View.VISIBLE
                 val resultList = mutableListOf<String>()
-                val dateEnd = LocalDate.of(year, month, dayOfMonth)
-                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                val dateEnd = LocalDate.of(year, month+1, dayOfMonth)
+                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
                 val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                 when {
                     daysBetween>=365 -> resultList.addAll(periodList)
@@ -299,12 +298,9 @@ class NewTransactionFragment : Fragment() {
             }
         }
 
-        var islBudgetTo: OnItemSelectedListener? = null
-        var islBudget: OnItemSelectedListener? = null
-        var updatingBudget = false
-        var updatingBudgetTo = false
 
-        islBudget = object : OnItemSelectedListener{
+
+        binding.spinnerBudget.onItemSelectedListener = object : OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -319,7 +315,6 @@ class NewTransactionFragment : Fragment() {
                     binding.transfer.isChecked->{
                         binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name } )
                             .apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
-                        Log.e("checkSpinner", binding.spinnerBudget.selectedItem.toString())
 
                         beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
                         newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
@@ -359,7 +354,7 @@ class NewTransactionFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        islBudgetTo = object : OnItemSelectedListener{
+        binding.spinnerBudgetTo.onItemSelectedListener = object : OnItemSelectedListener{
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -392,9 +387,6 @@ class NewTransactionFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        binding.spinnerBudget.onItemSelectedListener = islBudget
-        binding.spinnerBudgetTo.onItemSelectedListener = islBudgetTo
-
         binding.spinnerCategory.setSelection(0)
     }
 
@@ -415,7 +407,7 @@ class NewTransactionFragment : Fragment() {
                     reference.addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val currentBudgetItem = snapshot.getValue(_BudgetItem::class.java)
-                            currentBudgetItem?.amount = String.format("%.2f",currentBudgetItem?.amount!!.toDouble()+valueDouble).replace(',','.')
+                            currentBudgetItem?.amount = "%.2f".format(currentBudgetItem?.amount!!.toDouble()+valueDouble).replace(',','.')
                             currentBudgetItem.count += 1
                             reference.setValue(currentBudgetItem).addOnCompleteListener {
 
@@ -423,9 +415,8 @@ class NewTransactionFragment : Fragment() {
                                     .child("${dateOfIncome.get(Calendar.YEAR)}/${dateOfIncome.get(Calendar.MONTH)+1}")
                                     .push()
 
-                                newHistory.setValue(HistoryItem(budgetId = budget.key, amount = String.format("%.2f",valueDouble).replace(',','.')/*${
-                                    requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))}"*/,
-                                    baseAmount = String.format("%.2f",valueDouble).replace(',','.'),
+                                newHistory.setValue(HistoryItem(budgetId = budget.key, amount = "%.2f".format(valueDouble).replace(',','.'),
+                                    baseAmount = "%.2f".format(valueDouble).replace(',','.'),
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
                                findNavController().popBackStack()
                             }
@@ -441,14 +432,14 @@ class NewTransactionFragment : Fragment() {
                     reference.addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val currentBudgetItem = snapshot.getValue(_BudgetItem::class.java)
-                            currentBudgetItem?.amount = String.format("%.2f",currentBudgetItem?.amount!!.toDouble()+valueDouble).replace(',','.')
+                            currentBudgetItem?.amount = "%.2f".format(currentBudgetItem?.amount!!.toDouble()+valueDouble).replace(',','.')
                             currentBudgetItem.count += 1
                             reference.setValue(currentBudgetItem).addOnCompleteListener {
                                 val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                     .child("${dateOfIncome.get(Calendar.YEAR)}/${dateOfIncome.get(Calendar.MONTH)+1}")
                                     .push()
-                                newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, amount = String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
-                                    baseAmount = String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
+                                newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, amount = "%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
+                                    baseAmount = "%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
                                 findNavController().popBackStack()
                             }
@@ -569,8 +560,8 @@ class NewTransactionFragment : Fragment() {
     private fun addTransfer(budgetFrom:BudgetItemWithKey, budgetTo:BudgetItemWithKey, valueDoubleOthers:Double, valueDouble:Double){
         budgetFrom.budgetItem.count++
         budgetTo.budgetItem.count++
-        budgetFrom.budgetItem.amount = String.format("%.2f",budgetFrom.budgetItem.amount.toDouble() - valueDoubleOthers).replace(",", ".")
-        budgetTo.budgetItem.amount = String.format("%.2f",budgetTo.budgetItem.amount.toDouble() + valueDouble).replace(",", ".")
+        budgetFrom.budgetItem.amount = "%.2f".format(budgetFrom.budgetItem.amount.toDouble() - valueDoubleOthers).replace(",", ".")
+        budgetTo.budgetItem.amount = "%.2f".format(budgetTo.budgetItem.amount.toDouble() + valueDouble).replace(",", ".")
         val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
             .push()
@@ -627,7 +618,7 @@ class NewTransactionFragment : Fragment() {
         if(dateOfExpence.get(Calendar.YEAR)<=Calendar.getInstance().get(Calendar.YEAR)&&
             dateOfExpence.get(Calendar.MONTH)<=Calendar.getInstance().get(Calendar.MONTH)
             && dateOfExpence.get(Calendar.DAY_OF_MONTH)<=Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
-            currentBudgetItem.amount = String.format("%.2f",currentBudgetItem.amount.toDouble()-valueDouble).replace(',','.')
+            currentBudgetItem.amount = "%.2f".format(currentBudgetItem.amount.toDouble()-valueDouble).replace(',','.')
             currentBudgetItem.count += 1
     }
 
@@ -643,11 +634,10 @@ class NewTransactionFragment : Fragment() {
                     && dateOfExpence.get(Calendar.DAY_OF_MONTH)<=Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
                     val beginRemainder = currentCategoryExpence.remainder
                     if(currentCategoryExpence.remainder =="0"){
-                        currentCategoryExpence.total = String.format("%.2f",currentCategoryExpence.total.toDouble()+if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')
+                        currentCategoryExpence.total = "%.2f".format(currentCategoryExpence.total.toDouble()+if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')
 
                     } else {
-                        currentCategoryExpence.remainder = String.format(
-                            "%.2f",
+                        currentCategoryExpence.remainder = "%.2f".format(
                             currentCategoryExpence.remainder.toDouble() - if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
                         ).replace(',', '.')
                     }
@@ -662,9 +652,8 @@ class NewTransactionFragment : Fragment() {
                                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                             .push()
                                         newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
-                                            isCategory = true, amount = "-${String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"/*${
-                                                requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))
-                                            }"*/, baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                                            isCategory = true, amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
+                                            baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
                                             key = newHistory.key.toString()))
                                         findNavController().popBackStack()
@@ -682,8 +671,8 @@ class NewTransactionFragment : Fragment() {
                                     .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                     .push()
                                 newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
-                                    isCategory = true, amount = "-${String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"
-                                    , baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                                    isCategory = true, amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"
+                                    , baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
                                     key = newHistory.key.toString()))
                                 findNavController().popBackStack()
@@ -722,13 +711,12 @@ class NewTransactionFragment : Fragment() {
                                     budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }
                                         ?.get(0)!!.key,
                                     amount = "-${
-                                        String.format(
-                                            "%.2f",
+                                        "%.2f".format(
                                             if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
                                         ).replace(',', '.')
                                     }",
                                     baseAmount = "-${
-                                        String.format("%.2f", valueDouble)
+                                        "%.2f".format(valueDouble)
                                             .replace(',', '.')
                                     }",
                                     date = SimpleDateFormat(
@@ -758,16 +746,7 @@ class NewTransactionFragment : Fragment() {
                                 dateOfExpence.get(Calendar.YEAR),
                                 dateOfExpence.get(Calendar.MONTH)+1,
                                 dateOfExpence,
-                                amount = "-${
-                                    String.format(
-                                        "%.2f",
-                                        if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
-                                    ).replace(',', '.')
-                                }",
-                                baseAmount = "-${
-                                    String.format("%.2f", valueDouble)
-                                        .replace(',', '.')
-                                }")
+                                Constants.CHANNEL_ID_PLAN)
                             findNavController().popBackStack()
                         }
                     } else {
@@ -775,9 +754,8 @@ class NewTransactionFragment : Fragment() {
                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                             .push()
                         planReferense.setValue(HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
-                            amount = "-${String.format("%.2f",if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"/*${
-                                requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))
-                            }"*/,baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                            amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
+                            baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
                             key = planReferense.key.toString()))
                         if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
@@ -798,16 +776,7 @@ class NewTransactionFragment : Fragment() {
                             dateOfExpence.get(Calendar.YEAR),
                             dateOfExpence.get(Calendar.MONTH)+1,
                             dateOfExpence,
-                            amount = "-${
-                                String.format(
-                                    "%.2f",
-                                    if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
-                                ).replace(',', '.')
-                            }",
-                            baseAmount = "-${
-                                String.format("%.2f", valueDouble)
-                                    .replace(',', '.')
-                            }")
+                            Constants.CHANNEL_ID_PLAN)
                         findNavController().popBackStack()
                     }
                 }
@@ -821,8 +790,7 @@ class NewTransactionFragment : Fragment() {
             dateOfExpence.get(Calendar.MONTH)<=Calendar.getInstance().get(Calendar.MONTH)
             && dateOfExpence.get(Calendar.DAY_OF_MONTH)<=Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
 
-            currentBudgetItem.amount = String.format(
-            "%.2f",
+            currentBudgetItem.amount = "%.2f".format(
             currentBudgetItem.amount.toDouble() - (if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble)
         ).replace(',', '.')
         currentBudgetItem.count += 1
@@ -841,9 +809,9 @@ class NewTransactionFragment : Fragment() {
                         && dateOfExpence.get(Calendar.DAY_OF_MONTH)<=Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
                         val beginReminder = currentCategoryExpence2.remainder
                         if(currentCategoryExpence2.remainder =="0"){
-                            currentCategoryExpence2.total = String.format("%.2f",currentCategoryExpence2.total.toDouble()+valueDouble).replace(',','.')
+                            currentCategoryExpence2.total = "%.2f".format(currentCategoryExpence2.total.toDouble()+valueDouble).replace(',','.')
                         } else {
-                            currentCategoryExpence2.remainder = String.format("%.2f",currentCategoryExpence2.remainder.toDouble()-valueDouble).replace(',','.')
+                            currentCategoryExpence2.remainder = "%.2f".format(currentCategoryExpence2.remainder.toDouble()-valueDouble).replace(',','.')
                         }
                         if(beginReminder.toDouble()>0.0 && currentCategoryExpence2.remainder.toDouble()<0.0){
                             AlertDialog.Builder(context)
@@ -856,9 +824,8 @@ class NewTransactionFragment : Fragment() {
                                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                             .push()
                                         newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
-                                            isCategory = true, amount = "-${String.format("%.2f",if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"/*${
-                                                requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))
-                                            }"*/,baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                                            isCategory = true, amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"
+                                            ,baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
                                             key = newHistory.key.toString()))
                                         findNavController().popBackStack()
@@ -876,9 +843,8 @@ class NewTransactionFragment : Fragment() {
                                     .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                     .push()
                                 newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
-                                    isCategory = true, amount = "-${String.format("%.2f",if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"/*${
-                                        requireContext().resources.getString( requireContext().resources.getIdentifier(budget.budgetItem.currency, "string",  requireContext().packageName))
-                                    }"*/,baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                                    isCategory = true, amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
+                                    baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
                                     key = newHistory.key.toString()))
                                 findNavController().popBackStack()
@@ -916,13 +882,12 @@ class NewTransactionFragment : Fragment() {
                                         budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }
                                             ?.get(0)!!.key,
                                         amount = "-${
-                                            String.format(
-                                                "%.2f",
+                                            "%.2f".format(
                                                 if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
                                             ).replace(',', '.')
                                         }",
                                         baseAmount = "-${
-                                            String.format("%.2f", valueDouble)
+                                            "%.2f".format(valueDouble)
                                                 .replace(',', '.')
                                         }",
                                         date = SimpleDateFormat(
@@ -951,16 +916,7 @@ class NewTransactionFragment : Fragment() {
                                     dateOfExpence.get(Calendar.YEAR),
                                     dateOfExpence.get(Calendar.MONTH)+1,
                                     dateOfExpence,
-                                    amount = "-${
-                                        String.format(
-                                            "%.2f",
-                                            if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
-                                        ).replace(',', '.')
-                                    }",
-                                    baseAmount = "-${
-                                        String.format("%.2f", valueDouble)
-                                            .replace(',', '.')
-                                    }")
+                                    Constants.CHANNEL_ID_PLAN)
                                 findNavController().popBackStack()
                             }
                         }
@@ -970,7 +926,8 @@ class NewTransactionFragment : Fragment() {
                                 .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                 .push()
                             planReferense.setValue(HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
-                                amount = "-${String.format("%.2f",if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",baseAmount = "-${String.format("%.2f",valueDouble).replace(',','.')}",
+                                amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
+                                baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
                                 key = planReferense.key.toString()))
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
@@ -991,16 +948,7 @@ class NewTransactionFragment : Fragment() {
                                 dateOfExpence.get(Calendar.YEAR),
                                 dateOfExpence.get(Calendar.MONTH)+1,
                                 dateOfExpence,
-                                amount = "-${
-                                    String.format(
-                                        "%.2f",
-                                        if (valueDoubleOthers != 0.0) valueDoubleOthers else valueDouble
-                                    ).replace(',', '.')
-                                }",
-                                baseAmount = "-${
-                                    String.format("%.2f", valueDouble)
-                                        .replace(',', '.')
-                                }")
+                                Constants.CHANNEL_ID_PLAN)
                             findNavController().popBackStack()
                         }
                     }
@@ -1287,14 +1235,4 @@ class NewTransactionFragment : Fragment() {
 
 }
 
-data class HistoryItem(var budgetId:String = "",
-                       var placeId: String = "",
-                       var isCategory:Boolean?=false,
-                       var isGoal:Boolean?=false,
-                       var isLoan:Boolean?=false,
-                       var isSub:Boolean?=false,
-                       var isTransfer:Boolean?=false,
-                       var amount:String="",
-                       var date:String = "",
-                       var baseAmount:String = "",
-                       var key:String = "")
+

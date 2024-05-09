@@ -78,6 +78,7 @@ class HistoryFragment : Fragment() {
                 updateData(binding.tabs.selectedTabPosition)
             }
             financeViewModel.planLiveData.observe(viewLifecycleOwner){plan->
+                Log.e("CheckPlan", plan.toString())
                 planList = plan
                 updateData(binding.tabs.selectedTabPosition)
             }
@@ -109,10 +110,7 @@ class HistoryFragment : Fragment() {
             binding.dateRangeHistory.text = "${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(datePicker.first)}-${SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(datePicker.second)}"
             startDate = Calendar.getInstance().apply { timeInMillis = datePicker.first }
             endDate = Calendar.getInstance().apply {  timeInMillis = datePicker.second}
-            if(binding.tabs.selectedTabPosition!=3) {
-                historyAdapter.sortByDate(startDate, endDate, historyAdapter.getHistory())
-            }
-            else historyAdapter.sortByDate(startDate, endDate, planList)
+            updateData(binding.tabs.selectedTabPosition)
             isTransactionExists()
         }
     }
@@ -121,12 +119,13 @@ class HistoryFragment : Fragment() {
         if (historyAdapter.itemCount == 0){
             binding.noTransactionImage.visibility = View.VISIBLE
             binding.noTransactionText.visibility = View.VISIBLE
-            if(binding.tabs.selectedTabPosition==2){
+            binding.spinnerTypeOfHistory.visibility = View.GONE
+            /*if(binding.tabs.selectedTabPosition==2){
                 when(historyList.all { it.isCategory == false }){
                     true-> binding.spinnerTypeOfHistory.visibility = View.GONE
                     else-> binding.spinnerTypeOfHistory.visibility = View.VISIBLE
                 }
-            }
+            }*/
         } else {
             if(binding.tabs.selectedTabPosition!=0 && binding.tabs.selectedTabPosition!=3){
                 binding.spinnerTypeOfHistory.visibility = View.VISIBLE
@@ -205,7 +204,6 @@ class HistoryFragment : Fragment() {
                             historyAdapter.sortByDate(startDate, endDate, emptyList())
                         }
                         binding.spinnerTypeOfHistory.adapter = adapter
-                        binding.spinnerTypeOfHistory.visibility = View.VISIBLE
                         historyAdapter.checkPlan(false)
                         isTransactionExists()
                         binding.spinnerTypeOfHistory.onItemSelectedListener = object:OnItemSelectedListener{
@@ -242,7 +240,6 @@ class HistoryFragment : Fragment() {
                         isTransactionExists()
                     }
                     else->{
-                        Log.e("CheckList", historyList.filter {place-> place.placeId.isNotEmpty() && place.isGoal==true}.toString())
                         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
                             .filter {place-> place.placeId.isNotEmpty() && place.isGoal==true}.map {placeItem-> financeViewModel.goalsData.value!!.filter { it.key == placeItem.placeId }[0].goalItem.name}.toSet().toList())
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -262,7 +259,6 @@ class HistoryFragment : Fragment() {
                             ) {
                                 historyAdapter.sortByDate(startDate, endDate, historyList.filter {placeItem-> placeItem.placeId.isNotEmpty() && placeItem.isGoal==true}.filter {placeItem-> financeViewModel.goalsData.value!!.filter { it.key == placeItem.placeId }[0].goalItem.name == binding.spinnerTypeOfHistory.getItemAtPosition(position).toString()})
                                 isTransactionExists()
-
                             }
                             override fun onNothingSelected(parent: AdapterView<*>?) {}
                         }
@@ -271,11 +267,74 @@ class HistoryFragment : Fragment() {
             }
 
             //tabLoan
-            5 ->{}
+            5 ->{
+                when{
+                    financeViewModel.loansLiveData.value == null ->{
+                        historyList = emptyList()
+                        historyAdapter.notifyDataSetChanged()
+                        isTransactionExists()
+                    }
+                    else->{
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
+                            .filter {place-> place.placeId.isNotEmpty() && place.isLoan==true}.map {placeItem-> financeViewModel.loansLiveData.value!!.filter { it.key == placeItem.placeId }[0].loanItem.name}.toSet().toList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        if(historyList.all { place -> place.isSub == false }){
+                            historyAdapter.sortByDate(startDate, endDate, emptyList())
+                        }
+                        binding.spinnerTypeOfHistory.adapter = adapter
+                        binding.spinnerTypeOfHistory.visibility = View.VISIBLE
+                        historyAdapter.checkPlan(false)
+                        isTransactionExists()
+                        binding.spinnerTypeOfHistory.onItemSelectedListener = object:OnItemSelectedListener{
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                historyAdapter.sortByDate(startDate, endDate, historyList.filter {placeItem-> placeItem.placeId.isNotEmpty() && placeItem.isLoan==true}.filter {placeItem-> financeViewModel.loansLiveData.value!!.filter { it.key == placeItem.placeId }[0].loanItem.name == binding.spinnerTypeOfHistory.getItemAtPosition(position).toString()})
+                                isTransactionExists()
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+                    }
+                }
+            }
 
             //tabSub
-            6->{}
-
+            6->{
+                when{
+                    financeViewModel.subLiveData.value == null ->{
+                        historyList = emptyList()
+                        historyAdapter.notifyDataSetChanged()
+                        isTransactionExists()
+                    }
+                    else->{
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
+                            .filter {place-> place.placeId.isNotEmpty() && place.isSub==true}.map {placeItem-> financeViewModel.subLiveData.value!!.filter { it.key == placeItem.placeId }[0].subItem.name}.toSet().toList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        if(historyList.all { place -> place.isSub == false }){
+                            historyAdapter.sortByDate(startDate, endDate, emptyList())
+                        }
+                        binding.spinnerTypeOfHistory.adapter = adapter
+                        binding.spinnerTypeOfHistory.visibility = View.VISIBLE
+                        historyAdapter.checkPlan(false)
+                        isTransactionExists()
+                        binding.spinnerTypeOfHistory.onItemSelectedListener = object:OnItemSelectedListener{
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                historyAdapter.sortByDate(startDate, endDate, historyList.filter {placeItem-> placeItem.placeId.isNotEmpty() && placeItem.isSub==true}.filter {placeItem-> financeViewModel.subLiveData.value!!.filter { it.key == placeItem.placeId }[0].subItem.name == binding.spinnerTypeOfHistory.getItemAtPosition(position).toString()})
+                                isTransactionExists()
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+                    }
+                }
+            }
         }
     }
 }

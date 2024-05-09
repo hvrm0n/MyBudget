@@ -68,6 +68,9 @@ public final class PageNewGlsBinding implements ViewBinding {
   public final EditText nameGLSEdit;
 
   @NonNull
+  public final TextView periodOfLoan;
+
+  @NonNull
   public final Spinner periodOfNotificationGLS;
 
   @NonNull
@@ -100,11 +103,11 @@ public final class PageNewGlsBinding implements ViewBinding {
       @NonNull TextView currencyGLS, @NonNull TextView glsDate, @NonNull EditText glsValue,
       @NonNull TextView iconChooseGLS, @NonNull ImageView imageOfGLM,
       @NonNull LinearLayout linearLayout, @NonNull TextView nameGLS, @NonNull EditText nameGLSEdit,
-      @NonNull Spinner periodOfNotificationGLS, @NonNull TextView periodTitleGLS,
-      @NonNull RadioGroup radioGroupGLS, @NonNull NestedScrollView scw,
-      @NonNull Spinner spinnerBudgetGLS, @NonNull TextView timeOfNotificationsGLS,
-      @NonNull TextView timeTitleGLS, @NonNull RadioButton withDate,
-      @NonNull RadioButton withouthDate) {
+      @NonNull TextView periodOfLoan, @NonNull Spinner periodOfNotificationGLS,
+      @NonNull TextView periodTitleGLS, @NonNull RadioGroup radioGroupGLS,
+      @NonNull NestedScrollView scw, @NonNull Spinner spinnerBudgetGLS,
+      @NonNull TextView timeOfNotificationsGLS, @NonNull TextView timeTitleGLS,
+      @NonNull RadioButton withDate, @NonNull RadioButton withouthDate) {
     this.rootView = rootView;
     this.billingPeriodGLS = billingPeriodGLS;
     this.billingPeriodTitleGLS = billingPeriodTitleGLS;
@@ -119,6 +122,7 @@ public final class PageNewGlsBinding implements ViewBinding {
     this.linearLayout = linearLayout;
     this.nameGLS = nameGLS;
     this.nameGLSEdit = nameGLSEdit;
+    this.periodOfLoan = periodOfLoan;
     this.periodOfNotificationGLS = periodOfNotificationGLS;
     this.periodTitleGLS = periodTitleGLS;
     this.radioGroupGLS = radioGroupGLS;
@@ -235,6 +239,12 @@ public final class PageNewGlsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.periodOfLoan;
+      TextView periodOfLoan = ViewBindings.findChildViewById(rootView, id);
+      if (periodOfLoan == null) {
+        break missingId;
+      }
+
       id = R.id.periodOfNotificationGLS;
       Spinner periodOfNotificationGLS = ViewBindings.findChildViewById(rootView, id);
       if (periodOfNotificationGLS == null) {
@@ -291,9 +301,9 @@ public final class PageNewGlsBinding implements ViewBinding {
 
       return new PageNewGlsBinding((FrameLayout) rootView, billingPeriodGLS, billingPeriodTitleGLS,
           budgetGLS, buttonAddGLS, calendarViewGLS, currencyGLS, glsDate, glsValue, iconChooseGLS,
-          imageOfGLM, linearLayout, nameGLS, nameGLSEdit, periodOfNotificationGLS, periodTitleGLS,
-          radioGroupGLS, scw, spinnerBudgetGLS, timeOfNotificationsGLS, timeTitleGLS, withDate,
-          withouthDate);
+          imageOfGLM, linearLayout, nameGLS, nameGLSEdit, periodOfLoan, periodOfNotificationGLS,
+          periodTitleGLS, radioGroupGLS, scw, spinnerBudgetGLS, timeOfNotificationsGLS,
+          timeTitleGLS, withDate, withouthDate);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

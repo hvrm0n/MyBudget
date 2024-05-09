@@ -364,10 +364,10 @@
         <item>Самая сложная часть - это начать. Вы уже на пути к вашей цели %1$s, не останавливайтесь сейчас!</item>
     </string-array>
     <string-array name="notification_loans">
-        <item>Не забывайте о предстоящей обязательной выплате %1$s. Обеспечьте достаточный баланс на счету к %2$s.</item>
-        <item>%1$s у Вас будет обязательное списание %2$s. Убедитесь, что у вас достаточно средств.</item>
-        <item>Обратите внимание, что %1$s будет обязательное списание %2$s. Подготовьтесь заранее.</item>
-        <item>Планируете ли вы свои расходы на предстоящую обязательную выплату %1$s? Убедитесь, что Вы готовы к ней.\n
+        <item>Не забывайте о предстоящей обязательной выплате %1$s.\nОбеспечьте достаточный баланс на счету к %2$s.</item>
+        <item>%2$s у Вас будет обязательное списание %1$s.</item>
+        <item>Обратите внимание, что %2$s будет обязательное списание %1$s. Подготовьтесь заранее.</item>
+        <item>Планируете ли вы свои расходы на предстоящую обязательную выплату %1$s?\n
         %2$s произойдет списание.</item>
     </string-array>
     <string-array name="notification_sub">
@@ -756,6 +756,7 @@
     <string name="ZWL">$</string>
     <string name="ZWL_name">Доллар Зимбабве</string>
     <string name="action_settings">Settings</string>
+    <string name="activeSubs">Активные</string>
     <string name="add">Добавить</string>
     <string name="all_history">Общая</string>
     <string name="app_name">MyBudget</string>
@@ -773,7 +774,7 @@
     <string name="budget">Счет</string>
     <string name="budget_transfer_from">Перевод со счета</string>
     <string name="budget_transfer_to">Перевод на счет</string>
-    <string name="cancelledSubs">Отмененные подписки</string>
+    <string name="cancelledSubs">Отмененные</string>
     <string name="car">Транспорт</string>
     <string name="card_add_basic">Сделать основным</string>
     <string name="card_expence_rem">осталось из</string>
@@ -794,6 +795,9 @@
     <string name="choose_priority">Выберите приоритет</string>
     <string name="close">Держите информацию о финансах рядом!</string>
     <string name="dateExpence">Дата</string>
+    <string name="dateLoanCurrent">Следущая: %1$s</string>
+    <string name="dateLoanEnd">Срок: %1$s</string>
+    <string name="dateLoans">Период выплат</string>
     <string name="dateSubs">Дата начала подписки</string>
     <string name="defaultTime">12:00</string>
     <string name="default_web_client_id" translatable="false">480721209154-7s727dt7jqmnvlsvqqss5grs0h0eg5q0.apps.googleusercontent.com</string>
@@ -813,6 +817,7 @@
     <string name="finish">Готово</string>
     <string name="firebase_database_url" translatable="false">https://mybudget-1b117-default-rtdb.firebaseio.com</string>
     <string name="gcm_defaultSenderId" translatable="false">480721209154</string>
+    <string name="goal_notification">Уведомления о целях</string>
     <string name="goalsName">Название цели</string>
     <string name="google_api_key" translatable="false">AIzaSyDLhvlzlD6LNP0KVP4YgGJpLyM4K4a-V7U</string>
     <string name="google_app_id" translatable="false">1:480721209154:android:1715d30d7eb024a872aadb</string>
@@ -827,6 +832,9 @@
     <string name="history_goals">Цель: %1$s</string>
     <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="home">Дом</string>
+    <string name="inPlan">В планах потратить %1$s</string>
+    <string name="loanFinished"> Выплаченные</string>
+    <string name="loan_notification">Уведомления о важных выплатах</string>
     <string name="log_in">Войти</string>
     <string name="log_in_google">Или войдите, используя</string>
     <string name="marker">Путешествия</string>
@@ -836,28 +844,34 @@
     <string name="menu_setting">Настройки</string>
     <string name="menu_subs">Подписки</string>
     <string name="nameBudgetSubs">Счет: %1$s</string>
+    <string name="nameLoans">Название платежа</string>
     <string name="nameSubs">Название подписки</string>
     <string name="nature">Природа</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_exit">Выход</string>
     <string name="nav_header_subtitle">Баланс: </string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="newAccount">Регистрация в приложении MyBudget</string>
     <string name="next">Далее</string>
+    <string name="onceLoans">Одноразовый</string>
     <string name="other">Другое</string>
     <string name="page_finance_category">Категории расходов</string>
     <string name="page_finance_finances">Сбережения</string>
     <string name="page_finance_history">История</string>
     <string name="password">Пароль</string>
     <string name="passwordWrong">Пароль должен состоять минимум из 6 символов</string>
+    <string name="periodLoans">Выбирите даты...</string>
     <string name="periodTitle">Периодичность напоминаний</string>
     <string name="periodicityBillingweek">неделю</string>
     <string name="pet">Питомцы</string>
     <string name="plan">Запланировать</string>
+    <string name="plan_notification">Уведомления о планах</string>
     <string name="plans">Планы</string>
     <string name="priority">Приоритет: %1$s</string>
     <string name="project_id" translatable="false">mybudget-1b117</string>
     <string name="reSubs">Восстановить</string>
+    <string name="regularLoans">Многоразовый</string>
     <string name="remaind">%1$s %2$s</string>
     <string name="restaurants">Рестораны и кафе</string>
     <string name="save">Сохранить</string>
@@ -865,6 +879,7 @@
     <string name="sign_up_complete">Зарегистрироваться</string>
     <string name="sign_up_reason">Пройдите регистрацию, чтобы не потерять данные</string>
     <string name="smile">Развлечения</string>
+    <string name="subscribe_notification">Уведомления о подписках</string>
     <string name="target">/%1$s</string>
     <string name="timeTitle">Время</string>
     <string name="titleGoals">Введите желаемую сумму</string>

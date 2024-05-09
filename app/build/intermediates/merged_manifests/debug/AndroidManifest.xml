@@ -58,6 +58,7 @@
             android:exported="true" /> <!-- Вход и регистрация -->
         <activity
             android:name="com.example.mybudget.start_pages.StartActivity"
+            android:enabled="true"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>

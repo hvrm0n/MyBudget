@@ -39,6 +39,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">Баланс: </string>
+    <string name="nav_header_exit">Выход</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -98,6 +99,7 @@
     <string name="fab_calculate">Распределить бюджет</string>
     <string name="fab_cancel_calculate">Отменить распределение</string>
     <string name="transaction_transfer">Перевод</string>
+    <string name="inPlan">В планах потратить %1$s</string>
 
     <string name="base">%1$s (основной)</string>
     <string name="transaction">%1$d операций</string>
@@ -124,8 +126,17 @@
     <string name="dateSubs">Дата начала подписки</string>
     <string name="nameBudgetSubs">Счет: %1$s</string>
     <string name="reSubs">Восстановить</string>
-    <string name="cancelledSubs">Отмененные подписки</string>
-
+    <string name="cancelledSubs">Отмененные</string>
+    <string name="activeSubs">Активные</string>
+    <!--ОБЯЗАТЕЛЬНЫЕ ПЛАТЕЖИ-->
+    <string name="loanFinished"> Выплаченные</string>
+    <string name="nameLoans">Название платежа</string>
+    <string name="dateLoans">Период выплат</string>
+    <string name="onceLoans">Одноразовый</string>
+    <string name="regularLoans">Многоразовый</string>
+    <string name="periodLoans">Выбирите даты...</string>
+    <string name="dateLoanEnd">Срок: %1$s</string>
+    <string name="dateLoanCurrent">Следущая: %1$s</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

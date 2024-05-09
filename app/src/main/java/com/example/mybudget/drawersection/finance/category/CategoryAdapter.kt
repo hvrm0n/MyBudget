@@ -2,8 +2,6 @@ package com.example.mybudget.drawersection.finance.category
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +11,12 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.mybudget.R
-import com.example.mybudget.drawersection.finance.DateViewPagerAdapter
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
 import com.google.firebase.auth.FirebaseAuth
@@ -27,13 +24,17 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
 import java.util.Calendar
 
 
-class CategoryAdapter(private val context: Context, private var categories: List<CategoryItemWithKey>, val scope: CoroutineScope, val table: DatabaseReference, val auth: FirebaseAuth, val activity: ViewModelStoreOwner,
-    vpAdapter: DateViewPagerAdapter):
+class CategoryAdapter(
+    private val context: Context,
+    private var categories: List<CategoryItemWithKey>,
+    val lso: LifecycleOwner,
+    val table: DatabaseReference,
+    val auth: FirebaseAuth,
+    val activity: ViewModelStoreOwner,
+):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val TYPE_CATEGORY = 2
     private val TYPE_ADD = 1
@@ -58,7 +59,6 @@ class CategoryAdapter(private val context: Context, private var categories: List
 
     fun updateData(newCategory: List<CategoryItemWithKey>) {
         categories = newCategory
-        Log.e("CategoryDataUpdate", newCategory.toString())
         notifyDataSetChanged()
     }
 
@@ -69,11 +69,6 @@ class CategoryAdapter(private val context: Context, private var categories: List
     fun updateNewDate(new:Int){
         newDate = new
 
-    }
-
-    fun updateCurrency(newCurrency: String) {
-        baseCurrency = newCurrency
-        notifyDataSetChanged()
     }
 
     fun deleteItemAtPosition(position:Int, data:Pair<Int, Int>){
@@ -134,7 +129,6 @@ class CategoryAdapter(private val context: Context, private var categories: List
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val card: CardView = itemView.findViewById(R.id.cardExpense)
         private val textViewName: TextView = itemView.findViewById(R.id.categoryName)
         private val priority: TextView = itemView.findViewById(R.id.categoryPriority)
         private val currency: TextView = itemView.findViewById(R.id.expenceVal)
@@ -147,8 +141,14 @@ class CategoryAdapter(private val context: Context, private var categories: List
 
         fun bind(categoryItem: CategoryItemWithKey, position: Int) {
             val financeViewModel = ViewModelProvider(activity)[FinanceViewModel::class.java]
-            baseCurrency = financeViewModel.budgetLiveData.value?.get(0)?.budgetItem?.currency
-            textViewName.text = financeViewModel.categoryBeginLiveData.value!!.filter {  it.key == categoryItem.key}[0].categoryBegin.name
+            financeViewModel.budgetLiveData.value?.get(0)?.budgetItem?.currency?.let {
+                baseCurrency = it
+                currency.text = context.resources.getString(context.resources.getIdentifier(baseCurrency, "string", context.packageName))
+            }
+            financeViewModel.categoryBeginLiveData.observe(lso){
+                textViewName.text = it.filter {categoryItemWithKey->  categoryItemWithKey.key == categoryItem.key}[0].categoryBegin.name
+                icon.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(it.filter {categoryItemWithKey->  categoryItemWithKey.key == categoryItem.key}[0].categoryBegin.path, "drawable", context.packageName)))
+            }
             priority.text = context.resources.getString(
                 R.string.priority, when (categoryItem.categoryItem.priority) {
                     0 -> "Низкий"
@@ -156,8 +156,6 @@ class CategoryAdapter(private val context: Context, private var categories: List
                     else -> "Высокий"
                 }
             )
-            icon.setImageDrawable(ContextCompat.getDrawable(context, context.resources.getIdentifier(financeViewModel.categoryBeginLiveData.value!!.filter {  it.key == categoryItem.key}[0].categoryBegin.path, "drawable", context.packageName)))
-            currency.text = context.resources.getString(context.resources.getIdentifier(baseCurrency, "string", context.packageName))
             if (categoryItem.categoryItem.remainder=="0"){
                 categoryRemainder.visibility = View.GONE
                 progress.visibility = View.GONE
@@ -169,7 +167,6 @@ class CategoryAdapter(private val context: Context, private var categories: List
                 left.visibility=View.VISIBLE
                 if(categoryItem.categoryItem.remainder.toDouble()<0.0){
                     progress.progressTintList = ColorStateList.valueOf(context.resources.getColor(R.color.dark_orange, context.theme))
-                    //categoryTotal.visibility = View.GONE
                     left.text = "перерасход из"
                     categoryRemainder.text = categoryItem.categoryItem.remainder.subSequence(1, categoryItem.categoryItem.remainder.length)
                 } else {
@@ -188,7 +185,7 @@ class CategoryAdapter(private val context: Context, private var categories: List
 
             if(categoryItem.categoryItem.isPlanned){
                 categoryTotal.visibility = View.VISIBLE
-                currency.text ="В планах потратить "  + currency.text.toString()
+                currency.text = context.resources.getString(R.string.inPlan,  currency.text.toString())
             }
             categoryTotal.text = categoryItem.categoryItem.total
         }

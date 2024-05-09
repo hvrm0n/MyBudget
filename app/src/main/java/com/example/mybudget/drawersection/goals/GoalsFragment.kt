@@ -57,8 +57,8 @@ class GoalsFragment : Fragment() {
                     when (giwk.goalItem.date){
                         null->0
                         else->giwk.goalItem.date?.split('.')?.let {
-                            ChronoUnit.DAYS.between(LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
-                                LocalDate.of(it[2].toInt(),it[1].toInt()-1, it[0].toInt()))
+                            ChronoUnit.DAYS.between(LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
                         }
                     }
                 }
@@ -66,7 +66,7 @@ class GoalsFragment : Fragment() {
 
         }
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerGoals) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerGoals, adapterGoals, "goal") {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 if(position == adapterGoals.itemCount-1){return emptyList() }
                 val deleteButton = deleteButton(position)

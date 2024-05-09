@@ -36,16 +36,19 @@ import com.example.mybudget.drawersection.finance.budget.BudgetAdapter
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category.CategoryAdapter
+import com.example.mybudget.drawersection.finance.category.CategoryBeginWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
+import com.example.mybudget.drawersection.finance.category._CategoryBegin
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.goals.GoalItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.loans.LoanItem
+import com.example.mybudget.drawersection.loans.LoanItemWithKey
 import com.example.mybudget.drawersection.subs.SubItem
 import com.example.mybudget.drawersection.subs.SubItemWithKey
-import com.example.mybudget.start_pages.CategoryBeginWithKey
 import com.example.mybudget.start_pages.Constants
-import com.example.mybudget.start_pages._CategoryBegin
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -54,6 +57,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import kotlin.math.abs
 
@@ -78,7 +83,7 @@ class FinanceFragment : Fragment() {
     private val planList = mutableListOf<HistoryItem>()
     private val goalList = mutableListOf<GoalItemWithKey>()
     private val subList = mutableListOf<SubItemWithKey>()
-
+    private val loanList = mutableListOf<LoanItemWithKey>()
 
     private var isExpanded = false
 
@@ -136,7 +141,7 @@ class FinanceFragment : Fragment() {
 
         binding.floatingActionButton.setOnClickListener {
             if (isExpanded){
-                hideFabs()
+                hideFabs {}
             } else showFabs()
             isExpanded = !isExpanded
         }
@@ -152,23 +157,24 @@ class FinanceFragment : Fragment() {
         }
 
         binding.fabCalculate.setOnClickListener {
-            binding.viewpager.currentItem = adapterCategory.getCurrentDate()
-            updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){
-                when(sharedPreferences.getBoolean("isDistributed", false)){
-                    false -> {
-                        binding.viewpager.currentItem = adapterCategory.getCurrentDate()
-                        updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){}
-                        distributeMoney()
+            hideFabs{
+                isExpanded = false
+                binding.viewpager.currentItem = adapterCategory.getCurrentDate()
+                updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){
+                    when(sharedPreferences.getBoolean("isDistributed", false)){
+                        false -> {
+                            binding.viewpager.currentItem = adapterCategory.getCurrentDate()
+                            updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){}
+                            distributeMoney()
+                        }
+                        else -> cancelDistribution()
                     }
-                    else -> cancelDistribution()
                 }
             }
-            hideFabs()
-            isExpanded = false
         }
     }
 
-    private fun hideFabs(){
+    private fun hideFabs(callback: (Unit) -> Unit){
         binding.calculate.startAnimation(toBottom)
         binding.fabCalculate.startAnimation(toBottom)
         binding.transaction.startAnimation(toBottom)
@@ -181,6 +187,7 @@ class FinanceFragment : Fragment() {
         binding.fabHistory.isEnabled = false
         binding.fabNewTransaction.isEnabled = false
         binding.fabCalculate.isEnabled = false
+        callback(Unit)
     }
 
     private fun showFabs(){
@@ -206,14 +213,20 @@ class FinanceFragment : Fragment() {
 
         ExchangeRateManager.request(table, auth, requireContext(), lifecycleScope, requireView(), requireActivity(), false)
 
-        activity?.let {financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java]}
+        activity?.let {financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java] }
 
-        adapterCategory = CategoryAdapter(requireContext(), emptyList(), lifecycleScope, table, auth, requireActivity(), vpAdapter)
+        adapterCategory = CategoryAdapter(requireContext(), emptyList(), viewLifecycleOwner, table, auth, requireActivity())
         adapterBudget = BudgetAdapter(requireContext(), emptyList(), lifecycleScope, table, auth)
         binding.budgetsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.budgetsList.adapter = adapterBudget
         financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
             adapterBudget.updateData(it.filter {budgetItemWithKey ->  !budgetItemWithKey.budgetItem.isDeleted })
+            activity?.let {activity->
+                activity.findViewById<NavigationView>(R.id.nav_view).getHeaderView(0).apply {
+                    findViewById<TextView>(R.id.currentBalance).text = it[0].budgetItem.amount +  requireContext().resources.getString(requireContext().resources.getIdentifier(it[0].budgetItem.currency, "string", requireContext().packageName))
+
+                }
+            }
         }
 
         beginCheckUpCategories()
@@ -225,7 +238,7 @@ class FinanceFragment : Fragment() {
 
         updateCategory()
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(binding.categoryList) {
+        val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(binding.categoryList, adapterCategory, "category") {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 if(position==adapterCategory.itemCount-1){return emptyList() }
                 val deleteButton = deleteButton(position)
@@ -247,12 +260,36 @@ class FinanceFragment : Fragment() {
                 binding.rightNav.visibility = View.INVISIBLE
             }
 
-            else if(list.size == 1) {
-                binding.leftNav.visibility = View.INVISIBLE
-                binding.rightNav.visibility = View.INVISIBLE
-            }
-
             else {
+                val mutableList = mutableListOf<Pair<Int, Int>>()
+                mutableList.addAll(list)
+                if(list.size == 1) {
+                    when{
+                        list[0].first == Calendar.getInstance().get(Calendar.MONTH)+1
+                                && list[0].second == Calendar.getInstance().get(Calendar.YEAR)->{
+                                    binding.leftNav.visibility = View.INVISIBLE
+                                    binding.rightNav.visibility = View.INVISIBLE
+                                }
+                        list[0].first <= Calendar.getInstance().get(Calendar.MONTH)+1
+                                && list[0].second == Calendar.getInstance().get(Calendar.YEAR)->{
+                            binding.rightNav.visibility = View.INVISIBLE
+                            mutableList.add(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR)))
+                            categoryDateLive.value = mutableList
+                        }
+                        list[0].first >= Calendar.getInstance().get(Calendar.MONTH)+1
+                                && list[0].second == Calendar.getInstance().get(Calendar.YEAR)->{
+                            binding.leftNav.visibility = View.INVISIBLE
+                            mutableList.add(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR)))
+                            categoryDateLive.value = mutableList
+                        }
+                        list[0].second <= Calendar.getInstance().get(Calendar.YEAR)->{
+                            binding.rightNav.visibility = View.INVISIBLE
+                            mutableList.add(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR)))
+                            categoryDateLive.value = mutableList
+                        }
+                    }
+                }
+
                 binding.leftNav.visibility = View.VISIBLE
                 binding.rightNav.visibility = View.VISIBLE
                 var position = Pair(0,0)
@@ -292,6 +329,7 @@ class FinanceFragment : Fragment() {
 
         updateGoals()
         updateSubs()
+        updateLoans()
     }
 
     private fun leftAndRightRows(){
@@ -358,7 +396,8 @@ class FinanceFragment : Fragment() {
                         }
                     }
                 }
-                if(dateList.isEmpty()){
+                val current = Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR))
+                if(dateList.isEmpty() || !dateList.contains(current)){
                     dateList.add(Pair(Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.YEAR)))
                 }
                 categoryDateLive.value = dateList
@@ -437,7 +476,7 @@ class FinanceFragment : Fragment() {
         dialog.show()
     }
 
-    private fun cancelDistribution(/*currentCategories: MutableList<CategoryItem>*/){
+    private fun cancelDistribution(){
         if(category.size!=0){
                 for (categoryItem in category){
                     categoryItem.categoryItem.total = "%.2f".format(categoryItem.categoryItem.total.toDouble() - categoryItem.categoryItem.remainder.toDouble()).replace(',','.')
@@ -457,7 +496,7 @@ class FinanceFragment : Fragment() {
         } else Toast.makeText(context, "Вы еще не выбрали категории расходов на этот месяц!", Toast.LENGTH_LONG).show()
     }
 
-    private fun distributeMoney(/*currentCategories: MutableList<CategoryItem>*/){
+    private fun distributeMoney(){
             if(category.size!=0){
                 val highPriorityCategories = category.filter { it.categoryItem.priority == 2 }
                 val mediumPriorityCategories = category.filter { it.categoryItem.priority == 1 }
@@ -505,7 +544,7 @@ class FinanceFragment : Fragment() {
                     val lowPriorityBudget:Double = totalMoney * lowPriorityCoefficient / totalLowPriorityCategories
                     var totalCheck = 0.0
                     for (categoryItem in category){
-                        val expence = categoryItem.categoryItem.total.toDouble()
+                        val expence = if(categoryItem.categoryItem.remainder.toDouble() == 0.0) categoryItem.categoryItem.total.toDouble() else categoryItem.categoryItem.total.toDouble()-categoryItem.categoryItem.remainder.toDouble()
                         categoryItem.categoryItem.total = "%.2f".format(when(categoryItem.categoryItem.priority){
                             0  -> lowPriorityBudget
                             1 -> mediumPriorityBudget
@@ -535,14 +574,16 @@ class FinanceFragment : Fragment() {
         showBudgetSelectionDialog{
            it.forEach{budgetItem->
                when(budgetItem.budgetItem.currency){
-                   baseBudget[0].budgetItem.currency -> total += budgetItem.budgetItem.amount.toDouble()
+                   baseBudget[0].budgetItem.currency -> {
+                       total += budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key)
+                   }
                    else ->{
                        val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(requireContext())
                        if(currencyConvertor!=null){
                            total += when(currencyConvertor.baseCode){
-                               baseBudget[0].budgetItem.currency -> budgetItem.budgetItem.amount.toDouble()/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!
+                               baseBudget[0].budgetItem.currency -> (budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key))/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!
                                else->{
-                                   val newValueToBase = (budgetItem.budgetItem.amount.toDouble()/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!)
+                                   val newValueToBase = ((budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key))/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!)
                                    newValueToBase*currencyConvertor.conversionRates[baseBudget[0].budgetItem.currency]!!
                                }
                            }
@@ -550,9 +591,51 @@ class FinanceFragment : Fragment() {
                    }
                }
            }
-           callback(total)
+           callback(total - withLoan())
         }
     }
+
+    private fun withSub(budgetItemKey:String) = subList.filter { !it.subItem.isCancelled
+            && !it.subItem.isDeleted
+            && it.subItem.budgetId == budgetItemKey
+            && it.subItem.date.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
+            && it.subItem.date.split(".")[2].toInt() == Calendar.getInstance().get(Calendar.YEAR)}
+        .sumOf { it.subItem.amount.toDouble() }
+
+    private fun withLoan() = loanList.filter {
+        if(it.loanItem.period!=null) {
+            !it.loanItem.isFinished
+                    && !it.loanItem.isDeleted
+                    && it.loanItem.dateNext!!.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
+        }
+        else{
+            !it.loanItem.isFinished
+                    && !it.loanItem.isDeleted
+                    && it.loanItem.dateOfEnd.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
+        }
+    }.sumOf {
+        when(it.loanItem.currency){
+            baseBudget[0].budgetItem.currency -> {
+                it.loanItem.amount.toDouble()
+            }
+            else ->{
+                val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(requireContext())
+                if(currencyConvertor!=null){
+                    when(currencyConvertor.baseCode){
+                        baseBudget[0].budgetItem.currency ->
+                            it.loanItem.amount.toDouble()/currencyConvertor.conversionRates[it.loanItem.currency]!!
+                        else->{
+                            val newValueToBase = ((it.loanItem.amount.toDouble())/currencyConvertor.conversionRates[it.loanItem.currency]!!)
+                            newValueToBase*currencyConvertor.conversionRates[baseBudget[0].budgetItem.currency]!!
+                        }
+                    }
+                } else {
+                    0.0
+                }
+            }
+        }
+    }
+
 
     private fun showBudgetSelectionDialog(callback:(List<BudgetItemWithKey>)->Unit) {
         val alertDialogBuilder = AlertDialog.Builder(requireContext())
@@ -602,15 +685,14 @@ class FinanceFragment : Fragment() {
         alertDialogBuilder.setView(layout)
         alertDialogBuilder.setPositiveButton("Распределить") { dialog, _ ->
             val selectedBudgets = mutableListOf<BudgetItemWithKey>()
-            val checkedItems = listView.checkedItemPositions
-            for (i in 0 until checkedItems.size()) {
-                if (checkedItems.valueAt(i)) {
-                    val budget = (baseBudget+otherBudget)[checkedItems.keyAt(i)]
+            val checkedItem = listView.checkedItemPositions
+            for (i in 0 until checkedItem.size()) {
+                if (checkedItem.valueAt(i)) {
+                    val budget = (baseBudget+otherBudget)[checkedItem.keyAt(i)]
                     selectedBudgets.add(budget)
                 }
             }
             callback(selectedBudgets)
-            Log.e("checkSelected", selectedBudgets.toString())
             dialog.dismiss()
         }
         alertDialogBuilder.setNegativeButton("Отмена") { dialog, _ ->
@@ -642,7 +724,7 @@ class FinanceFragment : Fragment() {
                                                            sum += if (it.placeId == expenseCategory.key) abs(it.baseAmount.toDouble()) else 0.0
                                                        }
                                                    }
-                                                   categoryReference.child(expenseCategory.key.toString()).child("total").setValue(if (sum==0.0) "0" else "${"%.2f".format(sum).replace(",", ".")}")
+                                                   categoryReference.child(expenseCategory.key.toString()).child("total").setValue(if (sum==0.0) "0" else "%.2f".format(sum).replace(",", "."))
                                                }
 
                                                override fun onCancelled(error: DatabaseError) {
@@ -696,8 +778,6 @@ class FinanceFragment : Fragment() {
                                 }
                         }
                     }
-                    Log.e("UPDATE_PLAN", "YES")
-
                     financeViewModel.updatePlanData(planList)
                 }
 
@@ -894,7 +974,8 @@ class FinanceFragment : Fragment() {
                 financeViewModel.updateSubsData(
                     subList.asSequence()
                         .filter { !it.subItem.isCancelled  && !it.subItem.isDeleted  } .toList()
-                            + subList.asSequence() .filter { it.subItem.isCancelled }.toList())
+                            + subList.asSequence() .filter { it.subItem.isCancelled }.toList()
+                + subList.filter { it.subItem.isDeleted }.toList())
             }
             override fun onCancelled(error: DatabaseError) {
                 Log.e("errorLog", error.toException().toString())
@@ -902,5 +983,114 @@ class FinanceFragment : Fragment() {
         })
     }
 
+
+    private fun updateLoans(){
+        table.child("Users").child(auth.currentUser!!.uid).child("Loans").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                loanList.clear()
+                for (loan in snapshot.children){
+                    loan.getValue(LoanItem::class.java)?.let {loanItem->
+                        loanList.add(LoanItemWithKey(loan.key.toString(), loanItem))
+                    }
+                }
+
+                financeViewModel.updateLoansData(
+                    //активные
+                    loanList.asSequence()
+                        .filter { !it.loanItem.isFinished  && !it.loanItem.isDeleted && if (it.loanItem.dateNext!=null){
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,0)
+                                set(Calendar.MINUTE,0)
+                                set(Calendar.SECOND,0)
+                            }.timeInMillis <= Calendar.getInstance().apply {
+                                set(
+                                    it.loanItem.dateNext!!.split(".")[2].toInt(),
+                                    it.loanItem.dateNext!!.split(".")[1].toInt()-1,
+                                    it.loanItem.dateNext!!.split(".")[0].toInt(), 0,0,0)}.timeInMillis
+                        } else
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,0)
+                                set(Calendar.MINUTE,0)
+                                set(Calendar.SECOND,0)
+                            }.timeInMillis <= Calendar.getInstance().apply {
+                                set(
+                                    it.loanItem.dateOfEnd.split(".")[2].toInt(),
+                                    it.loanItem.dateOfEnd.split(".")[1].toInt()-1,
+                                    it.loanItem.dateOfEnd.split(".")[0].toInt(), 0,0,0)}.timeInMillis
+                        } .toList().sortedBy {loan->
+                            when (loan.loanItem.period){
+                                null->loan.loanItem.dateOfEnd.split('.').let {
+                                    ChronoUnit.DAYS.between(
+                                        LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                        LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                }
+                                else->loan.loanItem.dateNext?.split('.')?.let {
+                                    ChronoUnit.DAYS.between(
+                                        LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                        LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                }
+                            }
+                        }
+                            +
+                            //просроченные
+                            loanList.asSequence()
+                                .filter { !it.loanItem.isFinished  && !it.loanItem.isDeleted && if (it.loanItem.dateNext!=null){
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,0)
+                                set(Calendar.MINUTE,0)
+                                set(Calendar.SECOND,0)
+                            }.timeInMillis > Calendar.getInstance().apply {
+                                set(
+                                    it.loanItem.dateNext!!.split(".")[2].toInt(),
+                                    it.loanItem.dateNext!!.split(".")[1].toInt()-1,
+                                    it.loanItem.dateNext!!.split(".")[0].toInt(), 0,0,0)}.timeInMillis
+                            } else
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,0)
+                                set(Calendar.MINUTE,0)
+                                set(Calendar.SECOND,0)
+                            }.timeInMillis > Calendar.getInstance().apply {
+                                set(
+                                    it.loanItem.dateOfEnd.split(".")[2].toInt(),
+                                    it.loanItem.dateOfEnd.split(".")[1].toInt()-1,
+                                    it.loanItem.dateOfEnd.split(".")[0].toInt(), 0,0,0)}.timeInMillis
+                        } .toList().sortedBy {loan->
+                                    when (loan.loanItem.period){
+                                        null->loan.loanItem.dateOfEnd.split('.').let {
+                                            ChronoUnit.DAYS.between(
+                                                LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                                LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                        }
+                                        else->loan.loanItem.dateNext?.split('.')?.let {
+                                            ChronoUnit.DAYS.between(
+                                                LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                                LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                        }
+                                    }
+                                }
+                            //завершенные
+                            + loanList.asSequence()
+                                .filter { it.loanItem.isFinished }.toList()
+                        .sortedBy {loan->
+                            when (loan.loanItem.period){
+                                null->loan.loanItem.dateOfEnd.split('.').let {
+                                    ChronoUnit.DAYS.between(
+                                        LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                        LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                }
+                                else->loan.loanItem.dateNext?.split('.')?.let {
+                                    ChronoUnit.DAYS.between(
+                                        LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
+                                        LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                }
+                            }
+                        }
+                            + loanList.filter { it.loanItem.isDeleted }.toList())
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("errorLog", error.toException().toString())
+            }
+        })
+    }
 }
 

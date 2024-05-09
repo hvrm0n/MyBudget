@@ -3,6 +3,7 @@ package com.example.mybudget.drawersection.finance
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,8 @@ import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
+import com.example.mybudget.drawersection.loans.LoanItemWithKey
+import com.example.mybudget.drawersection.subs.SubItemWithKey
 import com.example.mybudget.start_pages.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -60,8 +63,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             holder.bind(history[position], position)
         }
     }
-
-    fun getHistory() = history
 
     fun checkPlan(isChecked:Boolean) {
         plan = isChecked
@@ -296,7 +297,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             }
 
             else{
-                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].placeId!="") {
+                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].placeId!="" ||  history[position].isTransfer == true) {
                     when {
                         history[position].isCategory == true -> editCategoryHistory(
                             categoryItem = financeViewModel.categoryLiveData.value!!.find { it.key == history[position].placeId },
@@ -328,7 +329,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             beginValueBase = beginValueBase
                         )
 
-                        history[position].isLoan == true ->/*removeCategoryHistory()*/ {}
                         else ->/*removeCategoryHistory()*/ {}
                     }
                 }
@@ -453,8 +453,16 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                         calendar.set(Calendar.MONTH, dateNew.second-1)
                         calendar.set(Calendar.DAY_OF_MONTH, dateNew.first)
 
-                        NotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
-                            historyItem.budgetId, dateNew.third, dateNew.second, calendar, historyItem.amount, historyItem.baseAmount)
+                        NotificationManager.setAutoTransaction(
+                            context = context,
+                            id = historyItem.key,
+                            placeId = historyItem.placeId,
+                            budgetId = historyItem.budgetId,
+                            year = dateNew.third,
+                            month = dateNew.second,
+                            dateOfExpence = calendar,
+                            type = Constants.CHANNEL_ID_PLAN
+                        )
                         NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN, historyItem.key, historyItem.placeId,time,calendar,period)
                     }
                     override fun onCancelled(error: DatabaseError) {}
@@ -490,7 +498,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 calendar.set(Calendar.DAY_OF_MONTH, dateNew.first)
 
                 NotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
-                    historyItem.budgetId, dateNew.third, dateNew.second, calendar, historyItem.amount, historyItem.baseAmount)
+                    historyItem.budgetId, dateNew.third, dateNew.second, calendar, Constants.CHANNEL_ID_PLAN)
                 NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN,  historyItem.key, historyItem.placeId, time,calendar,period)
 
             }
@@ -510,7 +518,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             }
 
             else{
-                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].placeId!="") {
+                if (history[position].isCategory == true || history[position].isGoal == true || history[position].isLoan == true || history[position].isSub == true || history[position].isTransfer == true) {
                     when {
                         history[position].isCategory == true->removeCategoryHistory(
                             budgetItem = budgetItem,
@@ -529,8 +537,18 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             budgetItemTo = financeViewModel.budgetLiveData.value!!.find { it.key == history[position].placeId },
                             position = position
                         )
-                        history[position].isLoan == true->/*removeCategoryHistory()*/{}
-                        else->/*removeCategoryHistory()*/{}
+                        history[position].isLoan == true-> removeLoanHistory(
+                            budgetItem = budgetItem,
+                            loanItem = financeViewModel.loansLiveData.value!!.find { it.key == history[position].placeId },
+                            value = value,
+                            position = position
+                        )
+                        history[position].isSub == true->removeSubHistory(
+                            budgetItem = budgetItem,
+                            subItem = financeViewModel.subLiveData.value!!.find { it.key == history[position].placeId },
+                            value = value,
+                            position = position
+                        )
                     }
                 }
                 //пополнение бюджета
@@ -547,7 +565,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                         }
 
                         else -> {
-                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(budgetItem.key).setValue(budgetItem)
+                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(budgetItem.key).setValue(budgetItem.budgetItem)
                             table.child("Users").child(auth.currentUser!!.uid).child("History")
                                 .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
                                 .child(history[position].key).removeValue()
@@ -613,12 +631,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             .child("Budgets")
                             .child("Base budget")
                             .setValue(budgetItem.budgetItem)
-
-                        table.child("Users")
-                            .child(auth.currentUser!!.uid)
-                            .child("History")
-                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                            .child(history[position].key).removeValue()
                     }
 
                     else -> {
@@ -628,12 +640,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             .child("Other budget")
                             .child(budgetItem.key)
                             .setValue(budgetItem.budgetItem)
-
-                        table.child("Users")
-                            .child(auth.currentUser!!.uid)
-                            .child("History")
-                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                            .child(history[position].key).removeValue()
                     }
                 }
                 when (categoryItem.categoryItem.remainder) {
@@ -647,6 +653,13 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     .child("ExpenseCategories")
                     .child(history[position].placeId)
                     .setValue(categoryItem.categoryItem)
+
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key).removeValue()
             }
         }
     }
@@ -685,12 +698,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             .child("Budgets")
                             .child("Base budget")
                             .setValue(budgetItem.budgetItem)
-
-                        table.child("Users")
-                            .child(auth.currentUser!!.uid)
-                            .child("History")
-                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                            .child(history[position].key).removeValue()
                     }
 
                     else -> {
@@ -700,12 +707,6 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             .child("Other budget")
                             .child(budgetItem.key)
                             .setValue(budgetItem.budgetItem)
-
-                        table.child("Users")
-                            .child(auth.currentUser!!.uid)
-                            .child("History")
-                            .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
-                            .child(history[position].key).removeValue()
                     }
                 }
 
@@ -717,7 +718,315 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     .child("Goals")
                     .child(history[position].placeId)
                     .setValue(goalItem.goalItem)
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key).removeValue()
             }
+        }
+    }
+    private fun removeSubHistory(budgetItem:BudgetItemWithKey, subItem: SubItemWithKey?, value:String, position:Int){
+        when{
+            subItem == null -> Toast.makeText(
+                context,
+                "Такой подписки больше нет, операцию нельзя удалить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+                budgetItem.budgetItem.amount = "%.2f".format(value.toDouble() + budgetItem.budgetItem.amount.toDouble()).replace(",", ".")
+                budgetItem.budgetItem.count -= 1
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .setValue(budgetItem.budgetItem)
+                    }
+
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+                    }
+                }
+
+                if (history[position].key ==financeViewModel.historyLiveData.value?.filter { it.placeId == subItem.key }?.maxByOrNull { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)?.time ?: 0 }?.key) {
+                    val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(subItem.subItem.date)
+
+                    val calendarPrev = Calendar.getInstance().apply {
+                        time = date!!
+                    }
+                    val calendarNext = Calendar.getInstance().apply {
+                        time = date!!
+                    }
+                    val calendarCurrent = Calendar.getInstance().apply {
+                        time = date!!
+                    }
+
+                    calendarPrev.add(when(subItem.subItem.period.split(" ")[1]){
+                        "d"->Calendar.DAY_OF_MONTH
+                        "w"->Calendar.WEEK_OF_MONTH
+                        "m"->Calendar.MONTH
+                        else->Calendar.YEAR
+                    }, subItem.subItem.period.split(" ")[0].toInt() * -1)
+
+                    calendarNext.add(when(subItem.subItem.period.split(" ")[1]){
+                        "d"->Calendar.DAY_OF_MONTH
+                        "w"->Calendar.WEEK_OF_MONTH
+                        "m"->Calendar.MONTH
+                        else->Calendar.YEAR
+                    }, subItem.subItem.period.split(" ")[0].toInt())
+
+                    val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
+                    val periodBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
+                    val timeBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(1)?:"12:00"
+
+                    NotificationManager.cancelAlarmManager(context, subItem.key)
+                    NotificationManager.cancelAutoTransaction(context, subItem.key)
+
+                    subItem.subItem.date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(
+                        when{
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis < calendarPrev.apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis -> {
+                                updateNotificationSub(
+                                    subItemWithKey = subItem,
+                                    calendar = calendarPrev,
+                                    timeBegin = timeBegin,
+                                    periodBegin = periodBegin
+                                )
+                                calendarPrev.time
+                            }
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis < calendarCurrent.apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis->{
+                                updateNotificationSub(
+                                    subItemWithKey = subItem,
+                                    calendar = calendarCurrent,
+                                    timeBegin = timeBegin,
+                                    periodBegin = periodBegin
+                                )
+                                calendarCurrent.time
+                            }
+                            else ->{
+                                updateNotificationSub(
+                                    subItemWithKey = subItem,
+                                    calendar = calendarNext,
+                                    timeBegin = timeBegin,
+                                    periodBegin = periodBegin
+                                )
+                                calendarNext.time
+                            }
+                        }
+                    )
+
+                    table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("Subs")
+                    .child(history[position].placeId)
+                    .setValue(subItem.subItem)
+                }
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key).removeValue()
+            }
+        }
+    }
+
+    private fun removeLoanHistory(budgetItem:BudgetItemWithKey, loanItem: LoanItemWithKey?, value:String, position:Int){
+        when{
+            loanItem == null -> Toast.makeText(
+                context,
+                "Такого обязательного платежа больше нет, операцию нельзя удалить.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> {
+                budgetItem.budgetItem.amount = "%.2f".format(value.toDouble() + budgetItem.budgetItem.amount.toDouble()).replace(",", ".")
+                budgetItem.budgetItem.count -= 1
+
+                when (history[position].budgetId) {
+                    "Base budget" -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Base budget")
+                            .setValue(budgetItem.budgetItem)
+                    }
+
+                    else -> {
+                        table.child("Users")
+                            .child(auth.currentUser!!.uid)
+                            .child("Budgets")
+                            .child("Other budget")
+                            .child(budgetItem.key)
+                            .setValue(budgetItem.budgetItem)
+                    }
+                }
+
+                val sharedPreferences = context.getSharedPreferences(
+                    "NotificationPeriodAndTime",
+                    Context.MODE_PRIVATE)
+
+                val periodBegin =
+                    sharedPreferences.getString(loanItem.key, "|")?.split("|")?.get(0)
+                        ?: context.resources.getStringArray(R.array.periodicity)[0]
+                val timeBegin =
+                    sharedPreferences.getString(loanItem.key, "|")?.split("|")?.get(1)
+                        ?: "12:00"
+
+                if (history[position].key == financeViewModel.historyLiveData.value?.filter { it.placeId == loanItem.key }?.maxByOrNull { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)?.time ?: 0 }?.key) {
+
+                    val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(loanItem.loanItem.dateNext?:loanItem.loanItem.dateOfEnd)
+                    val dateEnd = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(loanItem.loanItem.dateOfEnd)
+
+                    val calendarPrev = Calendar.getInstance().apply {
+                        time = date!!
+                    }
+                    val calendarEnd = Calendar.getInstance().apply {
+                        time = dateEnd!!
+                    }
+                    if(loanItem.loanItem.period!=null) {
+                        calendarPrev.add(
+                            when (loanItem.loanItem.period!!.split(" ")[1]) {
+                                "d" -> Calendar.DAY_OF_MONTH
+                                "w" -> Calendar.WEEK_OF_MONTH
+                                "m" -> Calendar.MONTH
+                                else -> Calendar.YEAR
+                            }, loanItem.loanItem.period!!.split(" ")[0].toInt() * -1
+                        )
+
+                        NotificationManager.cancelAlarmManager(context, loanItem.key)
+
+                        loanItem.loanItem.dateNext = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(calendarPrev.time)
+                        if(Calendar.getInstance().apply {
+                                   set(Calendar.HOUR_OF_DAY, 0)
+                                       set(Calendar.MINUTE, 0)
+                                       set(Calendar.SECOND, 0)
+                                       set(Calendar.MILLISECOND, 0)
+                               }.timeInMillis < calendarPrev.apply {
+                                   set(Calendar.HOUR_OF_DAY, 0)
+                                       set(Calendar.MINUTE, 0)
+                                       set(Calendar.SECOND, 0)
+                                       set(Calendar.MILLISECOND, 0)
+                               }.timeInMillis
+                                   &&
+                                   calendarPrev.apply {
+                                       set(Calendar.HOUR_OF_DAY, 0)
+                                       set(Calendar.MINUTE, 0)
+                                       set(Calendar.SECOND, 0)
+                                       set(Calendar.MILLISECOND, 0)
+                                   }.timeInMillis <= calendarEnd.apply {
+                                       set(Calendar.HOUR_OF_DAY, 0)
+                                       set(Calendar.MINUTE, 0)
+                                       set(Calendar.SECOND, 0)
+                                       set(Calendar.MILLISECOND, 0)
+                                   }.timeInMillis) {
+                                   if (!loanItem.loanItem.isDeleted){
+                                            NotificationManager.notification(
+                                                context = context,
+                                                channelID = Constants.CHANNEL_ID_SUB,
+                                                id = loanItem.key,
+                                                placeId = loanItem.key,
+                                                time = timeBegin,
+                                                dateOfExpence = calendarPrev,
+                                                periodOfNotification = periodBegin)
+                                   }
+                               }
+                    } else {
+                        if (!loanItem.loanItem.isDeleted &&
+                            Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis < calendarEnd.apply {
+                                set(Calendar.HOUR_OF_DAY, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }.timeInMillis){
+
+                            NotificationManager.notification(
+                                context = context,
+                                channelID = Constants.CHANNEL_ID_SUB,
+                                id = loanItem.key,
+                                placeId = loanItem.key,
+                                time = timeBegin,
+                                dateOfExpence = calendarPrev,
+                                periodOfNotification = periodBegin)
+                        }
+                    }
+
+                    if (loanItem.loanItem.isFinished) loanItem.loanItem.isFinished = false
+
+                    table.child("Users")
+                        .child(auth.currentUser!!.uid)
+                        .child("Loans")
+                        .child(history[position].placeId)
+                        .setValue(loanItem.loanItem)
+                }
+
+                table.child("Users")
+                    .child(auth.currentUser!!.uid)
+                    .child("History")
+                    .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
+                    .child(history[position].key).removeValue()
+            }
+        }
+    }
+
+
+
+    private fun updateNotificationSub(subItemWithKey: SubItemWithKey, calendar:Calendar, timeBegin:String, periodBegin:String){
+        if (!subItemWithKey.subItem.isCancelled && !subItemWithKey.subItem.isDeleted) {
+            NotificationManager.notification(
+                context = context,
+                channelID = Constants.CHANNEL_ID_SUB,
+                id = subItemWithKey.key,
+                placeId = subItemWithKey.key,
+                time = timeBegin,
+                dateOfExpence = calendar,
+                periodOfNotification = periodBegin
+            )
+
+            NotificationManager.setAutoTransaction(
+                context = context,
+                id = subItemWithKey.key,
+                placeId = subItemWithKey.key,
+                budgetId = subItemWithKey.subItem.budgetId,
+                year = calendar.get(Calendar.YEAR),
+                month = calendar.get(Calendar.MONTH),
+                dateOfExpence = calendar,
+                type = Constants.CHANNEL_ID_SUB
+            )
         }
     }
 
@@ -799,50 +1108,52 @@ class HistoryAdapter(private val context: Context, private var history: List<His
     }
 
     fun sortByDate(startDate:Calendar?, endDate:Calendar?, historyNew:List<HistoryItem> = history){
-        val startDef = Calendar.getInstance()
-        val endDef = Calendar.getInstance()
-        startDef.set(Calendar.DAY_OF_MONTH, 1)
-        endDef.set(Calendar.DAY_OF_MONTH, endDef.getActualMaximum(Calendar.DAY_OF_MONTH))
+        if (historyNew.isNotEmpty()){
+            val startDef = Calendar.getInstance()
+            val endDef = Calendar.getInstance()
+            startDef.set(Calendar.DAY_OF_MONTH, 1)
+            endDef.set(Calendar.DAY_OF_MONTH, endDef.getActualMaximum(Calendar.DAY_OF_MONTH))
+            sort(
+                historyNew.asSequence()
+                    .filter { it.date.isNotEmpty() && SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        .parse(it.date)?.let { calendar ->
 
-        sort(
-            historyNew.asSequence()
-                .filter { SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-                    .parse(it.date)?.let { calendar ->
+                            val calendarFromString = Calendar.getInstance()
+                            calendarFromString.time = calendar
 
-                        val calendarFromString = Calendar.getInstance()
-                        calendarFromString.time = calendar
+                            ((calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
+                                ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                    calendarFromString.get(Calendar.MONTH) >= (startDate?.get(
+                                Calendar.MONTH
+                            ) ?: Calendar.getInstance().get(Calendar.MONTH)) &&
+                                    calendarFromString.get(Calendar.DAY_OF_MONTH) >= ((startDate?.get(Calendar.DAY_OF_MONTH))
+                                ?: startDef.get(Calendar.DAY_OF_MONTH)))
+                                    ||
+                                    (calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
+                                        ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                            calendarFromString.get(Calendar.MONTH) > (startDate?.get(
+                                        Calendar.MONTH
+                                    ) ?: Calendar.getInstance().get(Calendar.MONTH)))
+                                    ||
+                                    (calendarFromString.get(Calendar.YEAR) > (startDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)) ))
+                                    &&
+                                    ((calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
+                                        ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                            calendarFromString.get(Calendar.MONTH) <= (endDate?.get(Calendar.MONTH)
+                                        ?: Calendar.getInstance().get(Calendar.MONTH)) &&
+                                            calendarFromString.get(Calendar.DAY_OF_MONTH) <= ((endDate?.get(Calendar.DAY_OF_MONTH))
+                                        ?: endDef.get(Calendar.DAY_OF_MONTH)))
+                                    ||
+                                    (calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
+                                                ?: Calendar.getInstance().get(Calendar.YEAR)) &&
+                                                    calendarFromString.get(Calendar.MONTH) < (endDate?.get(Calendar.MONTH)
+                                                ?: Calendar.getInstance().get(Calendar.MONTH))
+                                    ||
+                                    (calendarFromString.get(Calendar.YEAR) < (endDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)))))
 
-                        ((calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
-                            ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                calendarFromString.get(Calendar.MONTH) >= (startDate?.get(
-                            Calendar.MONTH
-                        ) ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                                calendarFromString.get(Calendar.DAY_OF_MONTH) >= ((startDate?.get(Calendar.DAY_OF_MONTH))
-                            ?: startDef.get(Calendar.DAY_OF_MONTH)))
-                                ||
-                                (calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
-                                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                        calendarFromString.get(Calendar.MONTH) > (startDate?.get(
-                                    Calendar.MONTH
-                                ) ?: Calendar.getInstance().get(Calendar.MONTH)))
-                                ||
-                                (calendarFromString.get(Calendar.YEAR) > (startDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)) ))
-                                &&
-                                ((calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
-                                    ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                        calendarFromString.get(Calendar.MONTH) <= (endDate?.get(Calendar.MONTH)
-                                    ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                                        calendarFromString.get(Calendar.DAY_OF_MONTH) <= ((endDate?.get(Calendar.DAY_OF_MONTH))
-                                    ?: endDef.get(Calendar.DAY_OF_MONTH)))
-                                ||
-                                (calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
-                                            ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                                calendarFromString.get(Calendar.MONTH) < (endDate?.get(Calendar.MONTH)
-                                            ?: Calendar.getInstance().get(Calendar.MONTH))
-                                ||
-                                (calendarFromString.get(Calendar.YEAR) < (endDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)))))
-
-            } ?: false}.toList().sortedByDescending {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)})
+                } ?: false}.toList().sortedByDescending {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)})
+        }
+        else sort(emptyList())
     }
 
     private fun sort(newHistory: List<HistoryItem>){
@@ -885,10 +1196,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     }
                     nameBudgetTextView.visibility =  when{
                         historyItem.isGoal == true -> {
-                            nameBudgetTextView.text = context.resources.getString(
-                                R.string.history_goals,
-                                financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.name
-                            )
+                            nameBudgetTextView.text = financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.name
                             View.VISIBLE
                         }
 
@@ -906,10 +1214,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     placeNameTextView.text =
                         if(historyItem.isLoan == true) {
                             placeNameTextView.visibility = View.VISIBLE
-                            context.resources.getString(
-                                R.string.history_loans,
-                                financeViewModel.budgetLiveData.value!!.find { history[position].budgetId == it.key }!!.budgetItem.name
-                            )
+                            financeViewModel.loansLiveData.value!!.find { history[position].placeId == it.key }!!.loanItem.name
                         }
                         else if (historyItem.isCategory == true) {
                             placeNameTextView.visibility = View.VISIBLE
@@ -928,6 +1233,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                 history[position].isCategory==true->financeViewModel.categoryBeginLiveData.value!!.find { history[position].placeId == it.key }!!.categoryBegin.path
                                 history[position].isGoal==true->financeViewModel.goalsData.value!!.find { history[position].placeId == it.key }!!.goalItem.path
                                 history[position].isSub==true->financeViewModel.subLiveData.value!!.find { history[position].placeId == it.key }!!.subItem.path
+                                history[position].isLoan==true->financeViewModel.loansLiveData.value!!.find { history[position].placeId == it.key }!!.loanItem.path
                                 else->"family"
                             }, "drawable", context.packageName)))
                             View.VISIBLE
@@ -1019,8 +1325,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
             calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
                 dateNew = Triple(dayOfMonth, month+1, year)
-                val dateEnd = LocalDate.of(year, month, dayOfMonth)
-                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                val dateEnd = LocalDate.of(year, month+1, dayOfMonth)
+                val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
                 val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                 val resultList = mutableListOf<String>()
                 when {
@@ -1080,8 +1386,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                         set(Calendar.YEAR, history[position].date.split(".")[2].toInt())
                        calendar.date = this.timeInMillis
                    }
-                    val dateEnd = LocalDate.of(history[position].date.split(".")[2].toInt(), history[position].date.split(".")[1].toInt()-1, history[position].date.split(".")[0].toInt())
-                    val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                    val dateEnd = LocalDate.of(history[position].date.split(".")[2].toInt(), history[position].date.split(".")[1].toInt(), history[position].date.split(".")[0].toInt())
+                    val dateNow = LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
                     val daysBetween = ChronoUnit.DAYS.between(dateNow, dateEnd)
                     val resultList = mutableListOf<String>()
                     when {
@@ -1166,6 +1472,10 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     periodOfNotificationHistory.visibility = View.GONE
                     timeOfNotificationsTitleHistory.visibility = View.GONE
                     timeOfNotificationsHistory.visibility = View.GONE
+
+                if (history[position].isSub == true || history[position].isLoan == true){
+                    value.isEnabled = false
+                    }
                 }
             }
 
@@ -1183,7 +1493,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
             builder.setNegativeButton("Удалить") { dialog, _ ->
                 AlertDialog.Builder(context)
-                    .setTitle("Удаление категории")
+                    .setTitle("Удаление операции")
                     .setMessage("Вы уверены, что хотите удалить транзакцию?\nБудет удалена операция с исходной суммой!")
                     .setPositiveButton("Подтвердить") { dialog2, _ ->
                         deleteItemAtPosition(position, numberBegin)
@@ -1209,5 +1519,4 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         }
 
     }
-
 }

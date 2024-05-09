@@ -79,7 +79,6 @@ class EnterFragment : Fragment() {
             table.child("Users").child(currentUser!!.uid).get().addOnSuccessListener {
                 if(it.exists() && it!=null){
                     if(it.child("Budgets").child("Base budget").child("name").exists()){
-                        Log.e(Constants.TAG_CONVERT, "enter")
                         ExchangeRateManager.request(table, auth, requireContext(), lifecycleScope, requireView(), requireActivity(), true)
                     } else Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment).also {
                         loadingDialog.dismiss()
@@ -104,7 +103,7 @@ class EnterFragment : Fragment() {
         if(result.resultCode ==  Activity.RESULT_OK){
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             manageResults(task)
-        } else Log.e(Constants.TAG_GOOGLE, result.resultCode.toString())
+        } else Log.e(Constants.TAG_GOOGLE, result.data.toString() + result.toString())
     }
 
     private fun googleSignIn(){

@@ -364,10 +364,10 @@
         <item>Самая сложная часть - это начать. Вы уже на пути к вашей цели %1$s, не останавливайтесь сейчас!</item>
     </string-array>
     <string-array name="notification_loans">
-        <item>Не забывайте о предстоящей обязательной выплате %1$s. Обеспечьте достаточный баланс на счету к %2$s.</item>
-        <item>%1$s у Вас будет обязательное списание %2$s. Убедитесь, что у вас достаточно средств.</item>
-        <item>Обратите внимание, что %1$s будет обязательное списание %2$s. Подготовьтесь заранее.</item>
-        <item>Планируете ли вы свои расходы на предстоящую обязательную выплату %1$s? Убедитесь, что Вы готовы к ней.\n
+        <item>Не забывайте о предстоящей обязательной выплате %1$s.\nОбеспечьте достаточный баланс на счету к %2$s.</item>
+        <item>%2$s у Вас будет обязательное списание %1$s.</item>
+        <item>Обратите внимание, что %2$s будет обязательное списание %1$s. Подготовьтесь заранее.</item>
+        <item>Планируете ли вы свои расходы на предстоящую обязательную выплату %1$s?\n
         %2$s произойдет списание.</item>
     </string-array>
     <string-array name="notification_sub">
@@ -2750,6 +2750,7 @@
     <string name="abc_shareactionprovider_share_with_application">Share with <ns2:g example="Mail" id="application_name">%s</ns2:g></string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
     <string name="action_settings">Settings</string>
+    <string name="activeSubs">Активные</string>
     <string name="add">Добавить</string>
     <string name="all_history">Общая</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
@@ -2782,7 +2783,7 @@
     <string name="call_notification_incoming_text">Incoming call</string>
     <string name="call_notification_ongoing_text">Ongoing call</string>
     <string name="call_notification_screening_text">Screening an incoming call</string>
-    <string name="cancelledSubs">Отмененные подписки</string>
+    <string name="cancelledSubs">Отмененные</string>
     <string name="car">Транспорт</string>
     <string name="card_add_basic">Сделать основным</string>
     <string name="card_expence_rem">осталось из</string>
@@ -2826,6 +2827,9 @@
     <string name="common_signin_button_text_long">Sign in with Google</string>
     <string name="copy_toast_msg">Link copied to clipboard</string>
     <string name="dateExpence">Дата</string>
+    <string name="dateLoanCurrent">Следущая: %1$s</string>
+    <string name="dateLoanEnd">Срок: %1$s</string>
+    <string name="dateLoans">Период выплат</string>
     <string name="dateSubs">Дата начала подписки</string>
     <string name="defaultTime">12:00</string>
     <string name="default_web_client_id" translatable="false">480721209154-7s727dt7jqmnvlsvqqss5grs0h0eg5q0.apps.googleusercontent.com</string>
@@ -2856,6 +2860,7 @@
     <string name="finish">Готово</string>
     <string name="firebase_database_url" translatable="false">https://mybudget-1b117-default-rtdb.firebaseio.com</string>
     <string name="gcm_defaultSenderId" translatable="false">480721209154</string>
+    <string name="goal_notification">Уведомления о целях</string>
     <string name="goalsName">Название цели</string>
     <string name="google_api_key" translatable="false">AIzaSyDLhvlzlD6LNP0KVP4YgGJpLyM4K4a-V7U</string>
     <string name="google_app_id" translatable="false">1:480721209154:android:1715d30d7eb024a872aadb</string>
@@ -2872,7 +2877,10 @@
     <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="home">Дом</string>
     <string description="Content description for an icon that appears in the title area of a dialog" name="icon_content_description">Dialog Icon</string>
+    <string name="inPlan">В планах потратить %1$s</string>
     <string name="item_view_role_description">Tab</string>
+    <string name="loanFinished"> Выплаченные</string>
+    <string name="loan_notification">Уведомления о важных выплатах</string>
     <string name="log_in">Войти</string>
     <string name="log_in_google">Или войдите, используя</string>
     <string name="m3_exceed_max_badge_text_suffix" translatable="false"><ns2:g example="Some te" id="part of a long text">%1$s</ns2:g><ns2:g example="…" id="suffix">%2$s</ns2:g></string>
@@ -2988,16 +2996,19 @@
     <string description="Button text to indicate that the widget will ignore the user&apos;s selection [CHAR_LIMIT=16]" name="mtrl_timepicker_cancel">Cancel</string>
     <string description="Button text to indicate that the widget will save the user&apos;s selection [CHAR_LIMIT=16]" name="mtrl_timepicker_confirm">OK</string>
     <string name="nameBudgetSubs">Счет: %1$s</string>
+    <string name="nameLoans">Название платежа</string>
     <string name="nameSubs">Название подписки</string>
     <string name="nature">Природа</string>
     <string name="nav_app_bar_navigate_up_description">Navigate up</string>
     <string name="nav_app_bar_open_drawer_description">Open navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_exit">Выход</string>
     <string name="nav_header_subtitle">Баланс: </string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="newAccount">Регистрация в приложении MyBudget</string>
     <string name="next">Далее</string>
+    <string name="onceLoans">Одноразовый</string>
     <string name="other">Другое</string>
     <string name="page_finance_category">Категории расходов</string>
     <string name="page_finance_finances">Сбережения</string>
@@ -3009,14 +3020,17 @@
     <string name="path_password_eye_mask_strike_through" translatable="false">M2,4.27 L19.73,22 L22.27,19.46 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
     <string name="path_password_eye_mask_visible" translatable="false">M2,4.27 L2,4.27 L4.54,1.73 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
     <string name="path_password_strike_through" translatable="false">M3.27,4.27 L19.74,20.74</string>
+    <string name="periodLoans">Выбирите даты...</string>
     <string name="periodTitle">Периодичность напоминаний</string>
     <string name="periodicityBillingweek">неделю</string>
     <string name="pet">Питомцы</string>
     <string name="plan">Запланировать</string>
+    <string name="plan_notification">Уведомления о планах</string>
     <string name="plans">Планы</string>
     <string name="priority">Приоритет: %1$s</string>
     <string name="project_id" translatable="false">mybudget-1b117</string>
     <string name="reSubs">Восстановить</string>
+    <string name="regularLoans">Многоразовый</string>
     <string name="remaind">%1$s %2$s</string>
     <string name="restaurants">Рестораны и кафе</string>
     <string name="save">Сохранить</string>
@@ -3033,6 +3047,7 @@
     <string name="sign_up_reason">Пройдите регистрацию, чтобы не потерять данные</string>
     <string name="smile">Развлечения</string>
     <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="subscribe_notification">Уведомления о подписках</string>
     <string name="target">/%1$s</string>
     <string name="timeTitle">Время</string>
     <string name="titleGoals">Введите желаемую сумму</string>

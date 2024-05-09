@@ -4,10 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
+import android.provider.Settings
+import androidx.core.app.NotificationManagerCompat
 import java.security.MessageDigest
 import java.util.Calendar
 import kotlin.math.abs
@@ -20,16 +18,14 @@ object NotificationManager {
         return abs(hexString.hashCode() and Int.MAX_VALUE)
     }
 
-    fun setAutoTransaction(context: Context, id:String, placeId:String, budgetId:String, year: Int, month:Int, dateOfExpence: Calendar, amount:String, baseAmount:String){
+    fun setAutoTransaction(context: Context, id:String, placeId:String, budgetId:String, year: Int, month:Int, dateOfExpence: Calendar, type:String){
         val transactionIntent = Intent(context, TransactionReceiver::class.java).apply {
             putExtra("categoryId", placeId)
             putExtra("budgetId", budgetId)
             putExtra("year", year.toString())
             putExtra("month", month.toString())
-            putExtra("amount", amount)
-            putExtra("baseAmount", baseAmount)
             putExtra("planId", id)
-
+            putExtra("type", type)
         }
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, dateOfExpence.get(Calendar.YEAR))
@@ -67,11 +63,18 @@ object NotificationManager {
     }
 
      fun notification(context: Context, channelID:String, id:String, placeId:String?=null, time:String, dateOfExpence:Calendar, periodOfNotification:String){
+         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+             NotificationManagerCompat.from(context).apply {
+                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                     putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                 }
+                 context.startActivity(intent)
+             }
+         }
+
          val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
              putExtra("channelID", channelID)
-             /*putExtra("notificationID", id)*/
              putExtra("placeId", placeId?:id)
-             /*putExtra("time",time)*/
              putExtra("date", dateOfExpence.timeInMillis)
         }
         val calendar = Calendar.getInstance()

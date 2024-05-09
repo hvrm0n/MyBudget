@@ -2,7 +2,6 @@ package com.example.mybudget.drawersection.finance.category
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,6 @@ class InnerAdapter(private val context: Context, private val categories: List<Pa
     }
 
     fun changeSelectedIcon(newIcon:String, cardView: LinearLayout){
-        Log.e("newIcon", newIcon)
         selectedIcon = newIcon
         cardViewOld?.backgroundTintList =
             ColorStateList.valueOf(ContextCompat.getColor(context, R.color.very_light_green))

@@ -41,8 +41,8 @@
             tools:text="Имя Фамилия"
             android:textStyle="bold"
             android:layout_gravity="center"
-            android:textColor="@color/dark_green"
-            android:textSize="@dimen/subtitle" />
+            android:textColor="@color/light"
+            android:textSize="@dimen/regText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
             android:text="@string/nav_header_subtitle"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textColor="@color/dark_green"
-            android:textSize="@dimen/subtitle"/>
+            android:textColor="@color/light"
+            android:textSize="@dimen/regText"/>
 
         <TextView
             android:id="@+id/currentBalance"
@@ -59,9 +59,9 @@
             android:layout_height="match_parent"
             tools:text="235000Р"
             android:textStyle="bold"
-            android:textColor="@color/dark_green"
+            android:textColor="@color/light"
             android:layout_gravity="center"
-            android:textSize="@dimen/subtitle"/>
+            android:textSize="@dimen/regText"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -24,6 +24,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.ExchangeRateManager
+import com.example.mybudget.NotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
@@ -38,9 +39,9 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private val TYPE_GOAL = 2
     private val TYPE_ADD = 1
-    private var placeNotReached = false
-    private var placeActive = false
-    private var placeReach = false
+    private var placeNotReached = -1
+    private var placeActive = -1
+    private var placeReach = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
@@ -58,9 +59,9 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
 
     fun updateData(newGoal: List<GoalItemWithKey>) {
         goals = newGoal
-        placeActive = false
-        placeNotReached = false
-        placeReach = false
+        placeActive = -1
+        placeNotReached = -1
+        placeReach = -1
         notifyDataSetChanged()
     }
 
@@ -71,6 +72,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             .child(goals[position].key)
             .child("deleted")
             .setValue(true)
+        NotificationManager.cancelAlarmManager(context, goals[position].key)
     }
 
     fun editItemAtPosition(position: Int){
@@ -127,12 +129,12 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 } else -> goalDate.visibility = View.GONE
             }
 
-            if (position!=0 && !goals[position-1].goalItem.isReached && !placeReach && goalItem.goalItem.isReached||
-                goalItem.goalItem.isReached && !placeReach){
+            if (position!=0 && !goals[position-1].goalItem.isReached && placeReach == -1 && goalItem.goalItem.isReached||
+                goalItem.goalItem.isReached && placeReach == -1 || placeReach == position){
                 reachedGoals.visibility = View.VISIBLE
                 reachedGoals.text = "Достигнутые"
-                placeReach = true
-            } else if(goalItem.goalItem.date!=null && !goalItem.goalItem.isReached && !placeNotReached){
+                placeReach = position
+            } else if(goalItem.goalItem.date!=null && !goalItem.goalItem.isReached && placeNotReached == -1 || placeNotReached == position){
                 val date = goalItem.goalItem.date!!.split(".")
                 val calendar = Calendar.getInstance()
                 calendar.set(date[2].toInt(), date[1].toInt()-1, date[0].toInt(),0, 0, 0)
@@ -144,16 +146,16 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 }.timeInMillis > calendar.timeInMillis){
                     reachedGoals.text = "Просроченные"
                     reachedGoals.visibility = View.VISIBLE
-                    placeNotReached = true
-                } else if (!placeActive){
+                    placeNotReached = position
+                } else if (placeActive == -1 || placeActive == position){
                     reachedGoals.text = "Активные"
                     reachedGoals.visibility = View.VISIBLE
-                    placeActive = true
+                    placeActive = position
                 }
-            } else if (!goalItem.goalItem.isReached && !placeActive){
+            } else if (!goalItem.goalItem.isReached && placeActive == -1 || placeActive == position){
                 reachedGoals.text = "Активные"
                 reachedGoals.visibility = View.VISIBLE
-                placeActive = true
+                placeActive = position
             }
             else {
                 reachedGoals.visibility = View.GONE
@@ -270,6 +272,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() + goalValue).replace(",", ".")
             if(goalItem.goalItem.current.toDouble()>=goalItem.goalItem.target.toDouble()){
                 goalItem.goalItem.isReached = true
+                NotificationManager.cancelAlarmManager(context, goalItem.key)
             }
             budgetItem.budgetItem.amount = "%.2f".format( budgetItem.budgetItem.amount.toDouble() - budgetValue).replace(",", ".")
             budgetItem.budgetItem.count ++
@@ -343,7 +346,6 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
         //goalItemCurrency - валюта цели
         private fun convertValue(goalsNewValue: EditText, goalsBudgetValue: EditText, budgetItemCurrency: String, goalItemCurrency: String){
             val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(context)
-            Log.e("convertValue_enter", currencyConvertor.toString())
             if(currencyConvertor!=null){
                 when (budgetItemCurrency){
                     currencyConvertor.baseCode->{

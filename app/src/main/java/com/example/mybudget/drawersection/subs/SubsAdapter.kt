@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mybudget.NotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
@@ -27,13 +28,14 @@ import java.util.Locale
 
 class SubsAdapter(private val context: Context, private var subs: List<SubItemWithKey>, val table: DatabaseReference, val auth: FirebaseAuth, val financeViewModel: FinanceViewModel, private val parentFragment:Fragment):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    private val TYPE_GOAL = 2
+    private val TYPE_SUB = 2
     private val TYPE_ADD = 1
-    private var cancelled = false
+    private var cancelled = -1
+    private var active = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
-            TYPE_GOAL->{
+            TYPE_SUB->{
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.card_subs, parent, false)
                 GoalViewHolder(view)
             }
@@ -47,11 +49,15 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
 
     fun updateData(newSub: List<SubItemWithKey>) {
         subs = newSub
-        cancelled = false
+        cancelled = -1
+        active = -1
         notifyDataSetChanged()
     }
 
     fun deleteItemAtPosition(position: Int){
+        NotificationManager.cancelAlarmManager(context, subs[position].key)
+        NotificationManager.cancelAutoTransaction(context, subs[position].key)
+
         table.child("Users")
             .child(auth.currentUser!!.uid)
             .child("Subs")
@@ -64,7 +70,7 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
         val bundle = Bundle()
         bundle.putString("key", subs[position].key)
         bundle.putString("type", "sub")
-        parentFragment.findNavController().navigate(R.id.action_nav_goals_to_newGLSFragment, bundle)
+        parentFragment.findNavController().navigate(R.id.action_nav_subs_to_newGLSFragment, bundle)
     }
 
     override fun getItemCount(): Int {
@@ -73,7 +79,7 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
 
     override fun getItemViewType(position: Int): Int {
         return if (position < subs.size) {
-            TYPE_GOAL
+            TYPE_SUB
         } else {
             TYPE_ADD
         }
@@ -106,10 +112,12 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
 
             when(subItem.subItem.isCancelled){
                 true->{
-                    if (!cancelled) {
+                    if (cancelled == -1 || cancelled == position) {
+                        cancelledSub.text = context.resources.getString(R.string.cancelledSubs)
                         cancelledSub.visibility = View.VISIBLE
-                        cancelled = true
+                        cancelled = position
                     } else cancelledSub.visibility = View.GONE
+                    subDate.visibility = View.GONE
                     cancelSub.visibility = View.GONE
                     paidSub.text = context.resources.getString(R.string.reSubs)
                     paidSub.setOnClickListener {
@@ -123,7 +131,15 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                 }
 
                 false->{
-                    cancelledSub.visibility = View.GONE
+                    if (active == -1 || active == position) {
+                        cancelledSub.text = context.resources.getString(R.string.activeSubs)
+                        cancelledSub.visibility = View.VISIBLE
+                        active = position
+                    }
+                    else{
+                        cancelledSub.visibility = View.GONE
+                    }
+                    subDate.visibility = View.VISIBLE
                     cancelSub.visibility = View.VISIBLE
                     paidSub.text = context.resources.getString(R.string.card_sub_paid)
                     cancelSub.setOnClickListener {
@@ -133,6 +149,8 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                             .child(subItem.key)
                             .child("cancelled")
                             .setValue(true)
+                        NotificationManager.cancelAlarmManager(context, subItem.key)
+                        NotificationManager.cancelAutoTransaction(context, subItem.key)
                     }
 
                     paidSub.setOnClickListener {
@@ -156,12 +174,19 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                 budgetItem.budgetItem.amount =  "%.2f".format(budgetItem.budgetItem.amount.toDouble() - subItem.subItem.amount.toDouble()).replace(",", ".")
                 budgetItem.budgetItem.count++
 
+
                 budgetReference.setValue(budgetItem.budgetItem).addOnSuccessListener {
                     val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(subItem.subItem.date)
                     val calendar = Calendar.getInstance().apply {
                         time = date!!
-                        timeInMillis += subItem.subItem.period
                     }
+                    calendar.add(when(subItem.subItem.period.split(" ")[1]){
+                        "d"->Calendar.DAY_OF_MONTH
+                        "w"->Calendar.WEEK_OF_MONTH
+                        "m"->Calendar.MONTH
+                        else->Calendar.YEAR
+                    }, subItem.subItem.period.split(" ")[0].toInt())
+
                     subItem.subItem.date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(calendar.time)
                     table.child("Users").child(auth.currentUser!!.uid).child("Subs").child(subItem.key).setValue(subItem.subItem).addOnSuccessListener {
                         val historyItem = table.child("Users").child(auth.currentUser!!.uid).child("History")

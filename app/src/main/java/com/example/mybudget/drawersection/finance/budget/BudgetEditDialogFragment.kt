@@ -22,6 +22,7 @@ import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
 import com.example.mybudget.drawersection.finance.SharedViewModel
 import com.example.mybudget.drawersection.finance.category._CategoryItem
+import com.example.mybudget.drawersection.subs.SubItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -68,12 +69,11 @@ class BudgetEditDialogFragment:DialogFragment() {
             if (data!=null && data.first.isNotEmpty()){
                 currency.text = data.third
                 if (requireArguments().getString("basicCurrency")==null){
-                    etAmount.setText(changeCurrencyAmount(oldCurrency?:requireArguments().getString("currency")!!,
+                    etAmount.setText(changeCurrencyAmount(
+                        oldCurrency = oldCurrency?:requireArguments().getString("currency")!!,
                         newCurrency = data.first,
                         newAmount = etAmount.text.toString(),
-                        context = requireContext(),
-
-                        ))
+                        context = requireContext()))
                 }
                 selection = data
                 sharedViewModel.dataToPass.value = Triple("","","")
@@ -117,12 +117,15 @@ class BudgetEditDialogFragment:DialogFragment() {
                                             .setValue(
                                                 _BudgetItem(
                                                     etName.text.toString(),
-                                                    changeCurrencyAmount(currencyShort!!,
-                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*key,*/ context),
+                                                    etAmount.text.toString(),
                                                     spinnerType.selectedItem.toString(),
                                                     transaction?.toInt() ?: 0,
-                                                    changeCurrency(currencyShort,
-                                                        selection.first.ifEmpty { currencyShort }, key, context, false)))
+                                                    changeCurrency(currencyShort!!,
+                                                        selection.first.ifEmpty { currencyShort }, key, context,
+                                                        baseChanged = false,
+                                                        checkBox = false,
+                                                        selection.first.isNotEmpty(),
+                                                        null)))
                                 } else {
                                         table.child("Users").child(auth.currentUser!!.uid)
                                             .child("Budgets").child("Base budget")
@@ -139,15 +142,29 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                     for (months in years.children){
                                                                         for (historyItem in months.children){
                                                                             historyItem.getValue(HistoryItem::class.java)?.let {
-                                                                                when (it.budgetId){
-                                                                                    "Base budget" ->{
-                                                                                        table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("budgetId").setValue(key)
-
+                                                                                    when (it.budgetId){
+                                                                                        "Base budget" ->{
+                                                                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                                                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("budgetId").setValue(key)
+                                                                                        }
+                                                                                        key-> {
+                                                                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("budgetId").setValue("Base budget")
+                                                                                        }
+                                                                                        else ->{}
                                                                                     }
-                                                                                    key-> table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                                                        .child(years.key.toString()).child(months.key.toString()).child(it.key).child("budgetId").setValue("Base budget")
-                                                                                    else ->{}
+                                                                                if (it.isTransfer == true ){
+                                                                                    when (it.placeId){
+                                                                                        "Base budget" ->{
+                                                                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                                                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("placeId").setValue(key)
+                                                                                        }
+                                                                                        key-> {
+                                                                                            table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                                                                                .child(years.key.toString()).child(months.key.toString()).child(it.key).child("placeId").setValue("Base budget")
+                                                                                        }
+                                                                                        else ->{}
+                                                                                    }
                                                                                 }
                                                                             }
                                                                         }
@@ -175,37 +192,65 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                             }
                                                                         }
 
-
-                                                                        table.child("Users")
-                                                                            .child(auth.currentUser!!.uid)
-                                                                            .child("Budgets").child("Base budget")
-                                                                            .setValue(
-                                                                                _BudgetItem(
-                                                                                    etName.text.toString(),
-                                                                                    changeCurrencyAmount(currencyShort!!,
-                                                                                        selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*"Base budget",*/ context),
-                                                                                    spinnerType.selectedItem.toString(),
-                                                                                    transaction?.toInt() ?: 0,
-                                                                                    changeCurrency(currencyShort,
-                                                                                        selection.first.ifEmpty { currencyShort }, "Base budget", context, true)))
-                                                                            .addOnCompleteListener {
+                                                                        table.child("Users").child(auth.currentUser!!.uid).child("Subs").addListenerForSingleValueEvent(object : ValueEventListener{
+                                                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                                                for (sub in snapshot.children){
+                                                                                    sub.getValue(SubItem::class.java)?.let {
+                                                                                        when (it.budgetId){
+                                                                                            "Base budget"->{
+                                                                                                table.child("Users")
+                                                                                                    .child(auth.currentUser!!.uid)
+                                                                                                    .child("Subs")
+                                                                                                    .child(sub.key.toString())
+                                                                                                    .child("budgetId")
+                                                                                                    .setValue(key)
+                                                                                            }
+                                                                                            key->{table.child("Users")
+                                                                                                .child(auth.currentUser!!.uid)
+                                                                                                .child("Subs")
+                                                                                                .child(sub.key.toString())
+                                                                                                .child("budgetId")
+                                                                                                .setValue("Base budget")
+                                                                                            }
+                                                                                            else->{}
+                                                                                        }
+                                                                                    }
+                                                                                }
                                                                                 table.child("Users")
                                                                                     .child(auth.currentUser!!.uid)
-                                                                                    .child("Budgets")
-                                                                                    .child("Other budget")
-                                                                                    .child(key!!)
-                                                                                    .setValue(baseOld)
+                                                                                    .child("Budgets").child("Base budget")
+                                                                                    .setValue(
+                                                                                        _BudgetItem(
+                                                                                            etName.text.toString(),
+                                                                                            etAmount.text.toString(),
+                                                                                            spinnerType.selectedItem.toString(),
+                                                                                            transaction?.toInt() ?: 0,
+                                                                                            changeCurrency(currencyShort!!,
+                                                                                                selection.first.ifEmpty { currencyShort }, "Base budget", context,
+                                                                                                baseChanged = true,
+                                                                                                checkBox = true,
+                                                                                                selection.first.isNotEmpty(),
+                                                                                                baseOld.currency)))
                                                                                     .addOnCompleteListener {
-                                                                                        dialog.dismiss()
+                                                                                        table.child("Users")
+                                                                                            .child(auth.currentUser!!.uid)
+                                                                                            .child("Budgets")
+                                                                                            .child("Other budget")
+                                                                                            .child(key!!)
+                                                                                            .setValue(baseOld)
+                                                                                            .addOnCompleteListener {
+                                                                                                dialog.dismiss()
+                                                                                            }
                                                                                     }
                                                                             }
+                                                                            override fun onCancelled(error: DatabaseError) {}}
+                                                                        )
                                                                     }
                                                                     override fun onCancelled(error: DatabaseError) {}}
                                                                 )
-                                                                }
+                                                            }
                                                             override fun onCancelled(error: DatabaseError) {}}
                                                         )
-
                                                     }
                                                 }
 
@@ -222,12 +267,15 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 .setValue(
                                     _BudgetItem(
                                         etName.text.toString(),
-                                        changeCurrencyAmount(currencyShort!!,
-                                            selection.first.ifEmpty { currencyShort },etAmount.text.toString(), /*"Base budget",*/ context),
+                                        etAmount.text.toString(),
                                         spinnerType.selectedItem.toString(),
                                         transaction?.toInt() ?: 0,
-                                        changeCurrency(currencyShort,
-                                            selection.first.ifEmpty { currencyShort }, "Base budget", context, true))
+                                        changeCurrency(currencyShort!!,
+                                            selection.first.ifEmpty { currencyShort }, "Base budget", context,
+                                            baseChanged = true,
+                                            checkBox = false,
+                                            selection.first.isNotEmpty(),
+                                            null))
                                 ).addOnCompleteListener {
                                     dialog.dismiss()
                                 }
@@ -346,302 +394,253 @@ class BudgetEditDialogFragment:DialogFragment() {
     }
 
     private fun changeCurrencyAmount(oldCurrency: String, newCurrency: String,newAmount:String, /*budgetKey: String, */context: Context):String{
-        /*if(newAmount==budgetViewModel.budgetLiveData.value?.find { it.key == budgetKey }!!.budgetItem.amount && newCurrency!=newAmount){*/
             val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(context)
             if(currencyConvertor!=null){
                 return when (oldCurrency){
                     currencyConvertor.baseCode->{
-                        String.format("%.2f", newAmount.toDouble()/*budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*/*currencyConvertor.conversionRates[newCurrency]!!).replace(',','.')
+                        "%.2f".format( newAmount.toDouble()*currencyConvertor.conversionRates[newCurrency]!!).replace(',','.')
                     }
                     else->{
-                        String.format("%.2f", newAmount.toDouble()/*budgetViewModel.budgetLiveData.value?.find {budgetList-> budgetList.key == budgetKey }!!.budgetItem.amount.toDouble()*/*currencyConvertor.conversionRates[newCurrency]!!/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')
+                        "%.2f".format(newAmount.toDouble()*currencyConvertor.conversionRates[newCurrency]!!/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')
                     }
                 }
             }
-       /* }*/
         return newAmount
     }
-    private fun changeCurrency(oldCurrency:String, newCurrency:String, budgetKey:String, context: Context, baseChanged:Boolean):String{
+
+    private fun changeCurrency(oldCurrency:String, newCurrency:String, budgetKey:String, context: Context, baseChanged: Boolean, checkBox: Boolean, newSelection:Boolean, oldBaseCurrency:String?):String{
         val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(context)
-        if(oldCurrency!=newCurrency){
-            if(currencyConvertor!=null){
-                when (oldCurrency){
-                    currencyConvertor.baseCode->{
-                        if(newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency){
-                            table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(budgetViewModel.historyLiveData.value?.find {historyList-> historyList.key == it.key }!!.baseAmount)
-                                                    }
+        if((oldCurrency!=newCurrency || checkBox || baseChanged) && currencyConvertor!=null){
+            table.child("Users").child(auth.currentUser!!.uid)
+                .child("History")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (years in snapshot.children){
+                        for (months in years.children){
+                            for (historyItem in months.children){
+                                historyItem.getValue(HistoryItem::class.java)?.let {history->
+                                    if (history.budgetId == budgetKey || history.placeId == budgetKey || baseChanged){
+                                        when{
+                                            newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
+                                                    && history.isCategory == true  && history.budgetId == budgetKey && newSelection-> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("amount")
+                                                    .setValue(history.baseAmount)
                                                 }
-                                            }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
 
-                            table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(budgetViewModel.planLiveData.value?.find {planList-> planList.key == it.key }!!.baseAmount)
-                                                    }
-                                                }
+                                            history.isTransfer == true && budgetKey == history.placeId && (!checkBox || newSelection)-> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("amount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!)
+                                                    .replace(',', '.'))
                                             }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
-                        }
-                        else{
-                            table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.'))
-                                                    }
-                                                }
+                                            (history.isLoan == true || history.isGoal == true || history.isSub == true || history.placeId.isEmpty())
+                                                    && budgetKey == history.budgetId && (!checkBox || newSelection) -> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("amount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
                                             }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
 
-                            table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')).addOnCompleteListener {
-                                                            }
-                                                    }
+                                            history.isCategory == true  && budgetKey == history.budgetId && (!checkBox || newSelection) ->{
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("amount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
+
+                                            }
+                                        }
+
+                                        when{
+                                            history.isCategory == true  && baseChanged-> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("baseAmount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.baseAmount.toDouble() / currencyConvertor.conversionRates[if (checkBox) oldBaseCurrency else oldCurrency]!!).replace(',', '.'))
+
+                                                if (budgetKey == history.budgetId){
+                                                    table.child("Users")
+                                                        .child(auth.currentUser!!.uid)
+                                                        .child("History")
+                                                        .child(years.key.toString())
+                                                        .child(months.key.toString())
+                                                        .child(history.key)
+                                                        .child("amount")
+                                                        .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.baseAmount.toDouble() / currencyConvertor.conversionRates[if (checkBox) oldBaseCurrency else oldCurrency]!!).replace(',', '.'))
                                                 }
+                                            }
+
+                                            (history.isTransfer == true ||  history.isSub == true || history.placeId.isEmpty()) && budgetKey == history.budgetId && (!checkBox || newSelection)-> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(history.key)
+                                                    .child("baseAmount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.baseAmount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
                                             }
                                         }
                                     }
                                 }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
-                        }
-                    }
-
-                    else->{
-                        if(newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency){
-                            table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(budgetViewModel.historyLiveData.value?.find {historyList-> historyList.key == it.key }!!.baseAmount)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
-
-                            table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let {
-                                                    if (it.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(it.key).child("amount").setValue(budgetViewModel.planLiveData.value?.find {planList-> planList.key == it.key }!!.baseAmount)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
-
-                        }
-                        else{
-                            table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let { history->
-                                                    if (history.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(history.key).child("amount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*history.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')).addOnCompleteListener {
-                                                                if(history.budgetId=="Base budget"){
-                                                                    table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                                        .child(years.key.toString()).child(months.key.toString()).child(history.key).child("baseAmount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*history.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.'))
-                                                                }
-                                                            }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
-
-                            table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children){
-                                        for (months in years.children){
-                                            for (historyItem in months.children){
-                                                historyItem.getValue(HistoryItem::class.java)?.let { history->
-                                                    if (history.budgetId == budgetKey){
-                                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                            .child(years.key.toString()).child(months.key.toString()).child(history.key).child("amount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*history.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.')).addOnCompleteListener {
-                                                                if(history.budgetId=="Base budget"){
-                                                                    table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                                        .child(years.key.toString()).child(months.key.toString()).child(history.key).child("baseAmount").setValue(String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*history.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.'))
-                                                                }
-                                                            }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                override fun onCancelled(error: DatabaseError) {}}
-                            )
+                            }
                         }
                     }
                 }
-            }
-        }
+                override fun onCancelled(error: DatabaseError) {}}
+            )
 
-        if(budgetKey == "Base budget" && currencyConvertor!=null && baseChanged){
-            val oldCurrency2 = budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
-            when (oldCurrency2){
-                currencyConvertor.baseCode->{
-                        table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-                            .addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (years in snapshot.children) {
-                                        for (months in years.children) {
-                                            for (type in months.children) {
-                                                for (categoryItem in type.children) {
-                                                    categoryItem.getValue(_CategoryItem::class.java)
-                                                        ?.let {
-                                                            val categoryItemNew = it
-                                                            when (categoryItemNew.remainder) {
-                                                                "0" -> {
-                                                                    categoryItemNew.total =
-                                                                        String.format(
-                                                                            "%.2f",
-                                                                            currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.total.toDouble()
-                                                                        ).replace(',', '.')
-                                                                }
-
-                                                                else -> {
-                                                                    categoryItemNew.total =
-                                                                        String.format(
-                                                                            "%.2f",
-                                                                            currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.total.toDouble()
-                                                                        ).replace(',', '.')
-                                                                    categoryItemNew.remainder =
-                                                                        String.format(
-                                                                            "%.2f",
-                                                                            currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.remainder.toDouble()
-                                                                        ).replace(',', '.')
-                                                                }
-                                                            }
-                                                            table.child("Users")
-                                                                .child(auth.currentUser!!.uid)
-                                                                .child("Categories")
-                                                                .child(years.key.toString())
-                                                                .child(months.key.toString())
-                                                                .child(type.key.toString())
-                                                                .child(categoryItem.key!!)
-                                                                .setValue(it)
-                                                        }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {}
-                            }
-                            )
-
-                    table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (years in snapshot.children){
-                                for (months in years.children){
-                                    for (historyItem in months.children){
-                                        historyItem.getValue(HistoryItem::class.java)?.let {
-                                                if(it.isCategory==true){
-                                                    table.child("Users").child(auth.currentUser!!.uid).child("History")
-                                                    .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                        when(it.budgetId){
-                                                            "Base budget" -> it.amount
-                                                            else ->
-                                                        String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/).replace(',','.')})
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        override fun onCancelled(error: DatabaseError) {}}
-                    )
-
-                    table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (years in snapshot.children){
-                                for (months in years.children){
-                                    for (historyItem in months.children){
-                                        historyItem.getValue(HistoryItem::class.java)?.let {
-                                            if(it.isCategory==true) {
-                                                table.child("Users").child(auth.currentUser!!.uid)
+            table.child("Users").child(auth.currentUser!!.uid).child("Plan")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (years in snapshot.children){
+                        for (months in years.children){
+                            for (historyItem in months.children){
+                                historyItem.getValue(HistoryItem::class.java)?.let { plan->
+                                    if (plan.budgetId == budgetKey || baseChanged) {
+                                        when {
+                                            newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
+                                                    &&  plan.budgetId == budgetKey && newSelection-> {
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
                                                     .child("Plan")
                                                     .child(years.key.toString())
-                                                    .child(months.key.toString()).child(it.key)
-                                                    .child("baseAmount").setValue(
-                                                        when (it.budgetId) {
-                                                            "Base budget" -> it.amount
-                                                            else ->
-                                                                String.format(
-                                                                    "%.2f",
-                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.baseAmount.toDouble()/*/currencyConvertor.conversionRates[oldCurrency2]!!*/
-                                                                ).replace(',', '.')
-                                                        }
+                                                    .child(months.key.toString())
+                                                    .child(plan.key).child("amount")
+                                                    .setValue(plan.baseAmount)
+                                            }
+                                            plan.budgetId == budgetKey && newSelection ->{
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("Plan")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(plan.key).child("amount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * plan.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.')
                                                     )
                                             }
                                         }
+
+                                        if (baseChanged){
+                                            table.child("Users")
+                                                .child(auth.currentUser!!.uid)
+                                                .child("Plan")
+                                                .child(years.key.toString())
+                                                .child(months.key.toString())
+                                                .child(plan.key).child("baseAmount")
+                                                .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!!*plan.baseAmount.toDouble()/currencyConvertor.conversionRates[if (checkBox) oldBaseCurrency else oldCurrency]!!).replace(',','.'))
+
+                                            if (budgetKey == plan.budgetId){
+                                                table.child("Users")
+                                                    .child(auth.currentUser!!.uid)
+                                                    .child("History")
+                                                    .child(years.key.toString())
+                                                    .child(months.key.toString())
+                                                    .child(plan.key)
+                                                    .child("amount")
+                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * plan.baseAmount.toDouble() / currencyConvertor.conversionRates[if (checkBox) oldBaseCurrency else oldCurrency]!!).replace(',', '.'))
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                        override fun onCancelled(error: DatabaseError) {}}
-                    )
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {}}
+            )
+
+            table.child("Users").child(auth.currentUser!!.uid).child("Subs").addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (sub in snapshot.children){
+                        sub.getValue(SubItem::class.java)?.let {
+                            if (it.budgetId == budgetKey ){
+                                table.child("Users")
+                                    .child(auth.currentUser!!.uid)
+                                    .child("Subs")
+                                    .child(sub.key.toString())
+                                    .child("amount")
+                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!!*it.amount.toDouble()/currencyConvertor.conversionRates[oldCurrency]!!).replace(',','.'))
+                            }
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {}}
+            )
+        }
+
+        if(budgetKey == "Base budget" && currencyConvertor!=null && baseChanged){
+            when (oldBaseCurrency?:oldCurrency){
+                currencyConvertor.baseCode->{
+                    table.child("Users").child(auth.currentUser!!.uid).child("Categories")
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                for (years in snapshot.children) {
+                                    for (months in years.children) {
+                                        for (type in months.children) {
+                                            for (categoryItem in type.children) {
+                                                categoryItem.getValue(_CategoryItem::class.java)
+                                                    ?.let {
+                                                        val categoryItemNew = it
+                                                        when (categoryItemNew.remainder) {
+                                                            "0" -> {
+                                                                categoryItemNew.total =
+                                                                    "%.2f".format(
+                                                                        currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.total.toDouble()
+                                                                    ).replace(',', '.')
+                                                            }
+
+                                                            else -> {
+                                                                categoryItemNew.total =
+                                                                    "%.2f".format(
+                                                                        currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.total.toDouble()
+                                                                    ).replace(',', '.')
+                                                                categoryItemNew.remainder =
+                                                                    "%.2f".format(
+                                                                        currencyConvertor.conversionRates[newCurrency]!! * categoryItemNew.remainder.toDouble()
+                                                                    ).replace(',', '.')
+                                                            }
+                                                        }
+                                                        table.child("Users")
+                                                            .child(auth.currentUser!!.uid)
+                                                            .child("Categories")
+                                                            .child(years.key.toString())
+                                                            .child(months.key.toString())
+                                                            .child(type.key.toString())
+                                                            .child(categoryItem.key!!)
+                                                            .setValue(it)
+                                                    }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {}
+                        }
+                        )
                 }
 
                 else-> {
@@ -656,21 +655,18 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                     ?.let {
                                                         when (it.remainder) {
                                                             "0" -> {
-                                                                it.total = String.format(
-                                                                    "%.2f",
-                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.total.toDouble() / currencyConvertor.conversionRates[oldCurrency2]!!
+                                                                it.total = "%.2f".format(
+                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.total.toDouble() / currencyConvertor.conversionRates[oldBaseCurrency?:oldCurrency]!!
                                                                 ).replace(',', '.')
                                                             }
 
                                                             else -> {
-                                                                it.total = String.format(
-                                                                    "%.2f",
-                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.total.toDouble() / currencyConvertor.conversionRates[oldCurrency2]!!
+                                                                it.total = "%.2f".format(
+                                                                    currencyConvertor.conversionRates[newCurrency]!! * it.total.toDouble() / currencyConvertor.conversionRates[oldBaseCurrency?:oldCurrency]!!
                                                                 ).replace(',', '.')
                                                                 it.remainder =
-                                                                    String.format(
-                                                                        "%.2f",
-                                                                        currencyConvertor.conversionRates[newCurrency]!! * it.remainder.toDouble() / currencyConvertor.conversionRates[oldCurrency2]!!
+                                                                    "%.2f".format(
+                                                                        currencyConvertor.conversionRates[newCurrency]!! * it.remainder.toDouble() / currencyConvertor.conversionRates[oldBaseCurrency?:oldCurrency]!!
                                                                     ).replace(',', '.')
                                                             }
                                                         }
@@ -692,62 +688,9 @@ class BudgetEditDialogFragment:DialogFragment() {
                             override fun onCancelled(error: DatabaseError) {}
                         }
                         )
-
-                    table.child("Users").child(auth.currentUser!!.uid).child("History").addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (years in snapshot.children){
-                                for (months in years.children){
-                                    for (historyItem in months.children){
-                                        historyItem.getValue(HistoryItem::class.java)?.let {
-                                            if (it.isCategory == true) {
-                                                table.child("Users").child(auth.currentUser!!.uid)
-                                                    .child("History")
-                                                    .child(years.key.toString())
-                                                    .child(months.key.toString()).child(it.key)
-                                                    .child("baseAmount").setValue(
-                                                        when (it.budgetId) {
-                                                            "Base budget" -> it.amount
-                                                            else -> String.format(
-                                                                "%.2f",
-                                                                currencyConvertor.conversionRates[newCurrency]!! * it.baseAmount.toDouble() / currencyConvertor.conversionRates[oldCurrency2]!!
-                                                            ).replace(',', '.')
-                                                        }
-                                                    )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        override fun onCancelled(error: DatabaseError) {}}
-                    )
-
-                    table.child("Users").child(auth.currentUser!!.uid).child("Plan").addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (years in snapshot.children){
-                                for (months in years.children){
-                                    for (historyItem in months.children){
-                                        historyItem.getValue(HistoryItem::class.java)?.let {
-                                            if(it.isCategory==true){
-                                                table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                                    .child(years.key.toString()).child(months.key.toString()).child(it.key).child("baseAmount").setValue(
-                                                        when(it.budgetId){
-                                                        "Base budget" -> it.amount
-                                                        else ->String.format("%.2f", currencyConvertor.conversionRates[newCurrency]!!*it.baseAmount.toDouble()/currencyConvertor.conversionRates[oldCurrency2]!!).replace(',','.')}
-                                                    )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        override fun onCancelled(error: DatabaseError) {}}
-                    )
-
                 }
             }
         }
         return newCurrency
     }
 }
-

@@ -32,8 +32,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_loans"
-        android:name="com.example.mybudget.drawersection.LoansFragment"
-        android:label="Важные выплаты" />
+        android:name="com.example.mybudget.drawersection.loans.LoansFragment"
+        android:label="Важные выплаты" >
+        <action
+            android:id="@+id/action_nav_loans_to_newGLSFragment"
+            app:destination="@id/newGLSFragment" />
+    </fragment>
     <fragment
         android:id="@+id/nav_subs"
         android:name="com.example.mybudget.drawersection.subs.SubsFragment"
@@ -110,6 +114,7 @@
     </fragment>
     <fragment
         android:id="@+id/newGLSFragment"
+        android:tag="gls"
         android:name="com.example.mybudget.drawersection.NewGLSFragment"
         android:label="NewGLSFragment" >
         <argument

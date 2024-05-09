@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
@@ -22,9 +23,14 @@ public final class PageLoansBinding implements ViewBinding {
   @NonNull
   public final RecyclerView loansList;
 
-  private PageLoansBinding(@NonNull DrawerLayout rootView, @NonNull RecyclerView loansList) {
+  @NonNull
+  public final NestedScrollView scwGoals;
+
+  private PageLoansBinding(@NonNull DrawerLayout rootView, @NonNull RecyclerView loansList,
+      @NonNull NestedScrollView scwGoals) {
     this.rootView = rootView;
     this.loansList = loansList;
+    this.scwGoals = scwGoals;
   }
 
   @Override
@@ -60,7 +66,13 @@ public final class PageLoansBinding implements ViewBinding {
         break missingId;
       }
 
-      return new PageLoansBinding((DrawerLayout) rootView, loansList);
+      id = R.id.scwGoals;
+      NestedScrollView scwGoals = ViewBindings.findChildViewById(rootView, id);
+      if (scwGoals == null) {
+        break missingId;
+      }
+
+      return new PageLoansBinding((DrawerLayout) rootView, loansList, scwGoals);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

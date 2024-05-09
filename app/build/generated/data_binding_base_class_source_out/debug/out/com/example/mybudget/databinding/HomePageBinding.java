@@ -4,6 +4,7 @@ package com.example.mybudget.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,13 +27,18 @@ public final class HomePageBinding implements ViewBinding {
   public final DrawerLayout drawerLayout;
 
   @NonNull
+  public final Button exitButton;
+
+  @NonNull
   public final NavigationView navView;
 
   private HomePageBinding(@NonNull DrawerLayout rootView, @NonNull AppBarMainBinding appBarMain,
-      @NonNull DrawerLayout drawerLayout, @NonNull NavigationView navView) {
+      @NonNull DrawerLayout drawerLayout, @NonNull Button exitButton,
+      @NonNull NavigationView navView) {
     this.rootView = rootView;
     this.appBarMain = appBarMain;
     this.drawerLayout = drawerLayout;
+    this.exitButton = exitButton;
     this.navView = navView;
   }
 
@@ -72,6 +78,12 @@ public final class HomePageBinding implements ViewBinding {
 
       DrawerLayout drawerLayout = (DrawerLayout) rootView;
 
+      id = R.id.exitButton;
+      Button exitButton = ViewBindings.findChildViewById(rootView, id);
+      if (exitButton == null) {
+        break missingId;
+      }
+
       id = R.id.nav_view;
       NavigationView navView = ViewBindings.findChildViewById(rootView, id);
       if (navView == null) {
@@ -79,7 +91,7 @@ public final class HomePageBinding implements ViewBinding {
       }
 
       return new HomePageBinding((DrawerLayout) rootView, binding_appBarMain, drawerLayout,
-          navView);
+          exitButton, navView);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
