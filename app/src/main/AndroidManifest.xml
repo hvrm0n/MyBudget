@@ -22,25 +22,32 @@
         <receiver
             android:name=".TransactionReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true">
+        </receiver>
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
-            android:exported="true"></receiver> <!-- Вход и регистрация -->
+            android:exported="true">
+        </receiver>
+        <!-- Вход и регистрация -->
         <activity
             android:name=".start_pages.StartActivity"
             android:exported="true"
             android:enabled="true"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Основная активность -->
+        </activity>
+        <!-- Основная активность -->
         <activity
             android:name=".drawersection.HomePageActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_home_page" />
     </application>
 

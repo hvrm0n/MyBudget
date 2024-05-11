@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.mybudget.app-mergeDebugResources-58:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.example.mybudget.app-mergeDebugResources-59:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "C:\\Users\\julia\\.gradle\\caches\\transforms-3\\f6e332187fb5c4d129b4af72b6143248\\transformed\\play-services-auth-21.0.0\\res\\values-watch-v20\\values.xml",

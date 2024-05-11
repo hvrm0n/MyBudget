@@ -13,7 +13,7 @@ import com.example.mybudget.drawersection.finance.category.InnerAdapter
 class IconsChooserAlertDialog(context: Context,  onIconSelected: (String) -> Unit) : AlertDialog(context) {
     init{
         val dialogView = View.inflate(context, R.layout.card_icon_chooser, null)
-        val builder = AlertDialog.Builder(context)
+        val builder = Builder(context)
         builder.setView(dialogView)
         val iconsRecycler = dialogView.findViewById<RecyclerView>(R.id.recyclerIconChooser)
 

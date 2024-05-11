@@ -5,12 +5,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import java.security.MessageDigest
 import java.util.Calendar
 import kotlin.math.abs
 
-object NotificationManager {
+object BudgetNotificationManager {
 
      private fun stringToUniqueId(input: String): Int {
         val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
@@ -18,10 +19,9 @@ object NotificationManager {
         return abs(hexString.hashCode() and Int.MAX_VALUE)
     }
 
-    fun setAutoTransaction(context: Context, id:String, placeId:String, budgetId:String, year: Int, month:Int, dateOfExpence: Calendar, type:String){
+    fun setAutoTransaction(context: Context, id:String, placeId:String, year: Int, month:Int, dateOfExpence: Calendar, type:String){
         val transactionIntent = Intent(context, TransactionReceiver::class.java).apply {
             putExtra("categoryId", placeId)
-            putExtra("budgetId", budgetId)
             putExtra("year", year.toString())
             putExtra("month", month.toString())
             putExtra("planId", id)
@@ -51,32 +51,30 @@ object NotificationManager {
         }
     }
 
-     fun cancelAlarmManager(context: Context, id:String){
+     fun cancelAlarmManager(context: Context, id:String, deletePrefs:Boolean = true){
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, NotificationReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context, stringToUniqueId(id), intent, PendingIntent.FLAG_MUTABLE)
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
             pendingIntent.cancel()
-            deleteSharedPreference(id, context)
+            if (deletePrefs) deleteSharedPreference(id, context)
         }
     }
 
      fun notification(context: Context, channelID:String, id:String, placeId:String?=null, time:String, dateOfExpence:Calendar, periodOfNotification:String){
-         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-             NotificationManagerCompat.from(context).apply {
-                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                     putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                 }
-                 context.startActivity(intent)
-             }
-         }
-
+         val periods = context.resources.getStringArray(R.array.periodicity)
          val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
              putExtra("channelID", channelID)
              putExtra("placeId", placeId?:id)
              putExtra("date", dateOfExpence.timeInMillis)
+             putExtra("deletePrefs", when(periodOfNotification){
+                 periods[1], periods[2], periods[3]->true
+                 else ->false
+             })
         }
+
+         Log.e("EnterNotification", channelID)
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, dateOfExpence.get(Calendar.YEAR))
         calendar.set(Calendar.MONTH, dateOfExpence.get(Calendar.MONTH))
@@ -97,7 +95,6 @@ object NotificationManager {
         today.set(Calendar.MILLISECOND, 0)
         val pendingIntent = PendingIntent.getBroadcast(context, stringToUniqueId(id), notificationIntent,  PendingIntent.FLAG_MUTABLE)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val periods = context.resources.getStringArray(R.array.periodicity)
 
          updateSharedPreference(id, time, periodOfNotification, context)
 

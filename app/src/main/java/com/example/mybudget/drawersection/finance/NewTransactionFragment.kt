@@ -19,7 +19,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.mybudget.ExchangeRateManager
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.databinding.PageNewExpenseBinding
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
@@ -728,21 +728,19 @@ class NewTransactionFragment : Fragment() {
                                 )
                             )
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
-                                NotificationManager.notification(
+                                BudgetNotificationManager.notification(
                                     requireContext(),
                                     Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
                                     financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory } ?.get(0)!!.key,
-                                   /* binding.spinnerCategory.selectedItem.toString(),*/
                                     binding.timeOfNotifications.text.toString(),
                                     dateOfExpence,
                                     binding.periodOfNotification.selectedItem.toString())
                             }
-                            NotificationManager.setAutoTransaction(
+                            BudgetNotificationManager.setAutoTransaction(
                                 requireContext(),
                                 planReferense.key.toString(),
                                 financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory }?.get(0)!!.key,
-                                financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }?.get(0)!!.key,
                                 dateOfExpence.get(Calendar.YEAR),
                                 dateOfExpence.get(Calendar.MONTH)+1,
                                 dateOfExpence,
@@ -759,7 +757,7 @@ class NewTransactionFragment : Fragment() {
                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
                             key = planReferense.key.toString()))
                         if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
-                            NotificationManager.notification(
+                            BudgetNotificationManager.notification(
                                 requireContext(),
                                 Constants.CHANNEL_ID_PLAN,
                                 planReferense.key.toString(),
@@ -768,11 +766,10 @@ class NewTransactionFragment : Fragment() {
                                 dateOfExpence,
                                 binding.periodOfNotification.selectedItem.toString())
                         }
-                        NotificationManager.setAutoTransaction(
+                        BudgetNotificationManager.setAutoTransaction(
                             requireContext(),
                             planReferense.key.toString(),
                             financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory }?.get(0)!!.key,
-                            financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }?.get(0)!!.key,
                             dateOfExpence.get(Calendar.YEAR),
                             dateOfExpence.get(Calendar.MONTH)+1,
                             dateOfExpence,
@@ -899,7 +896,7 @@ class NewTransactionFragment : Fragment() {
                                     )
                                 )
                                 if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
-                                    NotificationManager.notification(
+                                    BudgetNotificationManager.notification(
                                         requireContext(),
                                         Constants.CHANNEL_ID_PLAN,
                                         planReferense.key.toString(),
@@ -908,11 +905,10 @@ class NewTransactionFragment : Fragment() {
                                         dateOfExpence,
                                         binding.periodOfNotification.selectedItem.toString())
                                 }
-                                NotificationManager.setAutoTransaction(
+                                BudgetNotificationManager.setAutoTransaction(
                                     requireContext(),
                                     planReferense.key.toString(),
                                     financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory }?.get(0)!!.key,
-                                    financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }?.get(0)!!.key,
                                     dateOfExpence.get(Calendar.YEAR),
                                     dateOfExpence.get(Calendar.MONTH)+1,
                                     dateOfExpence,
@@ -931,7 +927,7 @@ class NewTransactionFragment : Fragment() {
                                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
                                 key = planReferense.key.toString()))
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
-                                NotificationManager.notification(
+                                BudgetNotificationManager.notification(
                                     requireContext(),
                                     Constants.CHANNEL_ID_PLAN,
                                     planReferense.key.toString(),
@@ -940,11 +936,10 @@ class NewTransactionFragment : Fragment() {
                                     dateOfExpence,
                                     binding.periodOfNotification.selectedItem.toString())
                             }
-                            NotificationManager.setAutoTransaction(
+                            BudgetNotificationManager.setAutoTransaction(
                                 requireContext(),
                                 planReferense.key.toString(),
                                 financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory }?.get(0)!!.key,
-                                financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget }?.get(0)!!.key,
                                 dateOfExpence.get(Calendar.YEAR),
                                 dateOfExpence.get(Calendar.MONTH)+1,
                                 dateOfExpence,

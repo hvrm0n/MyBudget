@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.ExchangeRateManager
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
@@ -72,7 +71,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             .child(goals[position].key)
             .child("deleted")
             .setValue(true)
-        NotificationManager.cancelAlarmManager(context, goals[position].key)
+        BudgetNotificationManager.cancelAlarmManager(context, goals[position].key)
     }
 
     fun editItemAtPosition(position: Int){
@@ -272,7 +271,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() + goalValue).replace(",", ".")
             if(goalItem.goalItem.current.toDouble()>=goalItem.goalItem.target.toDouble()){
                 goalItem.goalItem.isReached = true
-                NotificationManager.cancelAlarmManager(context, goalItem.key)
+                BudgetNotificationManager.cancelAlarmManager(context, goalItem.key)
             }
             budgetItem.budgetItem.amount = "%.2f".format( budgetItem.budgetItem.amount.toDouble() - budgetValue).replace(",", ".")
             budgetItem.budgetItem.count ++

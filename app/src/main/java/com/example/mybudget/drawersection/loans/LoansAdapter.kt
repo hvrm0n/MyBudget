@@ -21,7 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.ExchangeRateManager
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
@@ -30,8 +30,6 @@ import com.example.mybudget.start_pages.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
@@ -67,7 +65,7 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
     }
 
     fun deleteItemAtPosition(position: Int){
-        NotificationManager.cancelAlarmManager(context, loans[position].key)
+        BudgetNotificationManager.cancelAlarmManager(context, loans[position].key)
         table.child("Users")
             .child(auth.currentUser!!.uid)
             .child("Loans")
@@ -159,12 +157,7 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                 }
 
                 false->{
-                    Log.e("CheckTime", calendar.time.toString())
-                    Log.e("CheckTime", Calendar.getInstance().apply {
-                        set(Calendar.HOUR_OF_DAY,0)
-                        set(Calendar.MINUTE,0)
-                        set(Calendar.SECOND,0)
-                    }.time.toString())
+
                     if (Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY,0)
                             set(Calendar.MINUTE,0)
@@ -313,10 +306,10 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                 val timeBegin = sharedPreferences.getString(loanItem.key, "|")?.split("|")?.get(1)?:"12:00"
 
 
-                NotificationManager.cancelAlarmManager(context, loanItem.key)
+                BudgetNotificationManager.cancelAlarmManager(context, loanItem.key)
                 if (calendar.timeInMillis <= calendarEnd.timeInMillis){
                     if( loanItem.loanItem.period!=null){
-                        NotificationManager.notification(
+                        BudgetNotificationManager.notification(
                             context = context,
                             channelID = Constants.CHANNEL_ID_LOAN,
                             id = loanItem.key,

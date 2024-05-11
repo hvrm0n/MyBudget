@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,17 +53,18 @@ class GoalsFragment : Fragment() {
         recyclerGoals.adapter = adapterGoals
 
         financeViewModel.goalsData.observe(viewLifecycleOwner){
-            adapterGoals.updateData(it.filter { item -> !item.goalItem.isDeleted }
+            adapterGoals.updateData(it.filter { item -> !item.goalItem.isDeleted && if ( PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showCompleted", true) && PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showReachedGoals", true)) true else !item.goalItem.isReached}
                 .sortedByDescending {giwk->
                     when (giwk.goalItem.date){
                         null->0
-                        else->giwk.goalItem.date?.split('.')?.let {
+                        else->giwk.goalItem.date?.split('.')?.let {date->
                             ChronoUnit.DAYS.between(LocalDate.of(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH)+1, Calendar.getInstance().get(Calendar.DAY_OF_MONTH)),
-                                LocalDate.of(it[2].toInt(),it[1].toInt(), it[0].toInt()))
+                                LocalDate.of(date[2].toInt(), date[1].toInt(), date[0].toInt()))
                         }
                     }
                 }
-                .sortedBy { reach -> reach.goalItem.isReached })
+                .sortedBy { reach -> reach.goalItem.isReached }
+            )
 
         }
 

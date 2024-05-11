@@ -2,11 +2,9 @@ package com.example.mybudget.drawersection.subs
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -15,10 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.start_pages.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -55,8 +54,8 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
     }
 
     fun deleteItemAtPosition(position: Int){
-        NotificationManager.cancelAlarmManager(context, subs[position].key)
-        NotificationManager.cancelAutoTransaction(context, subs[position].key)
+        BudgetNotificationManager.cancelAlarmManager(context, subs[position].key)
+        BudgetNotificationManager.cancelAutoTransaction(context, subs[position].key)
 
         table.child("Users")
             .child(auth.currentUser!!.uid)
@@ -127,6 +126,7 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                         .child(subItem.key)
                         .child("cancelled")
                         .setValue(false)
+
                     }
                 }
 
@@ -149,8 +149,8 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                             .child(subItem.key)
                             .child("cancelled")
                             .setValue(true)
-                        NotificationManager.cancelAlarmManager(context, subItem.key)
-                        NotificationManager.cancelAutoTransaction(context, subItem.key)
+                        BudgetNotificationManager.cancelAlarmManager(context, subItem.key)
+                        BudgetNotificationManager.cancelAutoTransaction(context, subItem.key)
                     }
 
                     paidSub.setOnClickListener {
@@ -202,6 +202,32 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                                 baseAmount = "-${subItem.subItem.amount}",
                                 key = historyItem.key.toString()
                             )
+                        )
+                        val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
+                        val periodBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
+                        val timeBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(1)?:"12:00"
+
+                        BudgetNotificationManager.cancelAlarmManager(context, subItem.key)
+                        BudgetNotificationManager.cancelAutoTransaction(context, subItem.key)
+
+                        BudgetNotificationManager.notification(
+                            context = context,
+                            channelID = Constants.CHANNEL_ID_SUB,
+                            id = subItem.key,
+                            placeId = subItem.key,
+                            time = timeBegin,
+                            dateOfExpence = calendar,
+                            periodOfNotification = periodBegin
+                        )
+
+                        BudgetNotificationManager.setAutoTransaction(
+                            context = context,
+                            id = subItem.key,
+                            placeId = subItem.key,
+                            year = calendar.get(Calendar.YEAR),
+                            month = calendar.get(Calendar.MONTH)+1,
+                            dateOfExpence = calendar,
+                            type = Constants.CHANNEL_ID_SUB
                         )
                     }
                 }

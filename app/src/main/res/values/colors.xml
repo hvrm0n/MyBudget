@@ -10,4 +10,32 @@
     <color name="dark_orange">#aa7046</color>
     <color name="dark_grey">#31363F</color>
     <color name="light_grey">#d3d3d3</color>
+
+    <color name="cyan">#2a9d8f</color>
+    <color name="green">#90be6d</color>
+    <color name="yellow">#fa9500</color>
+    <color name="dark_blue">#264653</color>
+    <color name="gray_blue">#4c5760</color>
+    <color name="red">#c1121f</color>
+    <color name="tree_green">#35a067</color>
+    <color name="grass_green">#53b782</color>
+    <color name="gray">#577590</color>
+    <color name="red_dark">#bc4749</color>
+    <color name="purple">#735d78</color>
+    <color name="dark_purple">#3f3244</color>
+
+    <array name="color_chart">
+        <item>@color/tree_green</item>
+        <item>@color/green</item>
+        <item>@color/yellow</item>
+        <item>@color/red_dark</item>
+        <item>@color/gray_blue</item>
+        <item>@color/cyan</item>
+        <item>@color/purple</item>
+        <item>@color/red</item>
+        <item>@color/gray</item>
+        <item>@color/grass_green</item>
+        <item>@color/dark_orange</item>
+        <item>@color/dark_purple</item>
+    </array>
 </resources>

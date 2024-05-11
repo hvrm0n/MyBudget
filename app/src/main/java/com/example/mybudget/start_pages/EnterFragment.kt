@@ -2,7 +2,6 @@ package com.example.mybudget.start_pages
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,9 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.example.mybudget.ExchangeRateManager
-import com.example.mybudget.ExchangeRateResponse
 import com.example.mybudget.R
-import com.example.mybudget.RetrofitClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

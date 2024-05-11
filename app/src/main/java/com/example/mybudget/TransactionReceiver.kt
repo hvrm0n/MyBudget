@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.example.mybudget.drawersection.finance.HistoryItem
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category._CategoryItem
@@ -31,22 +32,24 @@ class TransactionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val categoryId = intent.getStringExtra("categoryId")
-        val budgetId = intent.getStringExtra("budgetId")
         val year = intent.getStringExtra("year")
         val month = intent.getStringExtra("month")
         val planId = intent.getStringExtra("planId")
         val type = intent.getStringExtra("type")
         auth = Firebase.auth
         table = Firebase.database.reference
-        when(type){
-            Constants.CHANNEL_ID_LOAN->{}
-            Constants.CHANNEL_ID_SUB->{
-                updateSub(context, budgetId!!, planId!!)
-            }
-            Constants.CHANNEL_ID_PLAN->{
-                updateCategory(year!!.toInt(), month!!.toInt(), categoryId!!, planId!!)
-                NotificationManager.cancelAlarmManager(context, planId)
-                NotificationManager.cancelAutoTransaction(context, planId)
+        Log.e("EnterTransaction", "yes")
+        if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("transaction_enabled", false)) {
+            when (type) {
+                Constants.CHANNEL_ID_SUB -> {
+                    updateSub(context, planId!!)
+                }
+
+                Constants.CHANNEL_ID_PLAN -> {
+                    updateCategory(year!!.toInt(), month!!.toInt(), categoryId!!, planId!!)
+                    BudgetNotificationManager.cancelAlarmManager(context, planId)
+                    BudgetNotificationManager.cancelAutoTransaction(context, planId)
+                }
             }
         }
     }
@@ -137,7 +140,7 @@ class TransactionReceiver : BroadcastReceiver() {
             })
     }
 
-    private fun updateSub(context: Context, budgetId: String, planId: String){
+    private fun updateSub(context: Context,  planId: String){
         table.child("Users")
             .child(auth.currentUser!!.uid)
             .child("Subs")
@@ -205,7 +208,6 @@ class TransactionReceiver : BroadcastReceiver() {
                                                     subItem.date.split(".")[1].toInt()-1,
                                                     subItem.date.split(".")[0].toInt())},
                                                 periodOfNotification = periodBegin,
-                                                budgetId = budgetId,
                                                 year = subItem.date.split(".")[2].toInt(),
                                                 month = subItem.date.split(".")[1].toInt()
                                             )
@@ -214,8 +216,8 @@ class TransactionReceiver : BroadcastReceiver() {
                                 }
                                 override fun onCancelled(error: DatabaseError) {
                                     Log.e("CheckNotification_NR", error.message)
-                                    NotificationManager.cancelAlarmManager(context, planId)
-                                    NotificationManager.cancelAutoTransaction(context, planId)
+                                    BudgetNotificationManager.cancelAlarmManager(context, planId)
+                                    BudgetNotificationManager.cancelAutoTransaction(context, planId)
                                 }
                             })
                         }
@@ -224,18 +226,18 @@ class TransactionReceiver : BroadcastReceiver() {
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("CheckNotification_NR", error.message)
-                    NotificationManager.cancelAlarmManager(context, planId)
-                    NotificationManager.cancelAutoTransaction(context, planId)
+                    BudgetNotificationManager.cancelAlarmManager(context, planId)
+                    BudgetNotificationManager.cancelAutoTransaction(context, planId)
                 }
 
             })
     }
 
-    private fun updateSubNotification(context: Context, id:String, time:String, dateOfExpence:Calendar, periodOfNotification:String, budgetId: String, year: Int, month: Int){
-        NotificationManager.cancelAlarmManager(context, id)
-        NotificationManager.cancelAutoTransaction(context, id)
+    private fun updateSubNotification(context: Context, id:String, time:String, dateOfExpence:Calendar, periodOfNotification:String,  year: Int, month: Int){
+        BudgetNotificationManager.cancelAlarmManager(context, id)
+        BudgetNotificationManager.cancelAutoTransaction(context, id)
 
-        NotificationManager.notification(
+        BudgetNotificationManager.notification(
             context = context,
             channelID = Constants.CHANNEL_ID_SUB,
             id = id,
@@ -244,11 +246,10 @@ class TransactionReceiver : BroadcastReceiver() {
             dateOfExpence = dateOfExpence,
             periodOfNotification = periodOfNotification
         )
-        NotificationManager.setAutoTransaction(
+        BudgetNotificationManager.setAutoTransaction(
             context = context,
             id = id,
             placeId = id,
-            budgetId = budgetId,
             year = year,
             month = month,
             dateOfExpence = dateOfExpence,

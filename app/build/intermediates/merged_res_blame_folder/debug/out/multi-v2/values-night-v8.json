@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.mybudget.app-mergeDebugResources-58:/values-night-v8/values-night-v8.xml",
+            "outputFile": "com.example.mybudget.app-mergeDebugResources-59:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
                     "source": "C:\\Users\\julia\\AndroidStudioProjects\\MyBudget\\app\\src\\main\\res\\values-night\\themes.xml",

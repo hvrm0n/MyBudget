@@ -5,7 +5,9 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.example.mybudget.drawersection.finance.category._CategoryBegin
 import com.example.mybudget.drawersection.goals.GoalItem
 import com.example.mybudget.drawersection.loans.LoanItem
@@ -21,33 +23,41 @@ import java.util.Calendar
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+
         val channelID = intent.getStringExtra("channelID")
         val placeId = intent.getStringExtra("placeId")
-        val date = Calendar.getInstance()
-        date.timeInMillis = intent.getLongExtra("date", 0)
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val notificationText = when(channelID){
-            Constants.CHANNEL_ID_PLAN->context.resources.getStringArray(R.array.notification_category)
-            Constants.CHANNEL_ID_GOAL->context.resources.getStringArray(R.array.notification_goal)
-            Constants.CHANNEL_ID_SUB->context.resources.getStringArray(R.array.notification_sub)
-            else -> context.resources.getStringArray(R.array.notification_loans)
-        }
+        val delete = intent.getBooleanExtra("deletePrefs", false)
+        Log.e("EnterNotification", "EnterReceiver")
         if (channelID!=null&&placeId!=null){
-            getName(channelID, placeId,/* date,*/ notificationText){
-                val notification:Notification = NotificationCompat.Builder(context, channelID)
-                .setSmallIcon(R.drawable.piggybank_18)
-                .setContentTitle(
-                    when (channelID){
-                        Constants.CHANNEL_ID_PLAN -> "Не забывайте про запланированные траты!"
-                        Constants.CHANNEL_ID_GOAL -> "Цели ждут!"
-                        Constants.CHANNEL_ID_SUB -> "Не забывайте о подписках!"
-                        else ->"Важные выплаты приближаются!"
-                    }
-                )
-                .setContentText(it)
-                .build()
-                notificationManager.notify(42, notification)
+            if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("notifications_enabled", false)) {
+                Log.e("EnterNotification", "EnterReceiver")
+                val date = Calendar.getInstance()
+                date.timeInMillis = intent.getLongExtra("date", 0)
+                val notificationManager = context.getSystemService(NotificationManager::class.java)
+                val notificationText = when (channelID) {
+                    Constants.CHANNEL_ID_PLAN -> context.resources.getStringArray(R.array.notification_category)
+                    Constants.CHANNEL_ID_GOAL -> context.resources.getStringArray(R.array.notification_goal)
+                    Constants.CHANNEL_ID_SUB -> context.resources.getStringArray(R.array.notification_sub)
+                    else -> context.resources.getStringArray(R.array.notification_loans)
+                }
+
+                getName(channelID, placeId,/* date,*/ notificationText) {
+                    val notification: Notification = NotificationCompat.Builder(context, channelID)
+                        .setSmallIcon(R.drawable.piggybank_18)
+                        .setContentTitle(
+                            when (channelID) {
+                                Constants.CHANNEL_ID_PLAN -> "Не забывайте про запланированные траты!"
+                                Constants.CHANNEL_ID_GOAL -> "Цели ждут!"
+                                Constants.CHANNEL_ID_SUB -> "Не забывайте о подписках!"
+                                else -> "Важные выплаты приближаются!"
+                            }
+                        )
+                        .setContentText(it)
+                        .build()
+                    notificationManager.notify(42, notification)
+                }
             }
+            if(delete && channelID == Constants.CHANNEL_ID_GOAL || channelID == Constants.CHANNEL_ID_LOAN || channelID == Constants.CHANNEL_ID_PLAN) BudgetNotificationManager.cancelAlarmManager(context, placeId)
         }
     }
 

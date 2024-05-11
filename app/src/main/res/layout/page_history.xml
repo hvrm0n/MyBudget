@@ -23,7 +23,7 @@
         android:paddingEnd="12dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="Текущий месяц"
+        android:text="@string/currentMonth"
         android:textStyle="italic"
         android:textColor="@color/light" />
 

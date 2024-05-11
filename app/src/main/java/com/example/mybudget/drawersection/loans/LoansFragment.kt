@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
-import com.example.mybudget.drawersection.subs.SubsAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -28,11 +28,6 @@ class LoansFragment : Fragment() {
     private lateinit var financeViewModel: FinanceViewModel
     private lateinit var recyclerLoans: RecyclerView
     private lateinit var adapterLoans: LoansAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +51,7 @@ class LoansFragment : Fragment() {
         recyclerLoans.adapter = adapterLoans
 
         financeViewModel.loansLiveData.observe(viewLifecycleOwner){
-            adapterLoans.updateData(it.filter { item-> !item.loanItem.isDeleted })
+            adapterLoans.updateData(it.filter { item-> !item.loanItem.isDeleted && if(PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showCompleted", true) && PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showFinishedLoans", true)) true else !item.loanItem.isFinished})
         }
 
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerLoans, adapterLoans, "loan") {

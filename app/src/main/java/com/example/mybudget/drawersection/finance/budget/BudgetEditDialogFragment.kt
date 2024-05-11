@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
@@ -16,10 +15,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
 import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.SelectedBudgetViewModel
 import com.example.mybudget.drawersection.finance.SharedViewModel
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.subs.SubItem
@@ -40,7 +41,9 @@ class BudgetEditDialogFragment:DialogFragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var table: DatabaseReference
     private lateinit var currency: TextView
-    private lateinit var budgetViewModel:FinanceViewModel
+    private lateinit var financeViewModel:FinanceViewModel
+    private lateinit var selectedBudgetViewModel: SelectedBudgetViewModel
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
@@ -62,7 +65,8 @@ class BudgetEditDialogFragment:DialogFragment() {
         adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerType.adapter = adapterType
         val sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
-        budgetViewModel = ViewModelProvider(requireActivity())[FinanceViewModel::class.java]
+        financeViewModel = ViewModelProvider(requireActivity())[FinanceViewModel::class.java]
+        selectedBudgetViewModel = ViewModelProvider(requireActivity())[SelectedBudgetViewModel::class.java]
         var oldCurrency:String? = null
         sharedViewModel.dataToPass.value = null
         sharedViewModel.dataToPass.observe(this) { data ->
@@ -107,7 +111,7 @@ class BudgetEditDialogFragment:DialogFragment() {
             builder.setPositiveButton("Сохранить") { dialog, _ ->
                 if (etName.text.isNotEmpty() && etAmount.text.isNotEmpty()){
                     if (!base){
-                            if(budgetViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, "Счет с таким названием уже существует!", Toast.LENGTH_LONG).show()
+                            if(financeViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, "Счет с таким названием уже существует!", Toast.LENGTH_LONG).show()
                             else {
                                 if (!checkBox.isChecked) {
 
@@ -239,6 +243,17 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                                             .child(key!!)
                                                                                             .setValue(baseOld)
                                                                                             .addOnCompleteListener {
+
+                                                                                                selectedBudgetViewModel.selectedBudget.value?.map{
+                                                                                                    when (it){
+                                                                                                        key -> "Base budget"
+                                                                                                        "Base budget" -> key
+                                                                                                        else -> it
+                                                                                                    }
+                                                                                                }?.let { newSelection ->
+                                                                                                        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet("sumOfFinance", newSelection.toSet()).apply()
+                                                                                                        selectedBudgetViewModel.updateSelectionData(newSelection)
+                                                                                                    }
                                                                                                 dialog.dismiss()
                                                                                             }
                                                                                     }
@@ -260,7 +275,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                             }
                     }
                     else{
-                        if(budgetViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, "Счет с таким названием уже существует!", Toast.LENGTH_LONG).show()
+                        if(financeViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, "Счет с таким названием уже существует!", Toast.LENGTH_LONG).show()
                         else {
                             table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
                                 .child("Base budget")
@@ -286,7 +301,7 @@ class BudgetEditDialogFragment:DialogFragment() {
 
             builder.setNegativeButton("Удалить") { dialog, _ ->
                 if (base) Toast.makeText(context, "Нельзя удалить основной бюджет!", Toast.LENGTH_LONG).show()
-                else if(budgetViewModel.planLiveData.value!!.any { it.budgetId == key})Toast.makeText(context, "У Вас есть запланированные операции с этим бюджетом!", Toast.LENGTH_LONG).show()
+                else if(financeViewModel.planLiveData.value!!.any { it.budgetId == key})Toast.makeText(context, "У Вас есть запланированные операции с этим бюджетом!", Toast.LENGTH_LONG).show()
                 else {
                     AlertDialog.Builder(context)
                         .setTitle("Удаление бюджета")
@@ -421,7 +436,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 historyItem.getValue(HistoryItem::class.java)?.let {history->
                                     if (history.budgetId == budgetKey || history.placeId == budgetKey || baseChanged){
                                         when{
-                                            newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
+                                            newCurrency == financeViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
                                                     && history.isCategory == true  && history.budgetId == budgetKey && newSelection-> {
                                                 table.child("Users")
                                                     .child(auth.currentUser!!.uid)
@@ -443,18 +458,62 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                     .child("amount")
                                                     .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!)
                                                     .replace(',', '.'))
+
+                                                if (newCurrency == financeViewModel.budgetLiveData.value?.find { it.key == history.budgetId }?.budgetItem?.currency){
+                                                    table.child("Users")
+                                                        .child(auth.currentUser!!.uid)
+                                                        .child("History")
+                                                        .child(years.key.toString())
+                                                        .child(months.key.toString())
+                                                        .child(history.key)
+                                                        .child("baseAmount")
+                                                        .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!)
+                                                            .replace(',', '.'))
+                                                }
                                             }
+
                                             (history.isLoan == true || history.isGoal == true || history.isSub == true || history.placeId.isEmpty())
                                                     && budgetKey == history.budgetId && (!checkBox || newSelection) -> {
-                                                table.child("Users")
-                                                    .child(auth.currentUser!!.uid)
-                                                    .child("History")
-                                                    .child(years.key.toString())
-                                                    .child(months.key.toString())
-                                                    .child(history.key)
-                                                    .child("amount")
-                                                    .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
-                                            }
+                                                        if( history.isLoan == true && financeViewModel.loansLiveData.value?.find { it.key == history.placeId }?.loanItem?.currency == newCurrency){
+                                                            table.child("Users")
+                                                                .child(auth.currentUser!!.uid)
+                                                                .child("History")
+                                                                .child(years.key.toString())
+                                                                .child(months.key.toString())
+                                                                .child(history.key)
+                                                                .child("baseAmount")
+                                                                .setValue(financeViewModel.loansLiveData.value?.find { it.key == history.placeId }?.loanItem?.amount)
+
+                                                            table.child("Users")
+                                                                .child(auth.currentUser!!.uid)
+                                                                .child("History")
+                                                                .child(years.key.toString())
+                                                                .child(months.key.toString())
+                                                                .child(history.key)
+                                                                .child("amount")
+                                                                .setValue(financeViewModel.loansLiveData.value?.find { it.key == history.placeId }?.loanItem?.amount)
+                                                        } else{
+                                                            table.child("Users")
+                                                                .child(auth.currentUser!!.uid)
+                                                                .child("History")
+                                                                .child(years.key.toString())
+                                                                .child(months.key.toString())
+                                                                .child(history.key)
+                                                                .child("amount")
+                                                                .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
+
+                                                            if(history.isGoal == true && financeViewModel.goalsData.value?.find { it.key == history.placeId }?.goalItem?.currency == newCurrency){
+                                                                    table.child("Users")
+                                                                        .child(auth.currentUser!!.uid)
+                                                                        .child("History")
+                                                                        .child(years.key.toString())
+                                                                        .child(months.key.toString())
+                                                                        .child(history.key)
+                                                                        .child("baseAmount")
+                                                                        .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.amount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
+                                                            }
+                                                        }
+                                                    }
 
                                             history.isCategory == true  && budgetKey == history.budgetId && (!checkBox || newSelection) ->{
                                                 table.child("Users")
@@ -501,6 +560,17 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                     .child(history.key)
                                                     .child("baseAmount")
                                                     .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.baseAmount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
+
+                                                if (history.isTransfer == true && newCurrency == financeViewModel.budgetLiveData.value?.find { it.key == history.placeId }?.budgetItem?.currency){
+                                                    table.child("Users")
+                                                        .child(auth.currentUser!!.uid)
+                                                        .child("History")
+                                                        .child(years.key.toString())
+                                                        .child(months.key.toString())
+                                                        .child(history.key)
+                                                        .child("amount")
+                                                        .setValue("%.2f".format(currencyConvertor.conversionRates[newCurrency]!! * history.baseAmount.toDouble() / currencyConvertor.conversionRates[oldCurrency]!!).replace(',', '.'))
+                                                }
                                             }
                                         }
                                     }
@@ -521,7 +591,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 historyItem.getValue(HistoryItem::class.java)?.let { plan->
                                     if (plan.budgetId == budgetKey || baseChanged) {
                                         when {
-                                            newCurrency == budgetViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
+                                            newCurrency == financeViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency
                                                     &&  plan.budgetId == budgetKey && newSelection-> {
                                                 table.child("Users")
                                                     .child(auth.currentUser!!.uid)

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/light"
+    android:gravity="center|top"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/dateRangeAnalysis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:layout_margin="8dp"
+        android:layout_gravity="center"
+        android:background="@drawable/listview_shadow"
+        android:backgroundTint="@color/light_green"
+        android:elevation="12dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="@string/currentMonth"
+        android:textStyle="italic"
+        android:textColor="@color/light" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabsAnalys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light"
+        app:tabTextColor="@color/dark_green"
+        app:tabIndicatorColor="@color/light_green"
+        app:tabGravity="fill"
+        app:tabMode="scrollable">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_history"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/finances"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/category"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_goals"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_loans"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_subs"/>
+    </com.google.android.material.tabs.TabLayout>
+
+    <Spinner
+        android:layout_marginTop="16dp"
+        android:id="@+id/spinnerAnalysBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/analys_type"
+        android:visibility="invisible"
+        />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChart"
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:background="@color/light"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <ImageView
+        android:id="@+id/noTransactionImageAnalysis"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:alpha="0.6"
+        android:visibility="gone"
+        android:src="@drawable/notransaction"/>
+    <TextView
+        android:id="@+id/noTransactionTextAnalysis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_green"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Вы еще не произвели ни одной транзакции"/>
+
+</LinearLayout>

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mybudget.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.google.firebase.database.database
 
 object Constants{
     const val TAG_SIGNUP = "SignUpMyBudget"

@@ -12,5 +12,9 @@
         <item>Высокий</item>
     </string-array>
 
+    <string-array name="analys_type">
+        <item>Доходы</item>
+        <item>Расходы</item>
+    </string-array>
 
 </resources>

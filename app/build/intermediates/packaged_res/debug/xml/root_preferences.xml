@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Основные">
+        <SwitchPreference
+            android:key="notifications_enabled"
+            android:title="Уведомления"/>
+
+        <SwitchPreference
+            android:key="transaction_enabled"
+            android:title="Автоматические списания"
+            android:summary="Средства списываются на планы и подписки"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Отображение">
+        <MultiSelectListPreference
+            android:key="sumOfFinance"
+            android:title="Баланс"
+            android:summary="Сбережения по выбранным бюджетам будут отображаться в шапке бокового меню"
+            />
+        <PreferenceCategory
+            android:title="Цели, подписки и важные выплаты">
+            <SwitchPreference
+                android:key="showCompleted"
+                android:title="Показывать завершенные"
+                android:defaultValue="true"
+                />
+            <CheckBoxPreference
+                android:key="showReachedGoals"
+                android:summary="Достигнутые цели"
+                android:dependency="showCompleted"
+                android:defaultValue="true"
+                />
+            <CheckBoxPreference
+                android:key="showCancelledSubs"
+                android:summary="Отмененные подписки"
+                android:dependency="showCompleted"
+                android:defaultValue="true"/>
+            <CheckBoxPreference
+                android:key="showFinishedLoans"
+                android:summary="Завершенные выплаты"
+                android:dependency="showCompleted"
+                android:defaultValue="true"/>
+        </PreferenceCategory>
+    </PreferenceCategory>
+
+</PreferenceScreen>

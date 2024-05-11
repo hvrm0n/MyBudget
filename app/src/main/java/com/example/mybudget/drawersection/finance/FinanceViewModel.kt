@@ -22,6 +22,9 @@ class FinanceViewModel:ViewModel() {
     private val _categoryBeginLiveData = MutableLiveData<List<CategoryBeginWithKey>>()
     val categoryBeginLiveData: LiveData<List<CategoryBeginWithKey>> get() = _categoryBeginLiveData
 
+    private val _categoryDate = MutableLiveData<List<Pair<Int,Int>>>()
+    val categoryDate: LiveData<List<Pair<Int,Int>>> get() = _categoryDate
+
 
     private val _historyLiveData = MutableLiveData<List<HistoryItem>>()
     val historyLiveData: LiveData<List<HistoryItem>> get() = _historyLiveData
@@ -64,6 +67,10 @@ class FinanceViewModel:ViewModel() {
 
     fun updateCategoryBeginData(newData: List<CategoryBeginWithKey>) {
         _categoryBeginLiveData.value = newData
+    }
+
+    fun updateCategoryDate(newData: List<Pair<Int, Int>>) {
+        _categoryDate.value = newData
     }
 
     fun updateDate(newData: Pair<Int, Int>) {

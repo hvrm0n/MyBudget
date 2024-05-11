@@ -10,7 +10,6 @@ import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.R
-import com.example.mybudget.drawersection.finance.category.CategoryAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson

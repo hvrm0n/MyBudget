@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,11 +28,6 @@ class SubsFragment : Fragment() {
     private lateinit var financeViewModel: FinanceViewModel
     private lateinit var recyclerSubs: RecyclerView
     private lateinit var adapterSubs: SubsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +51,7 @@ class SubsFragment : Fragment() {
         recyclerSubs.adapter = adapterSubs
 
         financeViewModel.subLiveData.observe(viewLifecycleOwner){
-            adapterSubs.updateData(it.filter { item-> !item.subItem.isDeleted })
+            adapterSubs.updateData(it.filter { item-> !item.subItem.isDeleted && if (PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showCompleted", true) && PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("showCancelledSubs", true)) true else !item.subItem.isCancelled})
         }
 
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerSubs, adapterSubs, "sub") {

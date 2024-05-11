@@ -21,9 +21,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
+import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
@@ -34,6 +35,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.MutableData
+import com.google.firebase.database.Transaction
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -445,25 +448,24 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             referencePlan.removeValue()
                         }
 
-                        NotificationManager.cancelAlarmManager(context, history[position].key)
-                        NotificationManager.cancelAutoTransaction(context, history[position].key)
-                        NotificationManager.deleteSharedPreference(history[position].key, context)
+                        BudgetNotificationManager.cancelAlarmManager(context, history[position].key)
+                        BudgetNotificationManager.cancelAutoTransaction(context, history[position].key)
+                        BudgetNotificationManager.deleteSharedPreference(history[position].key, context)
                         val calendar = Calendar.getInstance()
                         calendar.set(Calendar.YEAR, dateNew.third)
                         calendar.set(Calendar.MONTH, dateNew.second-1)
                         calendar.set(Calendar.DAY_OF_MONTH, dateNew.first)
 
-                        NotificationManager.setAutoTransaction(
+                        BudgetNotificationManager.setAutoTransaction(
                             context = context,
                             id = historyItem.key,
                             placeId = historyItem.placeId,
-                            budgetId = historyItem.budgetId,
                             year = dateNew.third,
                             month = dateNew.second,
                             dateOfExpence = calendar,
                             type = Constants.CHANNEL_ID_PLAN
                         )
-                        NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN, historyItem.key, historyItem.placeId,time,calendar,period)
+                        BudgetNotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN, historyItem.key, historyItem.placeId,time,calendar,period)
                     }
                     override fun onCancelled(error: DatabaseError) {}
                 })
@@ -489,17 +491,17 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     referencePlan.removeValue()
                 }
 
-                NotificationManager.cancelAlarmManager(context, history[position].key)
-                NotificationManager.cancelAutoTransaction(context, history[position].key)
-                NotificationManager.deleteSharedPreference(history[position].key, context)
+                BudgetNotificationManager.cancelAlarmManager(context, history[position].key)
+                BudgetNotificationManager.cancelAutoTransaction(context, history[position].key)
+                BudgetNotificationManager.deleteSharedPreference(history[position].key, context)
                 val calendar = Calendar.getInstance()
                 calendar.set(Calendar.YEAR, dateNew.third)
                 calendar.set(Calendar.MONTH, dateNew.second-1)
                 calendar.set(Calendar.DAY_OF_MONTH, dateNew.first)
 
-                NotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
-                    historyItem.budgetId, dateNew.third, dateNew.second, calendar, Constants.CHANNEL_ID_PLAN)
-                NotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN,  historyItem.key, historyItem.placeId, time,calendar,period)
+                BudgetNotificationManager.setAutoTransaction(context, historyItem.key, historyItem.placeId,
+                     dateNew.third, dateNew.second, calendar, Constants.CHANNEL_ID_PLAN)
+                BudgetNotificationManager.notification(context,  Constants.CHANNEL_ID_PLAN,  historyItem.key, historyItem.placeId, time,calendar,period)
 
             }
         }
@@ -606,8 +608,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             table.child("Users").child(auth.currentUser!!.uid).child("Plan")
                 .child("${history[position].date.split(".")[2]}/${history[position].date.split(".")[1].toInt()}")
                 .child(history[position].key).removeValue()
-            NotificationManager.cancelAlarmManager(context, history[position].key)
-            NotificationManager.cancelAutoTransaction(context, history[position].key)
+            BudgetNotificationManager.cancelAlarmManager(context, history[position].key)
+            BudgetNotificationManager.cancelAutoTransaction(context, history[position].key)
         }
     }
 
@@ -789,8 +791,8 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     val periodBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
                     val timeBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(1)?:"12:00"
 
-                    NotificationManager.cancelAlarmManager(context, subItem.key)
-                    NotificationManager.cancelAutoTransaction(context, subItem.key)
+                    BudgetNotificationManager.cancelAlarmManager(context, subItem.key)
+                    BudgetNotificationManager.cancelAutoTransaction(context, subItem.key)
 
                     subItem.subItem.date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(
                         when{
@@ -923,7 +925,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             }, loanItem.loanItem.period!!.split(" ")[0].toInt() * -1
                         )
 
-                        NotificationManager.cancelAlarmManager(context, loanItem.key)
+                        BudgetNotificationManager.cancelAlarmManager(context, loanItem.key)
 
                         loanItem.loanItem.dateNext = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(calendarPrev.time)
                         if(Calendar.getInstance().apply {
@@ -950,7 +952,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                        set(Calendar.MILLISECOND, 0)
                                    }.timeInMillis) {
                                    if (!loanItem.loanItem.isDeleted){
-                                            NotificationManager.notification(
+                                            BudgetNotificationManager.notification(
                                                 context = context,
                                                 channelID = Constants.CHANNEL_ID_SUB,
                                                 id = loanItem.key,
@@ -974,7 +976,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                                 set(Calendar.MILLISECOND, 0)
                             }.timeInMillis){
 
-                            NotificationManager.notification(
+                            BudgetNotificationManager.notification(
                                 context = context,
                                 channelID = Constants.CHANNEL_ID_SUB,
                                 id = loanItem.key,
@@ -1007,7 +1009,7 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
     private fun updateNotificationSub(subItemWithKey: SubItemWithKey, calendar:Calendar, timeBegin:String, periodBegin:String){
         if (!subItemWithKey.subItem.isCancelled && !subItemWithKey.subItem.isDeleted) {
-            NotificationManager.notification(
+            BudgetNotificationManager.notification(
                 context = context,
                 channelID = Constants.CHANNEL_ID_SUB,
                 id = subItemWithKey.key,
@@ -1017,13 +1019,12 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                 periodOfNotification = periodBegin
             )
 
-            NotificationManager.setAutoTransaction(
+            BudgetNotificationManager.setAutoTransaction(
                 context = context,
                 id = subItemWithKey.key,
                 placeId = subItemWithKey.key,
-                budgetId = subItemWithKey.subItem.budgetId,
                 year = calendar.get(Calendar.YEAR),
-                month = calendar.get(Calendar.MONTH),
+                month = calendar.get(Calendar.MONTH)+1,
                 dateOfExpence = calendar,
                 type = Constants.CHANNEL_ID_SUB
             )
@@ -1111,47 +1112,40 @@ class HistoryAdapter(private val context: Context, private var history: List<His
         if (historyNew.isNotEmpty()){
             val startDef = Calendar.getInstance()
             val endDef = Calendar.getInstance()
-            startDef.set(Calendar.DAY_OF_MONTH, 1)
-            endDef.set(Calendar.DAY_OF_MONTH, endDef.getActualMaximum(Calendar.DAY_OF_MONTH))
+            startDef.apply{
+                set(Calendar.HOUR, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                set(Calendar.DAY_OF_MONTH, 1)
+            }
+            endDef.apply{
+                set(Calendar.DAY_OF_MONTH, endDef.getActualMaximum(Calendar.DAY_OF_MONTH))
+                set(Calendar.HOUR, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
             sort(
                 historyNew.asSequence()
                     .filter { it.date.isNotEmpty() && SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                         .parse(it.date)?.let { calendar ->
-
                             val calendarFromString = Calendar.getInstance()
                             calendarFromString.time = calendar
+                            calendarFromString.apply {
+                                set(Calendar.HOUR, 0)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
 
-                            ((calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
-                                ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                    calendarFromString.get(Calendar.MONTH) >= (startDate?.get(
-                                Calendar.MONTH
-                            ) ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                                    calendarFromString.get(Calendar.DAY_OF_MONTH) >= ((startDate?.get(Calendar.DAY_OF_MONTH))
-                                ?: startDef.get(Calendar.DAY_OF_MONTH)))
-                                    ||
-                                    (calendarFromString.get(Calendar.YEAR) >= (startDate?.get(Calendar.YEAR)
-                                        ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                            calendarFromString.get(Calendar.MONTH) > (startDate?.get(
-                                        Calendar.MONTH
-                                    ) ?: Calendar.getInstance().get(Calendar.MONTH)))
-                                    ||
-                                    (calendarFromString.get(Calendar.YEAR) > (startDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)) ))
+                            (calendarFromString.timeInMillis >= (startDate?.timeInMillis
+                                ?: startDef.timeInMillis)
                                     &&
-                                    ((calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
-                                        ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                            calendarFromString.get(Calendar.MONTH) <= (endDate?.get(Calendar.MONTH)
-                                        ?: Calendar.getInstance().get(Calendar.MONTH)) &&
-                                            calendarFromString.get(Calendar.DAY_OF_MONTH) <= ((endDate?.get(Calendar.DAY_OF_MONTH))
-                                        ?: endDef.get(Calendar.DAY_OF_MONTH)))
-                                    ||
-                                    (calendarFromString.get(Calendar.YEAR) <= (endDate?.get(Calendar.YEAR)
-                                                ?: Calendar.getInstance().get(Calendar.YEAR)) &&
-                                                    calendarFromString.get(Calendar.MONTH) < (endDate?.get(Calendar.MONTH)
-                                                ?: Calendar.getInstance().get(Calendar.MONTH))
-                                    ||
-                                    (calendarFromString.get(Calendar.YEAR) < (endDate?.get(Calendar.YEAR) ?: Calendar.getInstance().get(Calendar.YEAR)))))
-
-                } ?: false}.toList().sortedByDescending {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)})
+                                    calendarFromString.timeInMillis <= (endDate?.timeInMillis
+                                        ?: endDef.timeInMillis))
+                        } ?: false}.toList().sortedByDescending {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(it.date)})
         }
         else sort(emptyList())
     }
@@ -1484,29 +1478,72 @@ class HistoryAdapter(private val context: Context, private var history: List<His
 
             val beginValueBase = history[position].baseAmount.filter {string-> string.isDigit() || string=='.'}
 
-            builder.setPositiveButton("Сохранить"){ dialog, _->
-                val newValue = "%.2f".format((abs(history[position].baseAmount.toDouble())/numberBegin.toDouble())*value.text.toString().toDouble()).replace(",", ".")
-                saveItemAtPosition(position, newValue, value.text.toString(), numberBegin, beginValueBase ,dateBeginTriple, dateNew, timeOfNotificationsHistory.text.toString(),
-                       periodOfNotificationHistory.selectedItem.toString())
-                dialog.dismiss()
-            }
+            when{
+                plan && Calendar.getInstance().apply {
+                    set(history[position].date.split(".")[2].toInt(), history[position].date.split(".")[1].toInt()-1, history[position].date.split(".")[0].toInt(), 0, 0, 0)
+                }.timeInMillis <= Calendar.getInstance().timeInMillis->{
+                    calendar.visibility = View.GONE
+                    value.isEnabled = false
+                    periodOfNotificationTitleHistory.visibility = View.GONE
+                    periodOfNotificationHistory.visibility = View.GONE
+                    timeOfNotificationsTitleHistory.visibility = View.GONE
+                    timeOfNotificationsHistory.visibility = View.GONE
 
-            builder.setNegativeButton("Удалить") { dialog, _ ->
-                AlertDialog.Builder(context)
-                    .setTitle("Удаление операции")
-                    .setMessage("Вы уверены, что хотите удалить транзакцию?\nБудет удалена операция с исходной суммой!")
-                    .setPositiveButton("Подтвердить") { dialog2, _ ->
-                        deleteItemAtPosition(position, numberBegin)
-                        dialog2.dismiss()
+                    builder.setPositiveButton("Списать"){ dialog, _->
+                        updateCategory(
+                            year = history[position].date.split(".")[2].toInt(),
+                            month = history[position].date.split(".")[1].toInt(),
+                            categoryId = history[position].placeId,
+                            planId = history[position].key
+                        )
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Отмена") { dialog2, _ ->
-                        dialog2.dismiss()
-                    }.show()
-            }
 
-            builder.setNeutralButton("Отмена") { dialog, _ ->
-                dialog.dismiss()
+                    builder.setNegativeButton("Удалить") { dialog, _ ->
+                        AlertDialog.Builder(context)
+                            .setTitle("Удаление операции")
+                            .setMessage("Вы уверены, что хотите удалить транзакцию?")
+                            .setPositiveButton("Подтвердить") { dialog2, _ ->
+                                deleteItemAtPosition(position, numberBegin)
+                                dialog2.dismiss()
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("Отмена") { dialog2, _ ->
+                                dialog2.dismiss()
+                            }.show()
+                    }
+
+                    builder.setNeutralButton("Отмена") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                }
+                else ->{
+                    builder.setPositiveButton("Сохранить"){ dialog, _->
+                        val newValue = "%.2f".format((abs(history[position].baseAmount.toDouble())/numberBegin.toDouble())*value.text.toString().toDouble()).replace(",", ".")
+                        saveItemAtPosition(position, newValue, value.text.toString(), numberBegin, beginValueBase ,dateBeginTriple, dateNew, timeOfNotificationsHistory.text.toString(),
+                            periodOfNotificationHistory.selectedItem.toString())
+                        dialog.dismiss()
+                    }
+
+                    builder.setNegativeButton("Удалить") { dialog, _ ->
+                        AlertDialog.Builder(context)
+                            .setTitle("Удаление операции")
+                            .setMessage("Вы уверены, что хотите удалить транзакцию?\nБудет удалена операция с исходной суммой!")
+                            .setPositiveButton("Подтвердить") { dialog2, _ ->
+                                deleteItemAtPosition(position, numberBegin)
+                                dialog2.dismiss()
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("Отмена") { dialog2, _ ->
+                                dialog2.dismiss()
+                            }.show()
+                    }
+
+                    builder.setNeutralButton("Отмена") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+
+                }
             }
 
             val dialog = builder.create()
@@ -1517,6 +1554,91 @@ class HistoryAdapter(private val context: Context, private var history: List<His
             dialog.window?.setBackgroundDrawableResource(R.drawable.listview_shadow)
             dialog.show()
         }
+    }
 
+    private fun updateCategory(year: Int, month: Int, categoryId:String, planId: String){
+        val categoryReference = table.child("Users").child(auth.currentUser!!.uid)
+            .child("Categories").child("$year/$month")
+            .child("ExpenseCategories").child(categoryId)
+
+        table.child("Users").child(auth.currentUser!!.uid)
+            .child("Plan").child("$year/$month")
+            .child(planId).addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.getValue(HistoryItem::class.java)?.let {
+                        categoryReference.runTransaction(object : Transaction.Handler {
+                            override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                                val category = mutableData.getValue(_CategoryItem::class.java)
+                                if (category != null) {
+                                    when(category.remainder){
+                                        "0"->category.total = "%.2f".format(category.total.toDouble()+abs(it.baseAmount.toDouble())).replace(',','.')
+                                        else->category.remainder = "%.2f".format(category.remainder.toDouble()-abs(it.baseAmount.toDouble())).replace(',','.')
+                                    }
+                                    mutableData.value = category
+                                }
+                                return Transaction.success(mutableData)
+                            }
+
+                            override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
+                                if (databaseError != null) {
+                                    Log.d("TAG", "Transaction completed. Committed: $committed")
+                                } else {
+                                    updateBudget(it.budgetId, it.amount, year, month, planId)
+                                }
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+
+            })
+    }
+
+    private fun updateBudget(budgetId:String, amount:String, year: Int, month: Int, planId: String){
+        val budgetReference =
+            when(budgetId){
+                "Base budget"-> table.child("Users").child(auth.currentUser!!.uid)
+                    .child("Budgets").child("Base budget")
+                else->table.child("Users").child(auth.currentUser!!.uid)
+                    .child("Budgets").child("Other budget").child(budgetId)
+            }
+        budgetReference.runTransaction(object : Transaction.Handler {
+            override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                val budget = mutableData.getValue(_BudgetItem::class.java)
+                if (budget != null) {
+                    budget.amount = "%.2f".format(budget.amount.toDouble() - abs(amount.toDouble())).replace(',', '.')
+                    budget.count++
+                    mutableData.value = budget
+                }
+                return Transaction.success(mutableData)
+            }
+
+            override fun onComplete(databaseError: DatabaseError?, committed: Boolean, dataSnapshot: DataSnapshot?) {
+                if (databaseError != null) {
+                    Log.d("TAG", "Transaction completed. Committed: $committed")
+                } else {
+                    planToHistory(year, month, planId)
+                }
+            }
+        })
+    }
+
+    private fun planToHistory(year: Int, month: Int, planId:String){
+        val historyReference = table.child("Users").child(auth.currentUser!!.uid).child("History")
+            .child("$year/$month").child(planId)
+        val planReference = table.child("Users").child(auth.currentUser!!.uid).child("Plan")
+            .child("$year/$month").child(planId)
+
+        planReference.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.getValue(HistoryItem::class.java)?.let {
+                    historyReference.setValue(it)
+                    planReference.removeValue()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 }

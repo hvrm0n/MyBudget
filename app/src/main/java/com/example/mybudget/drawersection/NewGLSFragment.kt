@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.ExchangeRateResponse
-import com.example.mybudget.NotificationManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.databinding.PageNewGlsBinding
 import com.example.mybudget.drawersection.finance.FinanceViewModel
@@ -152,7 +151,7 @@ class NewGLSFragment : Fragment() {
                         binding.buttonAddGLS.setOnClickListener { saveSub() }
                         financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
                             budgetAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,
-                                it.filter { budget->!budget.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name })
+                                it.filter { budget->!budget.budgetItem.isDeleted && budget.budgetItem.type != resources.getStringArray(R.array.budget_types)[0] }.map { budget -> budget.budgetItem.name })
                                 .apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
                             binding.spinnerBudgetGLS.adapter = budgetAdapter
                         }
@@ -356,7 +355,7 @@ class NewGLSFragment : Fragment() {
                             binding.calendarViewGLS.date = dateLS.timeInMillis
                             financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
                                 budgetAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,
-                                    it.filter { budget->!budget.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name })
+                                    it.filter { budget->!budget.budgetItem.isDeleted && budget.budgetItem.type != resources.getStringArray(R.array.budget_types)[0] }.map { budget -> budget.budgetItem.name })
                                     .apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
                                 binding.spinnerBudgetGLS.adapter = budgetAdapter
                                 if (!set){
@@ -822,9 +821,9 @@ class NewGLSFragment : Fragment() {
                         path = binding.imageOfGLM.tag.toString(),
                         isDeleted = false)
                 )
-            NotificationManager.cancelAlarmManager(context, key!!)
+            BudgetNotificationManager.cancelAlarmManager(context, key!!)
             if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-                NotificationManager.notification(
+                BudgetNotificationManager.notification(
                     context = requireContext(),
                     channelID = Constants.CHANNEL_ID_GOAL,
                     placeId = null,
@@ -887,7 +886,7 @@ class NewGLSFragment : Fragment() {
                 isDeleted = false)
             ).addOnCompleteListener {
                 if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-                    NotificationManager.notification(
+                    BudgetNotificationManager.notification(
                         context = requireContext(),
                         channelID = Constants.CHANNEL_ID_GOAL,
                         id = goalReference.key.toString(),
@@ -978,10 +977,10 @@ class NewGLSFragment : Fragment() {
                         isDeleted = false,
                         period = periodLS ?: "1 m")
                 )
-            NotificationManager.cancelAlarmManager(context, subItemWithKey.key)
-            NotificationManager.cancelAutoTransaction(context, subItemWithKey.key)
+            BudgetNotificationManager.cancelAlarmManager(context, subItemWithKey.key)
+            BudgetNotificationManager.cancelAutoTransaction(context, subItemWithKey.key)
 
-            NotificationManager.notification(
+            BudgetNotificationManager.notification(
                 context = context,
                 channelID = Constants.CHANNEL_ID_SUB,
                 id = subItemWithKey.key,
@@ -990,11 +989,10 @@ class NewGLSFragment : Fragment() {
                 dateOfExpence = dateLS,
                 periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
             )
-            NotificationManager.setAutoTransaction(
+            BudgetNotificationManager.setAutoTransaction(
                 context = context,
                 id = subItemWithKey.key,
                 placeId = subItemWithKey.key,
-                budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
                 year = dateLS.get(Calendar.YEAR),
                 month = dateLS.get(Calendar.MONTH)-1,
                 dateOfExpence = dateLS,
@@ -1031,7 +1029,7 @@ class NewGLSFragment : Fragment() {
             isCancelled = false,
             period = periodLS ?: "1 m")
         ).addOnCompleteListener {
-            NotificationManager.notification(
+            BudgetNotificationManager.notification(
                 context = requireContext(),
                 channelID = Constants.CHANNEL_ID_SUB,
                 id = subReference.key!!,
@@ -1040,11 +1038,10 @@ class NewGLSFragment : Fragment() {
                 dateOfExpence = dateLS,
                 periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
             )
-            NotificationManager.setAutoTransaction(
+            BudgetNotificationManager.setAutoTransaction(
                 context = requireContext(),
                 id = subReference.key!!,
                 placeId = subReference.key!!,
-                budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
                 year = dateLS.get(Calendar.YEAR),
                 month = dateLS.get(Calendar.MONTH)-1,
                 dateOfExpence = dateLS,
@@ -1126,7 +1123,7 @@ class NewGLSFragment : Fragment() {
             isFinished = false,
             period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
         )).addOnCompleteListener {
-            NotificationManager.notification(
+            BudgetNotificationManager.notification(
                 context = requireContext(),
                 channelID = Constants.CHANNEL_ID_LOAN,
                 id = loanReference.key!!,
@@ -1187,10 +1184,10 @@ class NewGLSFragment : Fragment() {
                         period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
                     )
                 )
-            NotificationManager.cancelAlarmManager(context, key!!)
+            BudgetNotificationManager.cancelAlarmManager(context, key!!)
             if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
 
-                NotificationManager.notification(
+                BudgetNotificationManager.notification(
                     context = requireContext(),
                     channelID = Constants.CHANNEL_ID_LOAN,
                     placeId = null,
@@ -1263,4 +1260,19 @@ class NewGLSFragment : Fragment() {
         binding.buttonAddGLS.isEnabled =  binding.glsValue.text.isNotEmpty() && binding.nameGLS.text.isNotEmpty() && binding.imageOfGLM.tag!=null
     }
 
+    /*private fun title(key:String?, type:String?){
+        if (key == null){
+            requireActivity().title = when(type){
+                "loan"-> "Новый обязательный платеж"
+                "goal"-> "Новая цель"
+                else -> "Новая подписка"
+            }
+        } else {
+            requireActivity().title = when(type){
+                "loan"-> "Редактирования обязательного платежа"
+                "goal"-> "Редактирование цели"
+                else -> "Редактирование подписки"
+            }
+        }
+    }*/
 }
