@@ -31,7 +31,7 @@ class ImageAdapter(private val context: Context, private val images: Array<Strin
 
         holder.card.setOnClickListener {
             it.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.light_green))
+                ColorStateList.valueOf(ContextCompat.getColor(context, R.color.light_green_selection))
             adapter.changeSelectedIcon(images[position], holder.card)
         }
     }

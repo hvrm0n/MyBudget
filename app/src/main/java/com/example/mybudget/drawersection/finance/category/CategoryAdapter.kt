@@ -16,9 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mybudget.BudgetNotificationManager
+import com.example.mybudget.NotificationReceiver
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -72,33 +74,31 @@ class CategoryAdapter(
     }
 
     fun deleteItemAtPosition(position:Int, data:Pair<Int, Int>){
-        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-            .addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach { years ->
-                        years.children.forEach { months->
-                            months.children.forEach {snap->
-                                snap.getValue(HistoryItem::class.java)?.let {
-                                    if (it.placeId == categories[position].key && months.key!!.toInt() >= data.first && years.key!!.toInt() >= data.second){
-                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
-                                            .child("${years.key}/${months.key}").child(it.key).removeValue()
-
-                                        table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-                                            .child("${years.key}/${months.key}")
-                                            .child("ExpenseCategories").child(categories[position].key).removeValue()
-                                    }
-                                }
-                            }
+        val planReference =
+        table.child("Users").child(auth.currentUser!!.uid).child("Plan").child("${data.second}/${data.first}")
+        planReference.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach {snap->
+                    snap.getValue(HistoryItem::class.java)?.let {
+                        if (it.placeId == categories[position].key){
+                            planReference.child(it.key).removeValue()
+                            BudgetNotificationManager.cancelAutoTransaction(
+                                context = context,
+                                id = it.key
+                            )
+                            BudgetNotificationManager.cancelAlarmManager(
+                                context = context, id = it.key
+                            )
                         }
                     }
-                    table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-                        .child("${data.second}/${data.first}")
-                        .child("ExpenseCategories").child(categories[position].key).removeValue()
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                table.child("Users").child(auth.currentUser!!.uid).child("Categories")
+                    .child("${data.second}/${data.first}")
+                    .child("ExpenseCategories").child(categories[position].key).removeValue()
+            }
+
+                override fun onCancelled(error: DatabaseError) {}
 
             })
     }
@@ -167,7 +167,7 @@ class CategoryAdapter(
                 left.visibility=View.VISIBLE
                 if(categoryItem.categoryItem.remainder.toDouble()<0.0){
                     progress.progressTintList = ColorStateList.valueOf(context.resources.getColor(R.color.dark_orange, context.theme))
-                    left.text = "перерасход из"
+                    left.text = context.resources.getString(R.string.too_of)
                     categoryRemainder.text = categoryItem.categoryItem.remainder.subSequence(1, categoryItem.categoryItem.remainder.length)
                 } else {
                     progress.progressTintList = ColorStateList.valueOf(

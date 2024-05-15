@@ -73,13 +73,13 @@ class LoansFragment : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление подписки")
-                        .setMessage("Вы уверены, что хотите удалить выплату?")
-                        .setPositiveButton("Подтвердить") { dialog, _ ->
+                        .setTitle(resources.getString(R.string.delete_loan))
+                        .setMessage(resources.getString(R.string.delete_loan_sure))
+                        .setPositiveButton(resources.getString(R.string.agree)) { dialog, _ ->
                             adapterLoans.deleteItemAtPosition(position)
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Отмена") { dialog, _ ->
+                        .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                             dialog.dismiss()
                         }.show()
                 }

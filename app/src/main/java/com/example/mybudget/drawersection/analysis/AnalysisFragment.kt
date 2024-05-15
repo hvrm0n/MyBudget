@@ -221,20 +221,10 @@ class AnalysisFragment : Fragment() {
                 }
             }
 
-            if (categoryResult > 0.0) entries.add(
-                PieEntry(
-                    categoryResult.toFloat(),
-                    "Категории"
-                )
-            )
-            if (loansResult > 0.0) entries.add(
-                PieEntry(
-                    loansResult.toFloat(),
-                    "Важные выплаты"
-                )
-            )
-            if (goalsResult > 0.0) entries.add(PieEntry(goalsResult.toFloat(), "Цели"))
-            if (subsResult > 0.0) entries.add(PieEntry(subsResult.toFloat(), "Подписки"))
+            if (categoryResult > 0.0) entries.add(PieEntry(categoryResult.toFloat(), resources.getString(R.string.category)))
+            if (loansResult > 0.0) entries.add(PieEntry(loansResult.toFloat(), resources.getString(R.string.menu_loans)))
+            if (goalsResult > 0.0) entries.add(PieEntry(goalsResult.toFloat(), resources.getString(R.string.menu_goals)))
+            if (subsResult > 0.0) entries.add(PieEntry(subsResult.toFloat(), resources.getString(R.string.menu_subs)))
 
             if (entries.isNotEmpty()) {
                 val dataSet = PieDataSet(entries, "")
@@ -606,7 +596,7 @@ class AnalysisFragment : Fragment() {
 
     private fun showDateRangePicker(){
         val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Выберите промежуток")
+            .setTitleText(resources.getString(R.string.choose_range))
             .build()
         dateRangePicker.show(requireActivity().supportFragmentManager,"date_range_picker")
 

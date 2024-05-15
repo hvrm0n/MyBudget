@@ -73,13 +73,13 @@ class SubsFragment : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление подписки")
-                        .setMessage("Вы уверены, что хотите удалить подписку?")
-                        .setPositiveButton("Подтвердить") { dialog, _ ->
+                        .setTitle(resources.getString(R.string.delete_sub))
+                        .setMessage(resources.getString(R.string.delete_sub_sure))
+                        .setPositiveButton(resources.getString(R.string.agree)) { dialog, _ ->
                             adapterSubs.deleteItemAtPosition(position)
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Отмена") { dialog, _ ->
+                        .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                             dialog.dismiss()
                         }.show()
                 }

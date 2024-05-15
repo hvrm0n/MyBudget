@@ -107,7 +107,7 @@
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.mybudget.drawersection.finance.HistoryFragment"
+        android:name="com.example.mybudget.drawersection.finance.history.HistoryFragment"
         android:label="История" >
         <argument android:name="history" />
         <argument android:name="plan" />

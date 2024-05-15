@@ -32,7 +32,7 @@
                 android:gravity="center"
                 android:text="@string/page_finance_finances"
                 android:textColor="@color/dark_green"
-                android:textSize="@dimen/title"
+                android:textSize="@dimen/subtitle"
                 android:textStyle="bold" />
 
             <!--android:layout_marginStart="16dp"
@@ -57,7 +57,7 @@
                 android:gravity="center"
                 android:text="@string/page_finance_category"
                 android:textColor="@color/dark_green"
-                android:textSize="@dimen/title"
+                android:textSize="@dimen/subtitle"
                 android:textStyle="bold" />
 
             <FrameLayout

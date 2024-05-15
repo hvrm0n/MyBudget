@@ -36,14 +36,14 @@ class IconsChooserAlertDialog(context: Context,  onIconSelected: (String) -> Uni
         iconsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         iconsRecycler.adapter = adapter
 
-        builder.setPositiveButton("Выбрать") { dialog, _ ->
+        builder.setPositiveButton(context.resources.getString(R.string.choose)) { dialog, _ ->
             if(adapter.getSelectedIcon()!=""){
                 onIconSelected(adapter.getSelectedIcon())
                 dialog.dismiss()
-            } else Toast.makeText(context, "Вы не выбрали иконку.", Toast.LENGTH_LONG).show()
+            } else Toast.makeText(context, context.resources.getString(R.string.icon_not_choosen), Toast.LENGTH_LONG).show()
         }
 
-        builder.setNegativeButton("Отмена") { dialog, _ ->
+        builder.setNegativeButton(context.resources.getString(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
 

@@ -74,7 +74,6 @@ object BudgetNotificationManager {
              })
         }
 
-         Log.e("EnterNotification", channelID)
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, dateOfExpence.get(Calendar.YEAR))
         calendar.set(Calendar.MONTH, dateOfExpence.get(Calendar.MONTH))

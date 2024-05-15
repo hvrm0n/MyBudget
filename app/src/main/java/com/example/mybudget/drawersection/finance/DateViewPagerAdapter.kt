@@ -50,7 +50,6 @@ class DateViewPagerAdapter(val context: Context) : RecyclerView.Adapter<DateView
         private val textView: TextView = itemView.findViewById(android.R.id.text1)
         fun bind(date: Pair<Int, Int>) {
             textView.text = "${context.resources.getStringArray(R.array.months)[date.first-1]} ${date.second}"
-            Log.e("CheckList2",textView.text.toString())
         }
     }
 }

@@ -6,6 +6,11 @@
     <string name="plan_notification">Уведомления о планах</string>
     <string name="subscribe_notification">Уведомления о подписках</string>
 
+    <string name="goal_notification_title">Цели ждут!</string>
+    <string name="loan_notification_title">Важные выплаты приближаются!</string>
+    <string name="plan_notification_title">Не забывайте про запланированные траты!</string>
+    <string name="subscribe_notification_title">Не забывайте о подписках!</string>
+
     <string-array name="periodicity">
         <item>Никогда</item>
         <item>За день</item>
@@ -53,8 +58,7 @@
         <item>Внимание! Скоро будет расход по категории %1$s.</item>
         <item>Не забудьте, что скоро ожидается расход по категории %1$s.\n
             В случае отмены, обновите информацию в разделе "История и планы".</item>
-        <item>Ожидается расход по категории %1$s.\n
-            При изменении планов, не забудьте отменить трату в разделе "Планы".</item>
+        <item>Ожидается расход по категории %1$s.</item>
         <item>Близятся расходы по категории %1$s. Приготовьтесь к ним, чтобы управлять своим бюджетом эффективно.</item>
         <item>Обратите внимание, что в ближайшее время ожидается расход по категории %1$s.</item>
         <item>Помните о расходах по категории %1$s в ближайшее время.</item>

@@ -105,16 +105,17 @@ class LogInFragment : Fragment() {
         auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnCompleteListener { task->
             if (!task.isSuccessful) {
                 Log.e(Constants.TAG_LOGIN,  task.exception.toString())
-                Snackbar.make(email, "Такой учетной записи не существует!", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(email, getString(R.string.error_account_not_exist), Snackbar.LENGTH_LONG).show()
             } else updateUI()
         }
     }
 
     private fun updateUI(){
-        Navigation.findNavController(requireView()).navigate(R.id.action_logInFragment_to_homePageActivity)
+        val bundle = Bundle()
+        bundle.putBoolean("enter", true)
+        Navigation.findNavController(requireView()).navigate(R.id.action_logInFragment_to_homePageActivity, bundle)
         password.text.clear()
         email.text.clear()
         activity?.finishAffinity()
     }
-
 }

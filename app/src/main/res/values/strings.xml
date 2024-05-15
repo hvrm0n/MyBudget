@@ -20,6 +20,10 @@
     <string name="finish">Готово</string>
     <string name="log_in_google">Или войдите, используя</string>
 
+    <string name="equal">=</string>
+    <string name="every_months">Каждый месяц</string>
+    <string name="loading">Подгружаем Ваши финансы...</string>
+
     <string name="page_finance_finances">Сбережения</string>
     <string name="page_finance_category">Категории расходов</string>
     <string name="page_finance_history">История</string>
@@ -35,6 +39,7 @@
     <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="history_budget">Пополнение счета</string>
     <string name="all_history">Общая</string>
+    <string name="history_edit">Редактирование операции</string>
 
 
     <string name="title_activity_home_page">HomePageActivity</string>
@@ -88,11 +93,9 @@
     <string name="dateExpence">Дата</string>
 
     <string name="choose_icon">Выберите иконку</string>
-    <string name="choose">Выбрать</string>
     <string name="basic_budget_type_spinner">Выберите тип счета..</string>
 
     <string name="enterCurrencyName">Введите название валюты</string>
-    <string name="save">Сохранить</string>
 
     <!--ФИНАНСЫ-->
     <string name="chooseCategory">Выберите категорию расходов</string>
@@ -109,6 +112,10 @@
     <string name="remaind">%1$s %2$s</string>
     <string name="priority">Приоритет: %1$s</string>
 
+    <string name="name">Название</string>
+
+    <string name="too_of">перерасход из</string>
+
     <!--УВЕДОМЛЕНИЯ-->
     <string name="defaultTime">12:00</string>
     <string name="periodTitle">Периодичность напоминаний</string>
@@ -121,6 +128,9 @@
     <string name="goalsName">Название цели</string>
     <string name="titleLoans">Выплата</string>
     <string name="target">/%1$s</string>
+    <string name="reached">Достигнутые</string>
+    <string name="expence_date">Просроченные</string>
+    <string name="active">Активные</string>
 
     <!--ПОДПИСКИ-->
     <string name="billingPeriodTitle">Периодичность выплат</string>

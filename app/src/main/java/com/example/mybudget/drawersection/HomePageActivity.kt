@@ -30,7 +30,7 @@ import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.R
 import com.example.mybudget.databinding.HomePageBinding
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.SelectedBudgetViewModel
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
@@ -288,8 +288,8 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
         var total = 0.0
         val baseCurrency = budgetList.find {budget-> budget.key == "Base budget" }!!.budgetItem.currency
         val budgets =  selectedBudgetViewModel.selectedBudget.value?: listOf("Base budget")
-        Log.e("CheckPrefs", budgets.toString())
-        budgetList.filter { budgets.contains(it.key) }.forEach{ budgetItem->
+
+        budgetList.filter { budgets.contains(it.key) && !it.budgetItem.isDeleted }.forEach{ budgetItem->
                 when(budgetItem.budgetItem.currency){
                     baseCurrency -> {
                         total += budgetItem.budgetItem.amount.toDouble()
@@ -419,15 +419,13 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
     private fun updateGoals(){
         table.child("Users").child(auth.currentUser!!.uid).child("Goals").addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                goalList.clear()
                 for (goal in snapshot.children){
-                    goalList.clear()
                     goal.getValue(GoalItem::class.java)?.let { gi->
                         goalList.add(GoalItemWithKey(goal.key.toString(), gi))
                     }
                 }
-
                 financeViewModel.updateGoalsData(
-
                     goalList.asSequence()
                         .filter { it.goalItem.date!=null && if (it.goalItem.date!=null){
                             Calendar.getInstance().apply {
@@ -603,8 +601,7 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
         })
     }
 
-    override fun onChanged(value: List<BudgetItemWithKey>) {
-        TODO("Not yet implemented")
-    }
+    override fun onChanged(value: List<BudgetItemWithKey>) {}
+
 
 }

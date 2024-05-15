@@ -67,9 +67,7 @@ object ExchangeRateManager {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
     private fun currentTime() = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time

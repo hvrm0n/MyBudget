@@ -55,16 +55,16 @@ class CurrencyDialogFragment : DialogFragment() {
         val builder = AlertDialog.Builder(context)
         builder.setView(dialogView)
 
-        builder.setPositiveButton("Выбрать"){dialog, _->
+        builder.setPositiveButton(resources.getString(R.string.choose)){dialog, _->
             if (selection?.third == null) {
-                Toast.makeText(context, "Вы не выбрали валюту!", Toast.LENGTH_LONG).show()}
+                Toast.makeText(context, resources.getString(R.string.currency_not_choosen), Toast.LENGTH_LONG).show()}
             else {
                 sharedViewModel.dataToPass.value = selection
                 dialog.dismiss()
             }
         }
 
-        builder.setNegativeButton("Отмена") { dialog, _ ->
+        builder.setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
 

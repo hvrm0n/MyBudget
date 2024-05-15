@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.start_pages.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
@@ -161,74 +162,77 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
         }
 
         private fun payOnce(subItem: SubItemWithKey){
-            financeViewModel.budgetLiveData.value?.find { it.key == subItem.subItem.budgetId }?.let { budgetItem->
-                val budgetReference = when (subItem.subItem.budgetId){
-                    "Base budget"->{
-                        table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget")
+            if (financeViewModel.budgetLiveData.value?.find { it.key == subItem.subItem.budgetId  && !it.budgetItem.isDeleted} == null) Toast.makeText(context, context.resources.getString(R.string.error_budget_not_exists), Toast.LENGTH_SHORT).show()
+            else{
+                financeViewModel.budgetLiveData.value?.find { it.key == subItem.subItem.budgetId }?.let { budgetItem->
+                    val budgetReference = when (subItem.subItem.budgetId){
+                        "Base budget"->{
+                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget")
+                        }
+                        else->{
+                            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(subItem.subItem.budgetId)
+                        }
                     }
-                    else->{
-                        table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(subItem.subItem.budgetId)
-                    }
-                }
 
-                budgetItem.budgetItem.amount =  "%.2f".format(budgetItem.budgetItem.amount.toDouble() - subItem.subItem.amount.toDouble()).replace(",", ".")
-                budgetItem.budgetItem.count++
+                    budgetItem.budgetItem.amount =  "%.2f".format(budgetItem.budgetItem.amount.toDouble() - subItem.subItem.amount.toDouble()).replace(",", ".")
+                    budgetItem.budgetItem.count++
 
 
-                budgetReference.setValue(budgetItem.budgetItem).addOnSuccessListener {
-                    val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(subItem.subItem.date)
-                    val calendar = Calendar.getInstance().apply {
-                        time = date!!
-                    }
-                    calendar.add(when(subItem.subItem.period.split(" ")[1]){
-                        "d"->Calendar.DAY_OF_MONTH
-                        "w"->Calendar.WEEK_OF_MONTH
-                        "m"->Calendar.MONTH
-                        else->Calendar.YEAR
-                    }, subItem.subItem.period.split(" ")[0].toInt())
+                    budgetReference.setValue(budgetItem.budgetItem).addOnSuccessListener {
+                        val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(subItem.subItem.date)
+                        val calendar = Calendar.getInstance().apply {
+                            time = date!!
+                        }
+                        calendar.add(when(subItem.subItem.period.split(" ")[1]){
+                            "d"->Calendar.DAY_OF_MONTH
+                            "w"->Calendar.WEEK_OF_MONTH
+                            "m"->Calendar.MONTH
+                            else->Calendar.YEAR
+                        }, subItem.subItem.period.split(" ")[0].toInt())
 
-                    subItem.subItem.date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(calendar.time)
-                    table.child("Users").child(auth.currentUser!!.uid).child("Subs").child(subItem.key).setValue(subItem.subItem).addOnSuccessListener {
-                        val historyItem = table.child("Users").child(auth.currentUser!!.uid).child("History")
-                            .child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}").push()
+                        subItem.subItem.date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(calendar.time)
+                        table.child("Users").child(auth.currentUser!!.uid).child("Subs").child(subItem.key).setValue(subItem.subItem).addOnSuccessListener {
+                            val historyItem = table.child("Users").child(auth.currentUser!!.uid).child("History")
+                                .child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}").push()
 
-                        historyItem.setValue(
-                            HistoryItem(
-                                budgetId = subItem.subItem.budgetId,
-                                placeId = subItem.key,
-                                isSub = true,
-                                amount = "-${subItem.subItem.amount}",
-                                date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
-                                baseAmount = "-${subItem.subItem.amount}",
-                                key = historyItem.key.toString()
+                            historyItem.setValue(
+                                HistoryItem(
+                                    budgetId = subItem.subItem.budgetId,
+                                    placeId = subItem.key,
+                                    isSub = true,
+                                    amount = "-${subItem.subItem.amount}",
+                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
+                                    baseAmount = "-${subItem.subItem.amount}",
+                                    key = historyItem.key.toString()
+                                )
                             )
-                        )
-                        val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
-                        val periodBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
-                        val timeBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(1)?:"12:00"
+                            val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
+                            val periodBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
+                            val timeBegin = sharedPreferences.getString(subItem.key, "|")?.split("|")?.get(1)?:"12:00"
 
-                        BudgetNotificationManager.cancelAlarmManager(context, subItem.key)
-                        BudgetNotificationManager.cancelAutoTransaction(context, subItem.key)
+                            BudgetNotificationManager.cancelAlarmManager(context, subItem.key)
+                            BudgetNotificationManager.cancelAutoTransaction(context, subItem.key)
 
-                        BudgetNotificationManager.notification(
-                            context = context,
-                            channelID = Constants.CHANNEL_ID_SUB,
-                            id = subItem.key,
-                            placeId = subItem.key,
-                            time = timeBegin,
-                            dateOfExpence = calendar,
-                            periodOfNotification = periodBegin
-                        )
+                            BudgetNotificationManager.notification(
+                                context = context,
+                                channelID = Constants.CHANNEL_ID_SUB,
+                                id = subItem.key,
+                                placeId = subItem.key,
+                                time = timeBegin,
+                                dateOfExpence = calendar,
+                                periodOfNotification = periodBegin
+                            )
 
-                        BudgetNotificationManager.setAutoTransaction(
-                            context = context,
-                            id = subItem.key,
-                            placeId = subItem.key,
-                            year = calendar.get(Calendar.YEAR),
-                            month = calendar.get(Calendar.MONTH)+1,
-                            dateOfExpence = calendar,
-                            type = Constants.CHANNEL_ID_SUB
-                        )
+                            BudgetNotificationManager.setAutoTransaction(
+                                context = context,
+                                id = subItem.key,
+                                placeId = subItem.key,
+                                year = calendar.get(Calendar.YEAR),
+                                month = calendar.get(Calendar.MONTH)+1,
+                                dateOfExpence = calendar,
+                                type = Constants.CHANNEL_ID_SUB
+                            )
+                        }
                     }
                 }
             }

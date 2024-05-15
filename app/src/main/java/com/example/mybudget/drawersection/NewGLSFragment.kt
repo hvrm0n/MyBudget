@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,7 @@ import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.databinding.PageNewGlsBinding
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.IconsChooserAlertDialog
 import com.example.mybudget.drawersection.finance.SharedViewModel
 import com.example.mybudget.drawersection.goals.GoalItem
@@ -775,12 +776,13 @@ class NewGLSFragment : Fragment() {
     //FB
     private fun saveGoal(){
 
-        if (financeViewModel.goalsData.value?.filter { !it.goalItem.isDeleted }?.all{it.goalItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Такая цель уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.goalsData.value?.filter { !it.goalItem.isDeleted }?.all{it.goalItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_goal_exists), Snackbar.LENGTH_LONG).show()
         else if (financeViewModel.goalsData.value?.filter { it.goalItem.isDeleted }?.all{it.goalItem.name !=  binding.nameGLSEdit.text.toString()}==false){
             AlertDialog.Builder(context)
-                .setTitle("Восстановление")
-                .setMessage("У Вас уже была такая цель!\nХотите восстановить?")
-                .setPositiveButton("Восстановить") { dialog, _ ->
+                .setTitle(resources.getString(R.string.repair))
+                .setMessage(resources.getString(R.string.error_goal_repair))
+                .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
                     table.child("Users")
                         .child(auth.currentUser!!.uid)
                         .child("Goals")
@@ -789,11 +791,11 @@ class NewGLSFragment : Fragment() {
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
-                .setNegativeButton("Создать новую") { dialog, _ ->
+                .setNegativeButton(resources.getString(R.string.make_new)) { dialog, _ ->
                     makeNewGoal()
                     dialog.dismiss()
                 }
-                .setNeutralButton("Отмена") { dialog, _ ->
+                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
         }
@@ -801,7 +803,8 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun updateGoal(context: Context){
-        if (financeViewModel.goalsData.value?.filter { !it.goalItem.isDeleted  && it.key != key}?.all{it.goalItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Цель с таким названием уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.goalsData.value?.filter { !it.goalItem.isDeleted  && it.key != key}?.all{it.goalItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_goal_exists), Snackbar.LENGTH_LONG).show()
         else{
             val beginItem = financeViewModel.goalsData.value?.find { it.key == key }!!.goalItem
             table.child("Users")
@@ -901,12 +904,13 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun saveSub(){
-        if (financeViewModel.subLiveData.value?.filter { !it.subItem.isDeleted }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Такая подписка уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.subLiveData.value?.filter { !it.subItem.isDeleted }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_sub_exists), Snackbar.LENGTH_LONG).show()
         else if (financeViewModel.subLiveData.value?.filter { it.subItem.isDeleted }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false){
             AlertDialog.Builder(context)
-                .setTitle("Восстановление")
-                .setMessage("У Вас уже была такая подписка!\nХотите восстановить?")
-                .setPositiveButton("Восстановить") { dialog, _ ->
+                .setTitle(resources.getString(R.string.repair))
+                .setMessage(resources.getString(R.string.repair_sub))
+                .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
                     table.child("Users")
                         .child(auth.currentUser!!.uid)
                         .child("Subs")
@@ -915,19 +919,19 @@ class NewGLSFragment : Fragment() {
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
-                .setNegativeButton("Создать новую") { dialog, _ ->
+                .setNegativeButton(resources.getString(R.string.make_new)) { dialog, _ ->
                     makeNewSub()
                     dialog.dismiss()
                 }
-                .setNeutralButton("Отмена") { dialog, _ ->
+                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
         }
         else if (financeViewModel.subLiveData.value?.filter { it.subItem.isCancelled }?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false){
             AlertDialog.Builder(context)
-                .setTitle("Восстановление")
-                .setMessage("У Вас уже есть такая подписка, но она отменена!\nХотите возобновить?")
-                .setPositiveButton("Возобновить") { dialog, _ ->
+                .setTitle(resources.getString(R.string.repair))
+                .setMessage(resources.getString(R.string.resub_sub))
+                .setPositiveButton(resources.getString(R.string.renew)) { dialog, _ ->
                     table.child("Users")
                         .child(auth.currentUser!!.uid)
                         .child("Subs")
@@ -936,11 +940,11 @@ class NewGLSFragment : Fragment() {
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
-                .setNegativeButton("Создать новую") { dialog, _ ->
+                .setNegativeButton(resources.getString(R.string.make_new)) { dialog, _ ->
                     makeNewSub()
                     dialog.dismiss()
                 }
-                .setNeutralButton("Отмена") { dialog, _ ->
+                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
         }
@@ -948,7 +952,8 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun updateSub(context: Context, subItemWithKey: SubItemWithKey){
-        if (financeViewModel.subLiveData.value?.filter { !it.subItem.isDeleted  && it.key != key}?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Подписка с таким названием уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.subLiveData.value?.filter { !it.subItem.isDeleted  && it.key != key}?.all{it.subItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_sub_exists), Snackbar.LENGTH_LONG).show()
         else{
 
             while(dateLS.timeInMillis<Calendar.getInstance().timeInMillis){
@@ -1053,12 +1058,13 @@ class NewGLSFragment : Fragment() {
 
     private fun saveLoan(){
 
-        if (financeViewModel.loansLiveData.value?.filter { !it.loanItem.isDeleted }?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Такой платеж уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.loansLiveData.value?.filter { !it.loanItem.isDeleted }?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_loan_exists), Snackbar.LENGTH_LONG).show()
         else if (financeViewModel.loansLiveData.value?.filter { it.loanItem.isDeleted }?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false){
             AlertDialog.Builder(context)
-                .setTitle("Восстановление")
-                .setMessage("У Вас уже был такой платеж!\nХотите восстановить?")
-                .setPositiveButton("Восстановить") { dialog, _ ->
+                .setTitle(resources.getString(R.string.repair))
+                .setMessage(resources.getString(R.string.error_loan_renew))
+                .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
                     table.child("Users")
                         .child(auth.currentUser!!.uid)
                         .child("Loans")
@@ -1067,11 +1073,11 @@ class NewGLSFragment : Fragment() {
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
-                .setNegativeButton("Создать новый") { dialog, _ ->
+                .setNegativeButton(resources.getString(R.string.make_new_2)) { dialog, _ ->
                     makeNewLoan()
                     dialog.dismiss()
                 }
-                .setNeutralButton("Отмена") { dialog, _ ->
+                .setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }.show()
         }
@@ -1105,7 +1111,7 @@ class NewGLSFragment : Fragment() {
                 if(beginCalendar.timeInMillis>=Calendar.getInstance().apply {
                         set(endDate[2].toInt(), endDate[1].toInt()-1, endDate[0].toInt())
                     }.timeInMillis){
-                    Toast.makeText(requireContext(), "Вы выбрали неверную дату!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.error_date), Toast.LENGTH_SHORT).show()
                     binding.buttonAddGLS.isEnabled = false
                     return
                 }
@@ -1129,7 +1135,7 @@ class NewGLSFragment : Fragment() {
                 id = loanReference.key!!,
                 placeId =  loanReference.key!!,
                 time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                dateOfExpence = dateLS,
+                dateOfExpence = beginCalendar,
                 periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
             )
             findNavController().popBackStack()
@@ -1137,7 +1143,8 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun updateLoan(context: Context, beginItem: LoanItem){
-        if (financeViewModel.loansLiveData.value?.filter { !it.loanItem.isDeleted  && it.key != key}?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false) Snackbar.make(binding.buttonAddGLS, "Выплата с таким названием уже существует!", Snackbar.LENGTH_LONG).show()
+        if (financeViewModel.loansLiveData.value?.filter { !it.loanItem.isDeleted  && it.key != key}?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false)
+            Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_loan_exists), Snackbar.LENGTH_LONG).show()
         else{
             val beginDate:List<String>
             val beginCalendar = Calendar.getInstance()
@@ -1160,7 +1167,7 @@ class NewGLSFragment : Fragment() {
                     if(beginCalendar.timeInMillis>=Calendar.getInstance().apply {
                             set(endDate[2].toInt(), endDate[1].toInt()-1, endDate[0].toInt())
                         }.timeInMillis){
-                        Toast.makeText(requireContext(), "Вы выбрали неверную дату!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), context.resources.getString(R.string.error_date), Toast.LENGTH_SHORT).show()
                         binding.buttonAddGLS.isEnabled = false
                         return
                     }
@@ -1186,14 +1193,14 @@ class NewGLSFragment : Fragment() {
                 )
             BudgetNotificationManager.cancelAlarmManager(context, key!!)
             if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-
+                Log.e("CheckDate", beginCalendar.time.toString())
                 BudgetNotificationManager.notification(
                     context = requireContext(),
                     channelID = Constants.CHANNEL_ID_LOAN,
                     placeId = null,
                     id = key!!,
                     time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                    dateOfExpence = dateLS,
+                    dateOfExpence = beginCalendar,
                     periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
                 )
             }
@@ -1238,7 +1245,7 @@ class NewGLSFragment : Fragment() {
 
     private fun showDateRangePicker(){
         val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Выберите промежуток")
+            .setTitleText(resources.getString(R.string.choose_range))
             .build()
         dateRangePicker.show(requireActivity().supportFragmentManager,"date_range_picker")
 
@@ -1260,19 +1267,4 @@ class NewGLSFragment : Fragment() {
         binding.buttonAddGLS.isEnabled =  binding.glsValue.text.isNotEmpty() && binding.nameGLS.text.isNotEmpty() && binding.imageOfGLM.tag!=null
     }
 
-    /*private fun title(key:String?, type:String?){
-        if (key == null){
-            requireActivity().title = when(type){
-                "loan"-> "Новый обязательный платеж"
-                "goal"-> "Новая цель"
-                else -> "Новая подписка"
-            }
-        } else {
-            requireActivity().title = when(type){
-                "loan"-> "Редактирования обязательного платежа"
-                "goal"-> "Редактирование цели"
-                else -> "Редактирование подписки"
-            }
-        }
-    }*/
 }

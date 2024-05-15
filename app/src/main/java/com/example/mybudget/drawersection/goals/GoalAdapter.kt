@@ -26,7 +26,7 @@ import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -119,7 +119,6 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             textViewName.text = goalItem.goalItem.name
             goalNow.text = goalItem.goalItem.current
             goalTarget.text = context.resources.getString(R.string.target, "%.2f".format(goalItem.goalItem.target.toDouble()).replace(",", "."))
-
             goalCurrency.text = currencySymbol
             when (goalItem.goalItem.date != null){
                 true-> {
@@ -128,10 +127,10 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 } else -> goalDate.visibility = View.GONE
             }
 
-            if (position!=0 && !goals[position-1].goalItem.isReached && placeReach == -1 && goalItem.goalItem.isReached||
+            if (/*position!=0 && !goals[position-1].goalItem.isReached && placeReach == -1 && goalItem.goalItem.isReached||*/
                 goalItem.goalItem.isReached && placeReach == -1 || placeReach == position){
                 reachedGoals.visibility = View.VISIBLE
-                reachedGoals.text = "Достигнутые"
+                reachedGoals.text = context.resources.getString(R.string.reached)
                 placeReach = position
             } else if(goalItem.goalItem.date!=null && !goalItem.goalItem.isReached && placeNotReached == -1 || placeNotReached == position){
                 val date = goalItem.goalItem.date!!.split(".")
@@ -143,16 +142,16 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                         set(Calendar.MINUTE,0)
                         set(Calendar.SECOND,0)
                 }.timeInMillis > calendar.timeInMillis){
-                    reachedGoals.text = "Просроченные"
+                    reachedGoals.text = context.resources.getString(R.string.expence_date)
                     reachedGoals.visibility = View.VISIBLE
                     placeNotReached = position
                 } else if (placeActive == -1 || placeActive == position){
-                    reachedGoals.text = "Активные"
+                    reachedGoals.text = context.resources.getString(R.string.active)
                     reachedGoals.visibility = View.VISIBLE
                     placeActive = position
                 }
             } else if (!goalItem.goalItem.isReached && placeActive == -1 || placeActive == position){
-                reachedGoals.text = "Активные"
+                reachedGoals.text =  context.resources.getString(R.string.active)
                 reachedGoals.visibility = View.VISIBLE
                 placeActive = position
             }
@@ -222,22 +221,22 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 }
             }
 
-            builder.setPositiveButton("Начисление") { dialog, _ ->
-                if (goalsNewValue.text.isEmpty()) Toast.makeText(context, "Вы не ввели сумму начисления", Toast.LENGTH_SHORT).show()
-                else if (spinnerBudgetGoals.selectedItemPosition == -1)  Toast.makeText(context, "Вы не выбрали счет списания", Toast.LENGTH_SHORT).show()
+            builder.setPositiveButton(context.resources.getString(R.string.card_goal_put)) { dialog, _ ->
+                if (goalsNewValue.text.isEmpty()) Toast.makeText(context, context.resources.getString(R.string.error_not_value), Toast.LENGTH_SHORT).show()
+                else if (spinnerBudgetGoals.selectedItemPosition == -1)  Toast.makeText(context, context.resources.getString(R.string.error_not_budget), Toast.LENGTH_SHORT).show()
                 else{
                     if(budgetList[spinnerBudgetGoals.selectedItemPosition].budgetItem.amount.toDouble()>=0
                         && (budgetList[spinnerBudgetGoals.selectedItemPosition].budgetItem.amount.toDouble()
                                 - if(goalsBudgetValue.visibility == View.VISIBLE) goalsBudgetValue.text.toString().toDouble() else goalsNewValue.text.toString().toDouble()) <0){
 
                         AlertDialog.Builder(context)
-                            .setTitle("Перерасход")
-                            .setMessage("После совершения данной операции Вы уйдете в минус!\nПродолжить?")
-                            .setPositiveButton("Да") { dialog2, _ ->
+                            .setTitle(context.resources.getString(R.string.too_much))
+                            .setMessage(context.resources.getString(R.string.error_budget_minus_new))
+                            .setPositiveButton(context.resources.getString(R.string.yes)) { dialog2, _ ->
                                 income(budgetList[spinnerBudgetGoals.selectedItemPosition], goalItem, goalsNewValue.text.toString().toDouble(),  if(goalsBudgetValue.visibility == View.VISIBLE) goalsBudgetValue.text.toString().toDouble() else goalsNewValue.text.toString().toDouble())
                                 dialog2.dismiss()
                             }
-                            .setNegativeButton("Нет") { dialog2, _ ->
+                            .setNegativeButton(context.resources.getString(R.string.no)) { dialog2, _ ->
                                 dialog2.dismiss()
                             }.show()
                     }
@@ -246,17 +245,17 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 dialog.dismiss()
             }
 
-            builder.setNegativeButton("Списание"){dialog, _ ->
+            builder.setNegativeButton(context.resources.getString(R.string.expence)){dialog, _ ->
                 when{
-                    (goalsNewValue.text.isEmpty()) -> Toast.makeText(context,"Вы не ввели сумму списания", Toast.LENGTH_SHORT).show()
-                    (spinnerBudgetGoals.selectedItemPosition == -1) -> Toast.makeText(context,"Вы не выбрали счет начисления", Toast.LENGTH_LONG).show()
-                    (goalItem.goalItem.current.toDouble()<goalsNewValue.text.toString().toDouble()) -> Toast.makeText(context, "Вы не можете вернуть денег больше, чем отложили!", Toast.LENGTH_SHORT).show()
+                    (goalsNewValue.text.isEmpty()) -> Toast.makeText(context, context.resources.getString(R.string.error_not_value_expence), Toast.LENGTH_SHORT).show()
+                    (spinnerBudgetGoals.selectedItemPosition == -1) -> Toast.makeText(context, context.resources.getString(R.string.error_not_budget), Toast.LENGTH_LONG).show()
+                    (goalItem.goalItem.current.toDouble()<goalsNewValue.text.toString().toDouble()) -> Toast.makeText(context, context.resources.getString(R.string.error_not_more_goal), Toast.LENGTH_SHORT).show()
                     else -> expense(budgetList[spinnerBudgetGoals.selectedItemPosition], goalItem, goalsNewValue.text.toString().toDouble(),  if(goalsBudgetValue.visibility == View.VISIBLE) goalsBudgetValue.text.toString().toDouble() else goalsNewValue.text.toString().toDouble())
                 }
                 dialog.dismiss()
             }
 
-            builder.setNeutralButton("Отмена"){dialog, _ ->
+            builder.setNeutralButton(context.resources.getString(R.string.cancel)){dialog, _ ->
                 dialog.dismiss()
             }
 
@@ -285,7 +284,8 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 "${Calendar.getInstance().get(Calendar.YEAR)}/${
                     Calendar.getInstance().get(Calendar.MONTH)+1}"
             ).push()
-            historyReference.setValue(HistoryItem(
+            historyReference.setValue(
+                HistoryItem(
                 budgetId = budgetItem.key,
                 placeId = goalItem.key,
                 isGoal = true,
@@ -293,7 +293,8 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
                 baseAmount = "%.2f".format(goalValue).replace(",", "."),
                 key = historyReference.key.toString()
-            ))
+            )
+            )
         }
 
         private fun expense(budgetItem:BudgetItemWithKey, goalItem: GoalItemWithKey, goalValue:Double, budgetValue:Double){
@@ -328,7 +329,8 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 .child("History").child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}")
                 .push()
 
-            historyReference.setValue(HistoryItem(
+            historyReference.setValue(
+                HistoryItem(
                 budgetId = budgetItem.key,
                 placeId = goalItem.key,
                 isGoal = true,
@@ -336,7 +338,8 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
                 baseAmount = "-%.2f".format(goalValue).replace(",", "."),
                 key = historyReference.key.toString()
-            ))
+            )
+            )
         }
 
         //goalsNewValue - 2et

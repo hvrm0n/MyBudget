@@ -99,6 +99,6 @@
         android:visibility="gone"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Вы еще не произвели ни одной транзакции"/>
+        android:text="@string/error_no_transaction"/>
 
 </LinearLayout>

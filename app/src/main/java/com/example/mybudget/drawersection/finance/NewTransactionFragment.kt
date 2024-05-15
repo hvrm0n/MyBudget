@@ -26,6 +26,7 @@ import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category._CategoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.start_pages.Constants
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
@@ -415,16 +416,18 @@ class NewTransactionFragment : Fragment() {
                                     .child("${dateOfIncome.get(Calendar.YEAR)}/${dateOfIncome.get(Calendar.MONTH)+1}")
                                     .push()
 
-                                newHistory.setValue(HistoryItem(budgetId = budget.key, amount = "%.2f".format(valueDouble).replace(',','.'),
+                                newHistory.setValue(
+                                    HistoryItem(budgetId = budget.key, amount = "%.2f".format(valueDouble).replace(',','.'),
                                     baseAmount = "%.2f".format(valueDouble).replace(',','.'),
-                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
+                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString())
+                                )
                                findNavController().popBackStack()
                             }
                         }
                         override fun onCancelled(error: DatabaseError) {}
                     })
                     }
-                -1 -> Toast.makeText(requireContext(), "Вы не выбрали бюджет", Toast.LENGTH_LONG).show()
+                -1 -> Toast.makeText(requireContext(), resources.getString(R.string.error_budget_not_choose), Toast.LENGTH_LONG).show()
                 else ->{
                     val reference = table.child("Users").child(auth.currentUser!!.uid)
                         .child("Budgets").child("Other budget")
@@ -438,9 +441,11 @@ class NewTransactionFragment : Fragment() {
                                 val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                     .child("${dateOfIncome.get(Calendar.YEAR)}/${dateOfIncome.get(Calendar.MONTH)+1}")
                                     .push()
-                                newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, amount = "%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
+                                newHistory.setValue(
+                                    HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, amount = "%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
                                     baseAmount = "%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.'),
-                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString()))
+                                    date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfIncome.time), key = newHistory.key.toString())
+                                )
                                 findNavController().popBackStack()
                             }
                         }
@@ -452,15 +457,15 @@ class NewTransactionFragment : Fragment() {
 
         else if(binding.transfer.isChecked){
             when{
-                binding.spinnerBudget.selectedItemPosition == -1 || binding.spinnerBudgetTo.selectedItemPosition == -1 -> Toast.makeText(requireContext(), "Вы не выбрали бюджет", Toast.LENGTH_LONG).show()
+                binding.spinnerBudget.selectedItemPosition == -1 || binding.spinnerBudgetTo.selectedItemPosition == -1 -> Toast.makeText(requireContext(), resources.getString(R.string.error_budget_not_choose), Toast.LENGTH_LONG).show()
                 else ->{
                     val budgetFrom = budgetList.find { it.budgetItem.name ==  binding.spinnerBudget.selectedItem.toString()}!!
                     val budgetTo = budgetList.find { it.budgetItem.name ==  binding.spinnerBudgetTo.selectedItem.toString()}!!
                     if (budgetFrom.budgetItem.amount.toDouble() - valueDoubleOthers < 0.0){
                         AlertDialog.Builder(context)
-                            .setTitle("Перерасход")
-                            .setMessage("После совершения данной операции вы уйдете в минус!\nПродолжить?")
-                            .setPositiveButton("Да") { dialog2, _ ->
+                            .setTitle(resources.getString(R.string.too_much))
+                            .setMessage(resources.getString(R.string.error_budget_minus_new))
+                            .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
                                 addTransfer(
                                     budgetFrom = budgetFrom,
                                     budgetTo = budgetTo,
@@ -469,7 +474,7 @@ class NewTransactionFragment : Fragment() {
                                 )
                                 dialog2.dismiss()
                             }
-                            .setNegativeButton("Нет") { dialog2, _ ->
+                            .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                 dialog2.dismiss()
                             }.show()
                     } else {
@@ -501,13 +506,13 @@ class NewTransactionFragment : Fragment() {
 
                                 if(currentBudgetItem?.amount!!.toDouble() - valueDouble<0.0){
                                     AlertDialog.Builder(context)
-                                        .setTitle("Перерасход")
-                                        .setMessage("После совершения данной операции вы уйдете в минус!\nПродолжить?")
-                                        .setPositiveButton("Да") { dialog2, _ ->
+                                        .setTitle(resources.getString(R.string.too_much))
+                                        .setMessage(resources.getString(R.string.error_budget_minus_new))
+                                        .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
                                             addNewTransactionBase(currentBudgetItem, valueDoubleOthers, valueDouble, reference, nameCategory, nameBudget, budget)
                                             dialog2.dismiss()
                                         }
-                                        .setNegativeButton("Нет") { dialog2, _ ->
+                                        .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                             dialog2.dismiss()
                                         }.show()
                                 } else{
@@ -520,7 +525,7 @@ class NewTransactionFragment : Fragment() {
                         override fun onCancelled(error: DatabaseError) {}
                     })
                 }
-                -1 -> Toast.makeText(requireContext(), "Вы не выбрали бюджет", Toast.LENGTH_LONG).show()
+                -1 -> Toast.makeText(requireContext(), resources.getString(R.string.error_budget_not_choose), Toast.LENGTH_LONG).show()
                 else ->{
                     val reference = table.child("Users").child(auth.currentUser!!.uid)
                         .child("Budgets").child("Other budget").child(financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key)
@@ -533,13 +538,13 @@ class NewTransactionFragment : Fragment() {
 
                                 if((currentBudgetItem?.amount!!.toDouble() - if(valueDoubleOthers==0.0) valueDouble else valueDoubleOthers)<0.0){
                                     AlertDialog.Builder(context)
-                                        .setTitle("Перерасход")
-                                        .setMessage("После совершения данной операции вы уйдете в минус!\nПродолжить?")
-                                        .setPositiveButton("Да") { dialog2, _ ->
+                                        .setTitle(resources.getString(R.string.too_much))
+                                        .setMessage(resources.getString(R.string.error_budget_minus_new))
+                                        .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
                                             addNewTransaction(currentBudgetItem, valueDoubleOthers, valueDouble, reference, nameCategory, nameBudget, budget)
                                             dialog2.dismiss()
                                         }
-                                        .setNegativeButton("Нет") { dialog2, _ ->
+                                        .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                             dialog2.dismiss()
                                         }.show()
                                 } else{
@@ -643,25 +648,26 @@ class NewTransactionFragment : Fragment() {
                     }
                     if(beginRemainder.toDouble()>=0.0 && currentCategoryExpence.remainder.toDouble()<0.0) {
                             AlertDialog.Builder(context)
-                                .setTitle("Перерасход")
-                                .setMessage("После совершения данной операции Вы превысите распределенный бюджет на категорию!\nПродолжить?")
-                                .setPositiveButton("Да") { dialog2, _ ->
+                                .setTitle(resources.getString(R.string.too_much))
+                                .setMessage(resources.getString(R.string.error_category_minus))
+                                .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
                                     reference.setValue(currentBudgetItem)
                                     reference2.setValue(currentCategoryExpence).addOnCompleteListener {
                                         val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                             .push()
-                                        newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
+                                        newHistory.setValue(
+                                            HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
                                             isCategory = true, amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
                                             baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
-                                            key = newHistory.key.toString()))
+                                            key = newHistory.key.toString())
+                                        )
                                         findNavController().popBackStack()
                                         }
                                     dialog2.dismiss()
                                 }
-                                .setNegativeButton("Нет") { dialog2, _ ->
-
+                                .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                     dialog2.dismiss()
                                 }.show()
                         } else{
@@ -670,11 +676,13 @@ class NewTransactionFragment : Fragment() {
                                 val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                     .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                     .push()
-                                newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
+                                newHistory.setValue(
+                                    HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key, financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
                                     isCategory = true, amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"
                                     , baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
-                                    key = newHistory.key.toString()))
+                                    key = newHistory.key.toString())
+                                )
                                 findNavController().popBackStack()
                         }
                     }
@@ -751,11 +759,13 @@ class NewTransactionFragment : Fragment() {
                         val planReferense =  table.child("Users").child(auth.currentUser!!.uid).child("Plan")
                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                             .push()
-                        planReferense.setValue(HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
+                        planReferense.setValue(
+                            HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
                             amount = "-${"%.2f".format(if(valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
                             baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
-                            key = planReferense.key.toString()))
+                            key = planReferense.key.toString())
+                        )
                         if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                             BudgetNotificationManager.notification(
                                 requireContext(),
@@ -812,25 +822,26 @@ class NewTransactionFragment : Fragment() {
                         }
                         if(beginReminder.toDouble()>0.0 && currentCategoryExpence2.remainder.toDouble()<0.0){
                             AlertDialog.Builder(context)
-                                .setTitle("Перерасход")
-                                .setMessage("После совершения данной операции Вы превысите распределенный бюджет на категорию!\nПродолжить?")
-                                .setPositiveButton("Да") { dialog2, _ ->
+                                .setTitle(resources.getString(R.string.too_much))
+                                .setMessage(resources.getString(R.string.error_category_minus))
+                                .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
                                     reference.setValue(currentBudgetItem)
                                     reference2.setValue(currentCategoryExpence2).addOnCompleteListener {
                                         val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                             .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                             .push()
-                                        newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
+                                        newHistory.setValue(
+                                            HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
                                             isCategory = true, amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}"
                                             ,baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                             date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
-                                            key = newHistory.key.toString()))
+                                            key = newHistory.key.toString())
+                                        )
                                         findNavController().popBackStack()
                                     }
                                     dialog2.dismiss()
                                 }
-                                .setNegativeButton("Нет") { dialog2, _ ->
-
+                                .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                     dialog2.dismiss()
                                 }.show()
                         } else {
@@ -839,11 +850,13 @@ class NewTransactionFragment : Fragment() {
                                 val newHistory = table.child("Users").child(auth.currentUser!!.uid).child("History")
                                     .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                     .push()
-                                newHistory.setValue(HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
+                                newHistory.setValue(
+                                    HistoryItem(budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key,
                                     isCategory = true, amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
                                     baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                     date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),
-                                    key = newHistory.key.toString()))
+                                    key = newHistory.key.toString())
+                                )
                                 findNavController().popBackStack()
                             }
                         }
@@ -921,11 +934,13 @@ class NewTransactionFragment : Fragment() {
                             val planReferense =  table.child("Users").child(auth.currentUser!!.uid).child("Plan")
                                 .child("${dateOfExpence.get(Calendar.YEAR)}/${dateOfExpence.get(Calendar.MONTH)+1}")
                                 .push()
-                            planReferense.setValue(HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
+                            planReferense.setValue(
+                                HistoryItem(placeId = financeViewModel.categoryBeginLiveData.value?.filter { it.categoryBegin.name == nameCategory}?.get(0)!!.key, budgetId = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!.key,
                                 amount = "-${"%.2f".format(if( valueDoubleOthers!=0.0) valueDoubleOthers else valueDouble).replace(',','.')}",
                                 baseAmount = "-${"%.2f".format(valueDouble).replace(',','.')}",
                                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfExpence.time),  isCategory = true,
-                                key = planReferense.key.toString()))
+                                key = planReferense.key.toString())
+                            )
                             if(binding.periodOfNotification.selectedItemId!=0L && binding.periodOfNotification.selectedItemId!=-1L) {
                                 BudgetNotificationManager.notification(
                                     requireContext(),
@@ -1119,7 +1134,7 @@ class NewTransactionFragment : Fragment() {
 
         } else if(binding.expence.isChecked) {
             if(categoryList.isEmpty()){
-                Snackbar.make(binding.expence, "У вас не выбрано ни одной категории расходов!", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.expence, resources.getString(R.string.error_category_not_choosen), Snackbar.LENGTH_LONG).show()
                 binding.income.isChecked = true
                 binding.calendarViewBudget.visibility = View.VISIBLE
                 binding.calendarViewCategory.visibility = View.GONE

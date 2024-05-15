@@ -185,7 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
-                android:text="Каждый месяц"
+                android:text="@string/every_months"
                 android:textColor="@color/dark_orange"
                 android:textSize="@dimen/regText"/>
 

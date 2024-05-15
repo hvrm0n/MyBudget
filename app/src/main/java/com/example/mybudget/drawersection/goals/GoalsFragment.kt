@@ -2,6 +2,7 @@ package com.example.mybudget.drawersection.goals
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -87,13 +88,13 @@ class GoalsFragment : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление цели")
-                        .setMessage("Вы уверены, что хотите удалить цель?")
-                        .setPositiveButton("Подтвердить") { dialog, _ ->
+                        .setTitle(resources.getString(R.string.delete_goal))
+                        .setMessage(resources.getString(R.string.delete_goal_sure))
+                        .setPositiveButton(resources.getString(R.string.agree)) { dialog, _ ->
                             adapterGoals.deleteItemAtPosition(position)
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Отмена") { dialog, _ ->
+                        .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                             dialog.dismiss()
                         }.show()
                 }

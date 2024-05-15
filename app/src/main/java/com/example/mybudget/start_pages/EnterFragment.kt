@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.R
+import com.example.mybudget.drawersection.finance.category._CategoryBegin
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -122,18 +123,27 @@ class EnterFragment : Fragment() {
                                     Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_homePageActivity)
                                     requireActivity().finish()
                                 } else Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment)
-                            } else Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment)
+                            } else {
+                                val categories = resources.getStringArray(R.array.category_default)
+                                val paths = resources.getStringArray(R.array.icons_default)
+                                for (i in categories.indices){
+                                    table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base").push().setValue(
+                                        _CategoryBegin(categories[i], paths[i])
+                                    )
+                                }
+                                Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment)
+                            }
                         }
                     }
                 } else {
                     Log.e(Constants.TAG_GOOGLE, task.exception.toString())
-                    Toast.makeText(requireActivity(), "Не удалось войти в аккаунт!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireActivity(), getString(R.string.error_sign_in), Toast.LENGTH_SHORT).show()
                 }
             }
         }
         else{
             Log.e(Constants.TAG_GOOGLE, task.exception.toString())
-            Toast.makeText(requireActivity(), "Не удалось войти в аккаунт!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.error_sign_in), Toast.LENGTH_SHORT).show()
         }
     }
 }

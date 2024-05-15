@@ -362,8 +362,7 @@
         <item>Внимание! Скоро будет расход по категории %1$s.</item>
         <item>Не забудьте, что скоро ожидается расход по категории %1$s.\n
             В случае отмены, обновите информацию в разделе "История и планы".</item>
-        <item>Ожидается расход по категории %1$s.\n
-            При изменении планов, не забудьте отменить трату в разделе "Планы".</item>
+        <item>Ожидается расход по категории %1$s.</item>
         <item>Близятся расходы по категории %1$s. Приготовьтесь к ним, чтобы управлять своим бюджетом эффективно.</item>
         <item>Обратите внимание, что в ближайшее время ожидается расход по категории %1$s.</item>
         <item>Помните о расходах по категории %1$s в ближайшее время.</item>
@@ -451,6 +450,7 @@
     <color name="green">#90be6d</color>
     <color name="light">#F3F0E7</color>
     <color name="light_green">#869C8D</color>
+    <color name="light_green_selection">#BECEC2</color>
     <color name="light_grey">#d3d3d3</color>
     <color name="light_orange">#daa479</color>
     <color name="purple">#735d78</color>
@@ -794,10 +794,14 @@
     <string name="ZWL">$</string>
     <string name="ZWL_name">Доллар Зимбабве</string>
     <string name="action_settings">Settings</string>
+    <string name="active">Активные</string>
     <string name="activeSubs">Активные</string>
     <string name="add">Добавить</string>
+    <string name="add_income_loan">Выплатить</string>
+    <string name="agree">Подтвердить</string>
     <string name="all_history">Общая</string>
     <string name="app_name">MyBudget</string>
+    <string name="apply">Применить</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
@@ -816,6 +820,7 @@
     <string name="budget">Счет</string>
     <string name="budget_transfer_from">Перевод со счета</string>
     <string name="budget_transfer_to">Перевод на счет</string>
+    <string name="cancel">Отмена</string>
     <string name="cancelledSubs">Отмененные</string>
     <string name="car">Транспорт</string>
     <string name="card_add_basic">Сделать основным</string>
@@ -835,7 +840,9 @@
     <string name="chooseCategory">Выберите категорию расходов</string>
     <string name="choose_icon">Выберите иконку</string>
     <string name="choose_priority">Выберите приоритет</string>
+    <string name="choose_range">Выберите промежуток</string>
     <string name="close">Держите информацию о финансах рядом!</string>
+    <string name="currency_not_choosen">Вы не выбрали валюту.</string>
     <string name="currentMonth">Текущий месяц</string>
     <string name="dateExpence">Дата</string>
     <string name="dateLoanCurrent">Следущая: %1$s</string>
@@ -844,12 +851,69 @@
     <string name="dateSubs">Дата начала подписки</string>
     <string name="defaultTime">12:00</string>
     <string name="default_web_client_id" translatable="false">480721209154-7s727dt7jqmnvlsvqqss5grs0h0eg5q0.apps.googleusercontent.com</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_budget">Удаление бюджета</string>
+    <string name="delete_budget_sure">Вы уверены, что хотите удалить бюджет?</string>
+    <string name="delete_category">Удаление категории</string>
+    <string name="delete_category_sure">Вы уверены, что хотите удалить категорию?</string>
+    <string name="delete_goal">Удаление цели</string>
+    <string name="delete_goal_sure">Вы уверены, что хотите удалить бюджет?</string>
+    <string name="delete_history">Удаление операции</string>
+    <string name="delete_history_sure">Вы уверены, что хотите удалить транзакцию?</string>
+    <string name="delete_loan">Удаление выплаты</string>
+    <string name="delete_loan_sure">Вы уверены, что хотите удалить выплату?</string>
+    <string name="delete_sub">Удаление подписки</string>
+    <string name="delete_sub_sure">Вы уверены, что хотите удалить подписку?</string>
+    <string name="distribute">Распределить</string>
     <string name="email">Почта</string>
     <string name="emailWrong">Вы ввели адрес электронной почты в неверном формате</string>
     <string name="enter">Вход в приложение MyBudget</string>
     <string name="enterCurrencyName">Введите название валюты</string>
     <string name="enter_email">Введите почту</string>
     <string name="enter_pass">Введите пароль</string>
+    <string name="equal">=</string>
+    <string name="error_account_not_exist">Такой учетной записи не существует!</string>
+    <string name="error_budget_base_delete">"Нельзя удалить основной бюджет!</string>
+    <string name="error_budget_edit_delete">"Вы собираетесь удалить отредактированный бюджет!</string>
+    <string name="error_budget_exists">Счет с таким названием уже существует!</string>
+    <string name="error_budget_have_plan">У Вас есть запланированные операции с этим бюджетом!</string>
+    <string name="error_budget_minus_change">При изменении Вы уйдете в минус в бюджете!</string>
+    <string name="error_budget_minus_new">После совершения данной операции вы уйдете в минус!\nПродолжить?</string>
+    <string name="error_budget_not_choose">Вы не выбрали бюджет</string>
+    <string name="error_budget_not_exists">Такого бюджета больше нет!</string>
+    <string name="error_budget_not_exists_cant_change">Такого бюджета больше нет, операцию нельзя изменить!</string>
+    <string name="error_budget_not_exists_cant_delete">Такого бюджета больше нет, операцию нельзя удалить!</string>
+    <string name="error_category_exist">Такая категория уже существует!</string>
+    <string name="error_category_minus">"После совершения данной операции Вы превысите распределенный бюджет на категорию!\nПродолжить?</string>
+    <string name="error_category_name">Вы не заполнили название категории.</string>
+    <string name="error_category_not_choosen">У Вас не выбрано ни одной категории расходов!</string>
+    <string name="error_category_not_exist">Такой категории больше нет!</string>
+    <string name="error_category_not_exist_change">Такой категории больше нет, операцию нельзя изменить!</string>
+    <string name="error_category_not_exist_delete">Такой категории больше нет, операцию нельзя удалить!</string>
+    <string name="error_category_not_exists">Вы еще не выбрали категории расходов на этот месяц!</string>
+    <string name="error_creating_account">Не удалось создать в аккаунт, попробуйте еще раз.</string>
+    <string name="error_date">Вы выбрали неверную дату!</string>
+    <string name="error_goal_exists">Такая цели уже существует!</string>
+    <string name="error_goal_minus">При изменении Вы уйдете в минус в цели!</string>
+    <string name="error_goal_not_exists">Такой цели больше нет, операцию нельзя изменить.</string>
+    <string name="error_goal_not_exists_delete">Такой цели больше нет, операцию нельзя удалить.</string>
+    <string name="error_goal_repair">У Вас уже была такая цель!\nХотите восстановить?</string>
+    <string name="error_history_not_exists">Вы еще не произвели не одной операции!</string>
+    <string name="error_loan_exists">Такой платеж уже существует!</string>
+    <string name="error_loan_not_exists">Такой выплаты больше нет, операцию нельзя удалить.</string>
+    <string name="error_loan_renew">У Вас уже был такой платеж!\nХотите восстановить?</string>
+    <string name="error_no_transaction">Вы еще не произвели ни одной транзакции!</string>
+    <string name="error_not_all_data">Вы ввели не все данные.</string>
+    <string name="error_not_budget">Вы не выбрали счет списания.</string>
+    <string name="error_not_more_goal">Вы не можете вернуть денег больше, чем отложили!</string>
+    <string name="error_not_value">Вы не ввели сумму начисления.</string>
+    <string name="error_not_value_expence">Вы не ввели сумму списания.</string>
+    <string name="error_sign_in">Не удалось войти в аккаунт!</string>
+    <string name="error_sub_exists">Такая подписка уже существует.</string>
+    <string name="error_sub_not_exists">Такой подписки больше нет, операцию нельзя изменить.</string>
+    <string name="every_months">Каждый месяц</string>
+    <string name="expence">Списание</string>
+    <string name="expence_date">Просроченные</string>
     <string name="fab">+</string>
     <string name="fab_calculate">Распределить бюджет</string>
     <string name="fab_cancel_calculate">Отменить распределение</string>
@@ -861,6 +925,7 @@
     <string name="firebase_database_url" translatable="false">https://mybudget-1b117-default-rtdb.firebaseio.com</string>
     <string name="gcm_defaultSenderId" translatable="false">480721209154</string>
     <string name="goal_notification">Уведомления о целях</string>
+    <string name="goal_notification_title">Цели ждут!</string>
     <string name="goalsName">Название цели</string>
     <string name="google_api_key" translatable="false">AIzaSyDLhvlzlD6LNP0KVP4YgGJpLyM4K4a-V7U</string>
     <string name="google_app_id" translatable="false">1:480721209154:android:1715d30d7eb024a872aadb</string>
@@ -872,14 +937,20 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history_budget">Пополнение счета</string>
     <string name="history_category">Категория:\n%1$s</string>
+    <string name="history_edit">Редактирование операции</string>
     <string name="history_goals">Цель: %1$s</string>
     <string name="history_loans">Обязательная выплата: %1$s</string>
     <string name="home">Дом</string>
+    <string name="icon_not_choosen">Вы не выбрали иконку.</string>
     <string name="inPlan">В планах потратить %1$s</string>
+    <string name="loading">Подгружаем Ваши финансы...</string>
     <string name="loanFinished"> Выплаченные</string>
     <string name="loan_notification">Уведомления о важных выплатах</string>
+    <string name="loan_notification_title">Важные выплаты приближаются!</string>
     <string name="log_in">Войти</string>
     <string name="log_in_google">Или войдите, используя</string>
+    <string name="make_new">Создать новую</string>
+    <string name="make_new_2">Создать новый</string>
     <string name="marker">Путешествия</string>
     <string name="menu_analysis">Анализ</string>
     <string name="menu_goals">Цели</string>
@@ -888,6 +959,7 @@
     <string name="menu_setting">Настройки</string>
     <string name="menu_subs">Подписки</string>
     <string name="messages_header">Messages</string>
+    <string name="name">Название</string>
     <string name="nameBudgetSubs">Счет: %1$s</string>
     <string name="nameLoans">Название платежа</string>
     <string name="nameSubs">Название подписки</string>
@@ -899,6 +971,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="newAccount">Регистрация в приложении MyBudget</string>
     <string name="next">Далее</string>
+    <string name="no">Нет</string>
     <string name="onceLoans">Одноразовый</string>
     <string name="other">Другое</string>
     <string name="page_finance_category">Категории расходов</string>
@@ -912,21 +985,33 @@
     <string name="pet">Питомцы</string>
     <string name="plan">Запланировать</string>
     <string name="plan_notification">Уведомления о планах</string>
+    <string name="plan_notification_title">Не забывайте про запланированные траты!</string>
     <string name="plans">Планы</string>
     <string name="priority">Приоритет: %1$s</string>
     <string name="project_id" translatable="false">mybudget-1b117</string>
     <string name="reSubs">Восстановить</string>
+    <string name="reached">Достигнутые</string>
     <string name="regularLoans">Многоразовый</string>
     <string name="remaind">%1$s %2$s</string>
+    <string name="renew">Возобновить</string>
+    <string name="repair">Восстановление</string>
+    <string name="repair_agree">Восстановить</string>
+    <string name="repair_budget">Восстановить бюджет</string>
+    <string name="repair_budget_ask">У Вас уже был бюджет с таким названием.\nХотите его восстановить?</string>
+    <string name="repair_sub">У Вас уже была такая подписка!\nХотите восстановить?</string>
     <string name="reply_title">Default reply action</string>
     <string name="restaurants">Рестораны и кафе</string>
+    <string name="resub_sub">У Вас уже есть такая подписка, но она отменена!\nХотите возобновить?</string>
     <string name="save">Сохранить</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="select_budget">Выберите счет</string>
     <string name="sign_up">Регистрация</string>
     <string name="sign_up_complete">Зарегистрироваться</string>
     <string name="sign_up_reason">Пройдите регистрацию, чтобы не потерять данные</string>
     <string name="signature_title">Your signature</string>
     <string name="smile">Развлечения</string>
     <string name="subscribe_notification">Уведомления о подписках</string>
+    <string name="subscribe_notification_title">Не забывайте о подписках!</string>
     <string name="sync_header">Sync</string>
     <string name="sync_title">Sync email periodically</string>
     <string name="target">/%1$s</string>
@@ -935,6 +1020,8 @@
     <string name="titleLoans">Выплата</string>
     <string name="titleSubs">Введите стоимость подписки</string>
     <string name="title_activity_home_page">HomePageActivity</string>
+    <string name="too_much">Перерасход</string>
+    <string name="too_of">перерасход из</string>
     <string name="trans">Перевести</string>
     <string name="transaction">%1$d операций</string>
     <string name="transaction_transfer">Перевод</string>
@@ -942,11 +1029,14 @@
     <string name="withDate">Со сроком</string>
     <string name="withouthDate">Без срока</string>
     <string name="work">Работа</string>
+    <string name="yes">Да</string>
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="Base.Theme.MyBudget" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/light_green</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:colorBackground">@color/light</item>
+        <item name="colorPrimary">@color/light_green</item>
+        <item name="android:navigationBarColor">@color/light_green</item>
     </style>
     <style name="CircularExtendedFloatingActionButton" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="shapeAppearance">@style/ShapeAppearance.Circular</item>

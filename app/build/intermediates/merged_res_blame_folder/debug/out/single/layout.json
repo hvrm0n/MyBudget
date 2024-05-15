@@ -96,6 +96,10 @@
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-63:\\layout\\card_goal.xml"
     },
     {
+        "merged": "com.example.mybudget.app-mergeDebugResources-60:/layout/recycler_category.xml",
+        "source": "com.example.mybudget.app-main-63:/layout/recycler_category.xml"
+    },
+    {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-60:\\layout\\start_activity.xml",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-63:\\layout\\start_activity.xml"
     },
@@ -166,9 +170,5 @@
     {
         "merged": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-mergeDebugResources-60:\\layout\\fragment_home.xml",
         "source": "C:\\Users\\julia\\.gradle\\daemon\\8.2\\com.example.mybudget.app-main-63:\\layout\\fragment_home.xml"
-    },
-    {
-        "merged": "com.example.mybudget.app-mergeDebugResources-60:/layout/page_chart.xml",
-        "source": "com.example.mybudget.app-main-63:/layout/page_chart.xml"
     }
 ]

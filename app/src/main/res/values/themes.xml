@@ -4,6 +4,8 @@
         <item name="android:statusBarColor">@color/light_green</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:colorBackground">@color/light</item>
+        <item name="colorPrimary">@color/light_green</item>
+        <item name="android:navigationBarColor">@color/light_green</item>
     </style>
 
 

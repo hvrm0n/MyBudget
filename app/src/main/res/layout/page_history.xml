@@ -112,58 +112,9 @@
                 android:visibility="gone"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Вы еще не произвели ни одной транзакции"/>
+                android:text="@string/error_no_transaction"/>
 
         </LinearLayout>
 
 </LinearLayout>
 
-<!--<RadioGroup
-android:id="@+id/radioGroupHistory"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_marginBottom="8dp"
-android:orientation="horizontal">
-
-<RadioButton
-    android:id="@+id/rbAll"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:checked="true"
-    android:text="Общая"
-    android:textSize="@dimen/litText"
-    android:textColor="@color/dark_green"
-    android:textStyle="bold" />
-
-<RadioButton
-    android:id="@+id/rbCategoryHistory"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:text="@string/category"
-    android:textColor="@color/dark_green"
-    android:textSize="@dimen/litText"
-    android:textStyle="bold" />
-
-<RadioButton
-    android:id="@+id/rbBudgetHistory"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/finances"
-    android:layout_marginEnd="8dp"
-    android:textColor="@color/dark_green"
-
-    android:textSize="@dimen/litText"
-    android:textStyle="bold" />
-
-<RadioButton
-    android:id="@+id/rbPlansHistory"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/plans"
-    android:textColor="@color/dark_green"
-
-    android:textSize="@dimen/litText"
-    android:textStyle="bold" />
-</RadioGroup>-->

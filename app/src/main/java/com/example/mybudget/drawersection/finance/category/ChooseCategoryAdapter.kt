@@ -79,7 +79,8 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
             itemView.setOnClickListener {
                 button.isEnabled = true
                 lastClick?.backgroundTintList = ColorStateList.valueOf( ContextCompat.getColor(context, R.color.very_light_green))
-                it.backgroundTintList = ColorStateList.valueOf( ContextCompat.getColor(context, R.color.light_green))
+
+                it.backgroundTintList = ColorStateList.valueOf( ContextCompat.getColor(context, R.color.light_green_selection))
                 lastClick = it
                 fragment.changeSelectedIcon(category.categoryBegin.path)
             }
@@ -112,7 +113,7 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
                 }
             }
 
-            builder.setPositiveButton("Добавить") { dialog, _ ->
+            builder.setPositiveButton(context.resources.getString(R.string.add)) { dialog, _ ->
                 if(newCategoryName.text.isNotEmpty()&&iconNew.tag!=null){
                     table.child("Users").child(auth.currentUser!!.uid).child("Categories").child("Categories base")
                         .addListenerForSingleValueEvent(object :
@@ -123,7 +124,7 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
                                     categories.getValue(_CategoryBegin::class.java)?.let {
                                         if (it.name == newCategoryName.text.toString()){
                                             alreadyExist = true
-                                            Toast.makeText(context, "Такая категория уже существует!", Toast.LENGTH_LONG).show()
+                                            Toast.makeText(context, context.resources.getString(R.string.error_category_exist), Toast.LENGTH_LONG).show()
                                             return@forEach
                                         }
                                     }
@@ -142,12 +143,12 @@ class ChooseCategoryAdapter(private val context: Context, private var categories
                         })
 
                 } else when{
-                    newCategoryName.text.isEmpty() -> Toast.makeText(context, "Вы не ввели название категории", Toast.LENGTH_LONG).show()
-                    iconNew.tag==null-> Toast.makeText(context, "Вы не выбрали изображение", Toast.LENGTH_LONG).show()
+                    newCategoryName.text.isEmpty() -> Toast.makeText(context, context.resources.getString(R.string.error_category_name), Toast.LENGTH_LONG).show()
+                    iconNew.tag==null-> Toast.makeText(context, context.resources.getString(R.string.icon_not_choosen), Toast.LENGTH_LONG).show()
                 }
             }
 
-            builder.setNegativeButton("Отмена"){dialog, _ ->
+            builder.setNegativeButton(context.resources.getString(R.string.cancel)){dialog, _ ->
                 dialog.dismiss()
             }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryBeginWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.goals.GoalItemWithKey
 import com.example.mybudget.drawersection.loans.LoanItemWithKey
 import com.example.mybudget.drawersection.subs.SubItemWithKey

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.preference.PreferenceManager
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.subs.SubItem
@@ -38,7 +38,6 @@ class TransactionReceiver : BroadcastReceiver() {
         val type = intent.getStringExtra("type")
         auth = Firebase.auth
         table = Firebase.database.reference
-        Log.e("EnterTransaction", "yes")
         if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("transaction_enabled", false)) {
             when (type) {
                 Constants.CHANNEL_ID_SUB -> {

@@ -130,7 +130,7 @@ class FinanceFragment : Fragment() {
         binding.fabHistory.setOnClickListener {
             if (!financeViewModel.historyLiveData.value.isNullOrEmpty() || !financeViewModel.planLiveData.value.isNullOrEmpty()){
                 findNavController().navigate(R.id.action_nav_finance_to_historyFragment)
-            } else Toast.makeText(requireContext(), "Вы еще не произвели не одной операции!", Toast.LENGTH_LONG).show()
+            } else Toast.makeText(requireContext(), getString(R.string.error_history_not_exists), Toast.LENGTH_LONG).show()
             isExpanded = false
         }
 
@@ -334,13 +334,13 @@ class FinanceFragment : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление категории")
-                        .setMessage("Вы уверены, что хотите удалить категорию?")
-                        .setPositiveButton("Подтвердить") { dialog, _ ->
+                        .setTitle(getString(R.string.delete_category))
+                        .setMessage(getString(R.string.delete_category_sure))
+                        .setPositiveButton(getString(R.string.agree)) { dialog, _ ->
                             adapterCategory.deleteItemAtPosition(position, vpAdapter.getDate(binding.viewpager.currentItem))
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Отмена") { dialog, _ ->
+                        .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                             dialog.dismiss()
                         }.show()
                 }
@@ -387,7 +387,7 @@ class FinanceFragment : Fragment() {
             }
         }
 
-        builder.setPositiveButton("Применить") {dialog, _ ->
+        builder.setPositiveButton(getString(R.string.apply)) {dialog, _ ->
 
             val newName = etName.text.toString()
             val newPriority = spinnerType.selectedItemPosition
@@ -395,7 +395,7 @@ class FinanceFragment : Fragment() {
             if (etName.text.toString() != financeViewModel.categoryBeginLiveData.value!!.filter {  it.key == category?.key}[0].categoryBegin.path) {
                     if (financeViewModel.categoryLiveData.value?.all { financeViewModel.categoryBeginLiveData.value!!.filter {begin->  begin.key == it.key}[0].categoryBegin.path != etName.text.toString() } == false) Toast.makeText(
                         context,
-                        "Такая категория уже существует!",
+                        getString(R.string.error_category_exist),
                         Toast.LENGTH_LONG
                     ).show()
                     else {
@@ -411,12 +411,12 @@ class FinanceFragment : Fragment() {
                                 }"
                             ).child("ExpenseCategories").child(category.key).setValue(category.categoryItem)
                     }
-            } else Toast.makeText(context, "Вы не заполнили название категории.", Toast.LENGTH_LONG).show()
+            } else Toast.makeText(context, getString(R.string.error_category_name), Toast.LENGTH_LONG).show()
 
             dialog.dismiss()
         }
 
-        builder.setNegativeButton("Отмена") { dialog, _ ->
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -446,7 +446,7 @@ class FinanceFragment : Fragment() {
                     editor.apply()
                     binding.calculate.text = resources.getString(R.string.fab_calculate)
                 }
-        } else Toast.makeText(context, "Вы еще не выбрали категории расходов на этот месяц!", Toast.LENGTH_LONG).show()
+        } else Toast.makeText(context, resources.getString(R.string.error_category_not_choosen), Toast.LENGTH_LONG).show()
     }
 
     private fun distributeMoney(){
@@ -459,7 +459,7 @@ class FinanceFragment : Fragment() {
                 val totalMediumPriorityCategories = mediumPriorityCategories.size
                 val totalLowPriorityCategories = lowPriorityCategories.size
 
-                var highPriorityCoefficient =0.0
+                var highPriorityCoefficient = 0.0
                 var mediumPriorityCoefficient = 0.0
                 var lowPriorityCoefficient = 0.0
 
@@ -519,7 +519,7 @@ class FinanceFragment : Fragment() {
 
                     }
                 }
-            } else Toast.makeText(context, "Вы еще не выбрали категории расходов на этот месяц!", Toast.LENGTH_LONG).show()
+            } else Toast.makeText(context, getString(R.string.error_category_not_exists), Toast.LENGTH_LONG).show()
         }
 
     private fun totalMoney(callback: (Double) -> Unit) {
@@ -594,13 +594,13 @@ class FinanceFragment : Fragment() {
 
     private fun showBudgetSelectionDialog(callback:(List<BudgetItemWithKey>)->Unit) {
         val alertDialogBuilder = AlertDialog.Builder(requireContext())
-        alertDialogBuilder.setTitle("Выберите счет")
+        alertDialogBuilder.setTitle(getString(R.string.select_budget))
         val budgetNames = financeViewModel.budgetLiveData.value!!.filter { !it.budgetItem.isDeleted }.map { it.budgetItem.name }.toTypedArray()
         val checkedItems = BooleanArray(budgetNames.size) { false }
         val layout = LinearLayout(requireContext())
         layout.orientation = LinearLayout.VERTICAL
         val selectAllCheckbox = CheckBox(requireContext())
-        selectAllCheckbox.text = "Выбрать все"
+        selectAllCheckbox.text = getString(R.string.select_all)
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -638,7 +638,7 @@ class FinanceFragment : Fragment() {
         }
 
         alertDialogBuilder.setView(layout)
-        alertDialogBuilder.setPositiveButton("Распределить") { dialog, _ ->
+        alertDialogBuilder.setPositiveButton(getString(R.string.distribute)) { dialog, _ ->
             val selectedBudgets = mutableListOf<BudgetItemWithKey>()
             val checkedItem = listView.checkedItemPositions
             for (i in 0 until checkedItem.size()) {
@@ -650,7 +650,7 @@ class FinanceFragment : Fragment() {
             callback(selectedBudgets)
             dialog.dismiss()
         }
-        alertDialogBuilder.setNegativeButton("Отмена") { dialog, _ ->
+        alertDialogBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -677,6 +677,4 @@ class FinanceFragment : Fragment() {
                 }
             })
     }
-
 }
-

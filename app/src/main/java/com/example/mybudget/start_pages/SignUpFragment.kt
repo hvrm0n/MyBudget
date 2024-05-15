@@ -109,12 +109,6 @@ class SignUpFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-
-                    Snackbar.make(
-                        password,
-                        "Вы успешно зарегистрировались!",
-                        Snackbar.LENGTH_SHORT,
-                    ).show()
                     val categories = resources.getStringArray(R.array.category_default)
                     val paths = resources.getStringArray(R.array.icons_default)
                     for (i in categories.indices){
@@ -128,7 +122,7 @@ class SignUpFragment : Fragment() {
 
                     Snackbar.make(
                         password,
-                        "Не удалось создать в аккаунт, попробуйте еще раз.",
+                        getString(R.string.error_creating_account),
                         Snackbar.LENGTH_SHORT,
                     ).show()
                 }

@@ -16,14 +16,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.SelectedBudgetViewModel
 import com.example.mybudget.drawersection.finance.SharedViewModel
 import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.example.mybudget.drawersection.subs.SubItem
+import com.example.mybudget.start_pages.Constants
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -34,6 +36,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class BudgetEditDialogFragment:DialogFragment() {
 
@@ -44,7 +47,6 @@ class BudgetEditDialogFragment:DialogFragment() {
     private lateinit var financeViewModel:FinanceViewModel
     private lateinit var selectedBudgetViewModel: SelectedBudgetViewModel
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().layoutInflater
@@ -54,6 +56,8 @@ class BudgetEditDialogFragment:DialogFragment() {
         val etAmount: EditText = dialogView.findViewById(R.id.amountNew)
         val tvAmount: TextView = dialogView.findViewById(R.id.amountAddBudget)
         val spinnerType: Spinner = dialogView.findViewById(R.id.typeNewBudget)
+
+        val contextForRestore = requireContext()
         currency = dialogView.findViewById(R.id.currencyNewBudget)
 
         val checkBox: CheckBox = dialogView.findViewById(R.id.checkBoxBasic)
@@ -97,8 +101,8 @@ class BudgetEditDialogFragment:DialogFragment() {
 
             val context = requireContext()
 
-            tvName.text = "Название"
-            tvAmount.text = "Накопления"
+            tvName.text = resources.getString(R.string.basic_budget_name)
+            tvAmount.text = resources.getString(R.string.basic_budget_savings)
             currency.text = currencySymbol
             checkBox.isChecked = base
             etName.setText(name)
@@ -108,10 +112,10 @@ class BudgetEditDialogFragment:DialogFragment() {
 
             spinnerType.setSelection(adapterType.getPosition(type))
 
-            builder.setPositiveButton("Сохранить") { dialog, _ ->
+            builder.setPositiveButton(resources.getString(R.string.save)) { dialog, _ ->
                 if (etName.text.isNotEmpty() && etAmount.text.isNotEmpty()){
                     if (!base){
-                            if(financeViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, "Счет с таким названием уже существует!", Toast.LENGTH_LONG).show()
+                            if(financeViewModel.budgetLiveData.value?.filter { key!=it.key }?.all { it.budgetItem.name != etName.text.toString()} == false) Toast.makeText(context, resources.getString(R.string.error_budget_exists), Toast.LENGTH_LONG).show()
                             else {
                                 if (!checkBox.isChecked) {
 
@@ -145,7 +149,8 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                 for (years in snapshot.children){
                                                                     for (months in years.children){
                                                                         for (historyItem in months.children){
-                                                                            historyItem.getValue(HistoryItem::class.java)?.let {
+                                                                            historyItem.getValue(
+                                                                                HistoryItem::class.java)?.let {
                                                                                     when (it.budgetId){
                                                                                         "Base budget" ->{
                                                                                             table.child("Users").child(auth.currentUser!!.uid).child("History")
@@ -180,7 +185,8 @@ class BudgetEditDialogFragment:DialogFragment() {
                                                                         for (years in snapshot.children){
                                                                             for (months in years.children){
                                                                                 for (historyItem in months.children){
-                                                                                    historyItem.getValue(HistoryItem::class.java)?.let {
+                                                                                    historyItem.getValue(
+                                                                                        HistoryItem::class.java)?.let {
                                                                                         when (it.budgetId){
                                                                                             "Base budget" ->{
                                                                                                 table.child("Users").child(auth.currentUser!!.uid).child("Plan")
@@ -296,40 +302,42 @@ class BudgetEditDialogFragment:DialogFragment() {
                                 }
                         }
                     }
-                } else Toast.makeText(context, "Вы заполнили не все данные", Toast.LENGTH_LONG).show()
+                } else Toast.makeText(context, resources.getString(R.string.error_not_all_data), Toast.LENGTH_LONG).show()
             }
 
-            builder.setNegativeButton("Удалить") { dialog, _ ->
-                if (base) Toast.makeText(context, "Нельзя удалить основной бюджет!", Toast.LENGTH_LONG).show()
-                else if(financeViewModel.planLiveData.value!!.any { it.budgetId == key})Toast.makeText(context, "У Вас есть запланированные операции с этим бюджетом!", Toast.LENGTH_LONG).show()
+            builder.setNegativeButton(resources.getString(R.string.delete)) { dialog, _ ->
+                if (base) Toast.makeText(context, resources.getString(R.string.error_budget_base_delete), Toast.LENGTH_LONG).show()
+                else if(financeViewModel.planLiveData.value!!.any { it.budgetId == key})Toast.makeText(context, resources.getString(R.string.error_budget_have_plan), Toast.LENGTH_LONG).show()
                 else {
                     AlertDialog.Builder(context)
-                        .setTitle("Удаление бюджета")
-                        .setMessage("Вы уверены, что хотите удалить бюджет?")
-                        .setPositiveButton("Подтвердить") { dialog2, _ ->
+                        .setTitle(resources.getString(R.string.delete_budget))
+                        .setMessage(resources.getString(R.string.delete_budget_sure))
+                        .setPositiveButton(resources.getString(R.string.agree)) { dialog2, _ ->
                             if (name == etName.text.toString() && etName.text.isNotEmpty() && etAmount.text.isNotEmpty()) {
                                 table.child("Users").child(auth.currentUser!!.uid).child("Budgets")
                                     .child("Other budget").child(key!!).child("deleted").setValue(true)
                                     .addOnCompleteListener {
+                                        deletePlansAndSubs(budgetKey = key, context = context)
                                         dialog.dismiss()
+
                                     }
                             } else when {
                                 name != etName.text.toString() -> Toast.makeText(
                                     context,
-                                    "Вы собираетесь удалить отредактированный бюджет",
+                                    resources.getString(R.string.error_budget_edit_delete),
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
                             dialog2.dismiss()
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Отмена") { dialog2, _ ->
+                        .setNegativeButton(resources.getString(R.string.cancel)) { dialog2, _ ->
                             dialog2.dismiss()
                         }.show()
                 }
             }
 
-            builder.setNeutralButton("Отмена") { dialog, _ ->
+            builder.setNeutralButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
         }
@@ -342,7 +350,7 @@ class BudgetEditDialogFragment:DialogFragment() {
             currency.setOnClickListener {
                 findNavController().navigate(R.id.action_budgetEditDialogFragment_to_currencyDialogFragment)
             }
-            builder.setPositiveButton("Добавить") { dialog, _ ->
+            builder.setPositiveButton(resources.getString(R.string.add)) { dialog, _ ->
                 if (etName.text.isNotEmpty() && etAmount.text.isNotEmpty() && financeViewModel.budgetLiveData.value!!.none {it.budgetItem.name == etName.text.toString()}){
                     if (!checkBox.isChecked){
                         table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").push().setValue(
@@ -371,18 +379,21 @@ class BudgetEditDialogFragment:DialogFragment() {
                         }
                     }
                 } else when{
+
                     !financeViewModel.budgetLiveData.value!!.none {it.budgetItem.name == etName.text.toString()}-> {
                         val deletedBudget = financeViewModel.budgetLiveData.value!!.find { it.budgetItem.name == etName.text.toString()}!!
                         when(deletedBudget.budgetItem.isDeleted){
                             true->{
                                 AlertDialog.Builder(context)
-                                    .setTitle("Восстановление бюджета")
-                                    .setMessage("У Вас уже был бюджет с таким названием.\nХотите его восстановить?")
-                                    .setPositiveButton("Да") { dialog2, _ ->
-                                        table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(deletedBudget.key).child("deleted").setValue(false)
-                                        dialog2.dismiss()
+                                    .setTitle(resources.getString(R.string.repair_budget))
+                                    .setMessage(resources.getString(R.string.repair_budget_ask))
+                                    .setPositiveButton(resources.getString(R.string.yes)) { dialog2, _ ->
+                                        table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").child(deletedBudget.key).child("deleted").setValue(false).addOnCompleteListener {
+                                            restoreSubs(deletedBudget.key, contextForRestore)
+                                            dialog2.dismiss()
+                                            }
                                         }
-                                    .setNegativeButton("Нет") { dialog2, _ ->
+                                    .setNegativeButton(resources.getString(R.string.no)) { dialog2, _ ->
                                         dialog2.dismiss()
                                     }.show()
 
@@ -390,14 +401,14 @@ class BudgetEditDialogFragment:DialogFragment() {
                             }
                             else-> Toast.makeText(
                                 context,
-                                "Счет с таким названием уже существует!",
+                                resources.getString(R.string.error_budget_exists),
                                 Toast.LENGTH_LONG
                             ).show()
                         }
                     }
-                    etName.text.isEmpty() || etAmount.text.isEmpty() -> Toast.makeText(context, "Вы ввели не все данные.", Toast.LENGTH_LONG).show()}
+                    etName.text.isEmpty() || etAmount.text.isEmpty() -> Toast.makeText(context, resources.getString(R.string.error_not_all_data), Toast.LENGTH_LONG).show()}
             }
-            builder.setNegativeButton("Отмена") { dialog, _ ->
+            builder.setNegativeButton(resources.getString(R.string.cancel),) { dialog, _ ->
                 dialog.dismiss()
             }
         }
@@ -406,6 +417,110 @@ class BudgetEditDialogFragment:DialogFragment() {
         dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         return dialog
 
+    }
+
+    private fun deletePlansAndSubs(budgetKey: String, context: Context){
+        financeViewModel.subLiveData.value?.filter { it.subItem.budgetId == budgetKey }?.forEach { subItemWithKey ->
+            BudgetNotificationManager.cancelAlarmManager(
+                context = context,
+                id = subItemWithKey.key,
+                deletePrefs = false
+            )
+            BudgetNotificationManager.cancelAutoTransaction(
+                context = context,
+                id = subItemWithKey.key
+            )
+        }
+
+        financeViewModel.planLiveData.value?.filter { it.budgetId == budgetKey }?.forEach { planItem ->
+            BudgetNotificationManager.cancelAlarmManager(
+                context = context,
+                id = planItem.key
+            )
+            BudgetNotificationManager.cancelAutoTransaction(
+                context = context,
+                id = planItem.key
+            )
+        }
+
+        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
+            .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (years in snapshot.children){
+                        for (months in years.children){
+                            for (historyItem in months.children){
+                                historyItem.getValue(HistoryItem::class.java)?.let { history->
+                                    if (history.budgetId == budgetKey){
+                                        if(months.key!!.toInt()>Calendar.getInstance().get(Calendar.MONTH)+1 && years.key!!.toInt()>=Calendar.getInstance().get(Calendar.YEAR) ||
+                                            years.key!!.toInt()>Calendar.getInstance().get(Calendar.YEAR)){
+
+                                            table.child("Users").child(auth.currentUser!!.uid).child("Category").child("Categories")
+                                                .child("${years.key}/${months.key}").child("CategoriesExpence").child(history.placeId).addListenerForSingleValueEvent(object : ValueEventListener{
+                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                        snapshot.getValue(_CategoryItem::class.java)?.let {
+
+                                                            it.total = "%.2f".format(it.total.toDouble() - history.baseAmount.toDouble()).replace(",", ".")
+
+                                                            table.child("Users").child(auth.currentUser!!.uid).child("Category").child("Categories")
+                                                                .child("${years.key}/${months.key}").child("CategoriesExpence").child(history.placeId).setValue(it)
+
+                                                            if (it.total == "0.000") {
+                                                                table.child("Users").child(auth.currentUser!!.uid).child("Category").child("Categories")
+                                                                    .child("${years.key}/${months.key}").child("CategoriesExpence").child(history.placeId).removeValue()
+                                                            }
+                                                        }
+                                                    }
+
+                                                    override fun onCancelled(error: DatabaseError) {}
+                                                })
+                                        }
+
+                                        table.child("Users").child(auth.currentUser!!.uid).child("Plan")
+                                            .child("${years.key}/${months.key}").child(history.key).removeValue()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {} }
+            )
+    }
+
+    private fun restoreSubs(budgetKey: String, context: Context){
+
+        val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
+        var periodBegin:String
+        var timeBegin:String
+        val calendar = Calendar.getInstance()
+
+        financeViewModel.subLiveData.value?.filter { it.subItem.budgetId == budgetKey }?.forEach { subItemWithKey ->
+
+            periodBegin = sharedPreferences.getString(subItemWithKey.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
+            timeBegin = sharedPreferences.getString(subItemWithKey.key, "|")?.split("|")?.get(1)?:"12:00"
+            calendar.set(subItemWithKey.subItem.date.split(".")[2].toInt(),
+                subItemWithKey.subItem.date.split(".")[1].toInt()-1,
+                subItemWithKey.subItem.date.split(".")[0].toInt(), 0,0,0)
+
+            BudgetNotificationManager.notification(
+                context = context,
+                channelID = Constants.CHANNEL_ID_SUB,
+                id = subItemWithKey.key,
+                placeId = subItemWithKey.key,
+                time = timeBegin,
+                dateOfExpence = calendar,
+                periodOfNotification = periodBegin
+            )
+            BudgetNotificationManager.setAutoTransaction(
+                context = context,
+                id = subItemWithKey.key,
+                placeId = subItemWithKey.key,
+                year = subItemWithKey.subItem.date.split(".")[2].toInt(),
+                month = subItemWithKey.subItem.date.split(".")[1].toInt()-1,
+                dateOfExpence = calendar,
+                type = Constants.CHANNEL_ID_SUB
+            )
+        }
     }
 
     private fun changeCurrencyAmount(oldCurrency: String, newCurrency: String,newAmount:String, /*budgetKey: String, */context: Context):String{
@@ -433,7 +548,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                     for (years in snapshot.children){
                         for (months in years.children){
                             for (historyItem in months.children){
-                                historyItem.getValue(HistoryItem::class.java)?.let {history->
+                                historyItem.getValue(HistoryItem::class.java)?.let { history->
                                     if (history.budgetId == budgetKey || history.placeId == budgetKey || baseChanged){
                                         when{
                                             newCurrency == financeViewModel.budgetLiveData.value?.find { it.key=="Base budget" }!!.budgetItem.currency

@@ -20,7 +20,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Подгружаем Ваши финансы..."
+            android:text="@string/loading"
             android:textColor="@color/dark_green"
             android:textStyle="bold"
             android:textSize="@dimen/subtitle"/>

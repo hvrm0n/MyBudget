@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.example.mybudget.drawersection.finance.category._CategoryBegin
@@ -23,14 +22,12 @@ import java.util.Calendar
 
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-
         val channelID = intent.getStringExtra("channelID")
         val placeId = intent.getStringExtra("placeId")
         val delete = intent.getBooleanExtra("deletePrefs", false)
-        Log.e("EnterNotification", "EnterReceiver")
+
         if (channelID!=null&&placeId!=null){
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("notifications_enabled", false)) {
-                Log.e("EnterNotification", "EnterReceiver")
                 val date = Calendar.getInstance()
                 date.timeInMillis = intent.getLongExtra("date", 0)
                 val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -42,14 +39,15 @@ class NotificationReceiver : BroadcastReceiver() {
                 }
 
                 getName(channelID, placeId,/* date,*/ notificationText) {
+
                     val notification: Notification = NotificationCompat.Builder(context, channelID)
                         .setSmallIcon(R.drawable.piggybank_18)
                         .setContentTitle(
                             when (channelID) {
-                                Constants.CHANNEL_ID_PLAN -> "Не забывайте про запланированные траты!"
-                                Constants.CHANNEL_ID_GOAL -> "Цели ждут!"
-                                Constants.CHANNEL_ID_SUB -> "Не забывайте о подписках!"
-                                else -> "Важные выплаты приближаются!"
+                                Constants.CHANNEL_ID_PLAN -> context.resources.getString(R.string.plan_notification_title)
+                                Constants.CHANNEL_ID_GOAL -> context.resources.getString(R.string.goal_notification_title)
+                                Constants.CHANNEL_ID_SUB -> context.resources.getString(R.string.subscribe_notification_title)
+                                else -> context.resources.getString(R.string.loan_notification_title)
                             }
                         )
                         .setContentText(it)
@@ -61,7 +59,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun getName(channelId:String,placeId:String/*, dateOfExpence:Calendar*/, notificationText:Array<String>, callback: (String) -> Unit){
+    private fun getName(channelId:String,placeId:String, notificationText:Array<String>, callback: (String) -> Unit){
         when(channelId){
             Constants.CHANNEL_ID_PLAN->{
                 Firebase.database.reference

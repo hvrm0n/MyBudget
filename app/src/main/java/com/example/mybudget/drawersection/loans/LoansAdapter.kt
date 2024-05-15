@@ -3,7 +3,6 @@ package com.example.mybudget.drawersection.loans
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.BudgetNotificationManager
 import com.example.mybudget.R
 import com.example.mybudget.drawersection.finance.FinanceViewModel
-import com.example.mybudget.drawersection.finance.HistoryItem
+import com.example.mybudget.drawersection.finance.history.HistoryItem
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.start_pages.Constants
 import com.google.firebase.auth.FirebaseAuth
@@ -164,7 +163,7 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                             set(Calendar.SECOND,0)
                         }.timeInMillis > calendar.timeInMillis && !loanItem.loanItem.isDeleted) {
                         if (notReached==-1 || notReached == position){
-                            loanFinished.text = "Просроченные"
+                            loanFinished.text = context.resources.getString(R.string.expence_date)
                             loanFinished.visibility = View.VISIBLE
                             notReached = position
                         } else {
@@ -245,21 +244,21 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                 }
             }
 
-            builder.setPositiveButton("Выплатить") { dialog, _ ->
-                if (spinnerBudgetGoals.selectedItemPosition == -1)  Toast.makeText(context, "Вы не выбрали счет списания", Toast.LENGTH_SHORT).show()
+            builder.setPositiveButton(context.resources.getString(R.string.add_income_loan)) { dialog, _ ->
+                if (spinnerBudgetGoals.selectedItemPosition == -1)  Toast.makeText(context, context.resources.getString(R.string.error_not_budget), Toast.LENGTH_SHORT).show()
                 else{
                     if(budgetList[spinnerBudgetGoals.selectedItemPosition].budgetItem.amount.toDouble()>=0
                         && (budgetList[spinnerBudgetGoals.selectedItemPosition].budgetItem.amount.toDouble()
                                 - if(goalsBudgetValue.visibility == View.VISIBLE) goalsBudgetValue.text.toString().toDouble() else goalsNewValue.text.toString().toDouble()) <0){
 
                         AlertDialog.Builder(context)
-                            .setTitle("Перерасход")
-                            .setMessage("После совершения данной операции Вы уйдете в минус!\nПродолжить?")
-                            .setPositiveButton("Да") { dialog2, _ ->
+                            .setTitle(context.resources.getString(R.string.too_much))
+                            .setMessage(context.resources.getString(R.string.error_budget_minus_new))
+                            .setPositiveButton(context.resources.getString(R.string.yes)) { dialog2, _ ->
                                 income(budgetList[spinnerBudgetGoals.selectedItemPosition], loanItem, goalsNewValue.text.toString().toDouble(),  if(goalsBudgetValue.visibility == View.VISIBLE) goalsBudgetValue.text.toString().toDouble() else goalsNewValue.text.toString().toDouble())
                                 dialog2.dismiss()
                             }
-                            .setNegativeButton("Нет") { dialog2, _ ->
+                            .setNegativeButton(context.resources.getString(R.string.no)) { dialog2, _ ->
                                 dialog2.dismiss()
                             }.show()
                     }
@@ -268,7 +267,7 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                 dialog.dismiss()
             }
 
-            builder.setNeutralButton("Отмена"){dialog, _ ->
+            builder.setNeutralButton(context.resources.getString(R.string.cancel)){dialog, _ ->
                 dialog.dismiss()
             }
 

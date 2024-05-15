@@ -37,7 +37,11 @@
         android:id="@+id/homePageActivity"
         android:name="com.example.mybudget.drawersection.HomePageActivity"
         android:label="app_bar_main"
-        tools:layout="@layout/app_bar_main" />
+        tools:layout="@layout/app_bar_main" >
+        <argument
+            android:name="enter"
+            app:argType="boolean" />
+    </activity>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.mybudget.start_pages.SignUpFragment"
