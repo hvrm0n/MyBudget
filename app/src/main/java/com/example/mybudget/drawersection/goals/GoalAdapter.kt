@@ -56,6 +56,8 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
         }
     }
 
+    fun placeReach() = placeReach
+
     fun updateData(newGoal: List<GoalItemWithKey>) {
         goals = newGoal
         placeActive = -1

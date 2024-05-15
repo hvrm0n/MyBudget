@@ -732,7 +732,11 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     }
                 }
 
-                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())goalItem.goalItem.isReached = false
+                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())
+                {
+                    goalItem.goalItem.isReached = false
+                    Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
+                }
                 else goalItem.goalItem.isReached = true
 
                 table.child("Users")

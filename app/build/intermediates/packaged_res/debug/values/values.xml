@@ -940,6 +940,7 @@
     <string name="history_edit">Редактирование операции</string>
     <string name="history_goals">Цель: %1$s</string>
     <string name="history_loans">Обязательная выплата: %1$s</string>
+    <string name="history_renotify">Не забудьте установить уведомления на цель!</string>
     <string name="home">Дом</string>
     <string name="icon_not_choosen">Вы не выбрали иконку.</string>
     <string name="inPlan">В планах потратить %1$s</string>

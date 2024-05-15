@@ -1083,54 +1083,60 @@ class NewTransactionFragment : Fragment() {
 
         }
         else if(binding.transfer.isChecked){
+            if(budgetList.size<=1){
+                binding.income.isChecked = true
+            }
+            else{
+                binding.spinnerBudgetTo.visibility = View.VISIBLE
+                binding.budgetTitleTo.visibility = View.VISIBLE
+                binding.buttonAddIncome.text = resources.getString(R.string.trans)
+                binding.currencyExpence.setOnClickListener(null)
+                binding.currencyNew.setOnClickListener(null)
+                binding.calendarViewBudget.visibility = View.VISIBLE
+                binding.calendarViewCategory.visibility = View.GONE
 
-            binding.spinnerBudgetTo.visibility = View.VISIBLE
-            binding.budgetTitleTo.visibility = View.VISIBLE
-            binding.buttonAddIncome.text = resources.getString(R.string.trans)
-            binding.currencyExpence.setOnClickListener(null)
-            binding.currencyNew.setOnClickListener(null)
-            binding.calendarViewBudget.visibility = View.VISIBLE
-            binding.calendarViewCategory.visibility = View.GONE
+                adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
+                adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.spinnerBudget.adapter = adapterBudget
 
-            adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
-            adapterBudget.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spinnerBudget.adapter = adapterBudget
+                binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name }.ifEmpty {
+                    binding.income.isChecked = true
+                    budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name }
+                }).apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
 
-            binding.spinnerBudgetTo.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, budgetList.filter { budgetExist-> !budgetExist.budgetItem.isDeleted && budgetExist.budgetItem.name != binding.spinnerBudget.selectedItem.toString() }.map { budget -> budget.budgetItem.name } )
-                .apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
-            binding.budgetTitle.text = resources.getString(R.string.budget_transfer_from)
-            binding.categoryTitle.visibility = View.GONE
-            binding.spinnerCategory.visibility = View.GONE
+                binding.budgetTitle.text = resources.getString(R.string.budget_transfer_from)
+                binding.categoryTitle.visibility = View.GONE
+                binding.spinnerCategory.visibility = View.GONE
 
-            binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
-            binding.timeOfNotifications.visibility = View.INVISIBLE
-            binding.periodOfNotificationTitle.visibility = View.GONE
-            binding.periodOfNotification.visibility = View.GONE
+                binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
+                binding.timeOfNotifications.visibility = View.INVISIBLE
+                binding.periodOfNotificationTitle.visibility = View.GONE
+                binding.periodOfNotification.visibility = View.GONE
 
-            binding.currencyNew.visibility = View.VISIBLE
-            binding.translateValueNew.visibility = View.VISIBLE
-            binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                binding.currencyNew.visibility = View.VISIBLE
+                binding.translateValueNew.visibility = View.VISIBLE
+                binding.equalSymbolNewExpence.visibility = View.VISIBLE
 
-            beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
-            newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
+                beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
+                newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
 
-            binding.currencyNew.text = requireContext().resources.getString(
-                requireContext().resources.getIdentifier(
-                    newCurrency,
-                    "string",
-                    requireContext().packageName
+                binding.currencyNew.text = requireContext().resources.getString(
+                    requireContext().resources.getIdentifier(
+                        newCurrency,
+                        "string",
+                        requireContext().packageName
+                    )
                 )
-            )
-            binding.currencyExpence.text = requireContext().resources.getString(
-                requireContext().resources.getIdentifier(
-                    beginCurrency,
-                    "string",
-                    requireContext().packageName
+                binding.currencyExpence.text = requireContext().resources.getString(
+                    requireContext().resources.getIdentifier(
+                        beginCurrency,
+                        "string",
+                        requireContext().packageName
+                    )
                 )
-            )
-            updateCurrency(true)
-            checkAllFilledIncome()
-
+                updateCurrency(true)
+                checkAllFilledIncome()
+            }
 
         } else if(binding.expence.isChecked) {
             if(categoryList.isEmpty()){

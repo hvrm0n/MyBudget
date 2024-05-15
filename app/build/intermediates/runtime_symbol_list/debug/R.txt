@@ -5071,6 +5071,7 @@ int string history_category 0x7f13021f
 int string history_edit 0x7f130220
 int string history_goals 0x7f130221
 int string history_loans 0x7f130222
+int string history_renotify 0x7f1302f6
 int string home 0x7f130223
 int string icon_content_description 0x7f130224
 int string icon_not_choosen 0x7f130225

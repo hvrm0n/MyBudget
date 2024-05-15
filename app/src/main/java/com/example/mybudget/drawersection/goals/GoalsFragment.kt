@@ -72,6 +72,7 @@ class GoalsFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerGoals, adapterGoals, "goal") {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 if(position == adapterGoals.itemCount-1){return emptyList() }
+                else if (position >= adapterGoals.placeReach()) {return listOf(deleteButton(position))}
                 val deleteButton = deleteButton(position)
                 val editButton = editButton(position)
                 return listOf(deleteButton, editButton)

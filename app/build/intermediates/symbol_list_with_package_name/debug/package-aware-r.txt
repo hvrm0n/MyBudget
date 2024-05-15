@@ -5072,6 +5072,7 @@ string history_category
 string history_edit
 string history_goals
 string history_loans
+string history_renotify
 string home
 string icon_content_description
 string icon_not_choosen
