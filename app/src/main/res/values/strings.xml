@@ -40,7 +40,7 @@
     <string name="history_budget">Пополнение счета</string>
     <string name="all_history">Общая</string>
     <string name="history_edit">Редактирование операции</string>
-    <string name="history_renotify">Не забудьте установить уведомления на цель!</string>
+    <string name="history_renotify">Не забудьте установить уведомления!</string>
 
 
     <string name="title_activity_home_page">HomePageActivity</string>

@@ -295,7 +295,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
                 baseAmount = "%.2f".format(goalValue).replace(",", "."),
                 key = historyReference.key.toString()
-            )
+                )
             )
         }
 
@@ -304,6 +304,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
             budgetItem.budgetItem.amount = "%.2f".format( budgetItem.budgetItem.amount.toDouble() + budgetValue).replace(",", ".")
             if(goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble()){
                 goalItem.goalItem.isReached = false
+                Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
             }
             budgetItem.budgetItem.count++
 
@@ -340,7 +341,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
                 date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Calendar.getInstance().time),
                 baseAmount = "-%.2f".format(goalValue).replace(",", "."),
                 key = historyReference.key.toString()
-            )
+                )
             )
         }
 

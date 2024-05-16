@@ -127,7 +127,7 @@ class SubsAdapter(private val context: Context, private var subs: List<SubItemWi
                         .child(subItem.key)
                         .child("cancelled")
                         .setValue(false)
-
+                    Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
                     }
                 }
 

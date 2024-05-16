@@ -141,9 +141,15 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                             .setValue(history[position])
                     }
                 }
-
-                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())goalItem.goalItem.isReached = false
-                else goalItem.goalItem.isReached = true
+                val startPoint = goalItem.goalItem.isReached
+                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble()){
+                    goalItem.goalItem.isReached = false
+                    if (startPoint) Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    goalItem.goalItem.isReached = true
+                    BudgetNotificationManager.cancelAlarmManager(context, goalItem.key)
+                }
 
                 table.child("Users")
                     .child(auth.currentUser!!.uid)
@@ -732,12 +738,15 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                     }
                 }
 
-                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble())
-                {
+                val startPoint = goalItem.goalItem.isReached
+                if (goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble()){
                     goalItem.goalItem.isReached = false
-                    Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
+                    if (startPoint) Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
                 }
-                else goalItem.goalItem.isReached = true
+                else {
+                    goalItem.goalItem.isReached = true
+                    BudgetNotificationManager.cancelAlarmManager(context, goalItem.key)
+                }
 
                 table.child("Users")
                     .child(auth.currentUser!!.uid)
