@@ -3,6 +3,7 @@ package com.example.mybudget.drawersection.loans
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -303,7 +304,6 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                 val sharedPreferences = context.getSharedPreferences("NotificationPeriodAndTime", Context.MODE_PRIVATE)
                 val periodBegin = sharedPreferences.getString(loanItem.key, "|")?.split("|")?.get(0)?:context.resources.getStringArray(R.array.periodicity)[0]
                 val timeBegin = sharedPreferences.getString(loanItem.key, "|")?.split("|")?.get(1)?:"12:00"
-
 
                 BudgetNotificationManager.cancelAlarmManager(context, loanItem.key)
                 if (calendar.timeInMillis <= calendarEnd.timeInMillis){

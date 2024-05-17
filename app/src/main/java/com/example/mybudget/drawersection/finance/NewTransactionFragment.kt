@@ -239,6 +239,7 @@ class NewTransactionFragment : Fragment() {
                         binding.income.isChecked = true
                         it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name }
                     }).apply {  setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)}
+                    checkAllFilledIncome()
                 }
                 else->{
                     adapterBudget = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it.filter { budgetExist-> !budgetExist.budgetItem.isDeleted }.map { budget -> budget.budgetItem.name } )
@@ -293,9 +294,9 @@ class NewTransactionFragment : Fragment() {
         radioGroupFunction()
 
         binding.savingsValue.doAfterTextChanged {
-            when(binding.income.isChecked){
-                true -> checkAllFilledIncome()
-                else -> checkAllFilledExpence()
+            when(binding.expence.isChecked){
+                true -> checkAllFilledExpence()
+                else -> checkAllFilledIncome()
             }
         }
 
@@ -336,6 +337,7 @@ class NewTransactionFragment : Fragment() {
                         binding.translateValueNew.visibility = View.VISIBLE
                         binding.equalSymbolNewExpence.visibility = View.VISIBLE
                         updateCurrency(true)
+                        checkAllFilledIncome()
                     }
 
                     else -> {
@@ -1030,6 +1032,7 @@ class NewTransactionFragment : Fragment() {
                                     binding.translateValueNew.setText(String.format("%.2f", newValueToBase*currencyConvertor.conversionRates[newCurrency]!!).replace(',','.'))
                                 }
                             }
+
                         }
                     }
 
@@ -1056,6 +1059,7 @@ class NewTransactionFragment : Fragment() {
     private fun radioGroupFunction(){
         binding.radioGroupNewExpence.setOnCheckedChangeListener { _, _ ->
             newCurrency = beginCurrency
+            if (binding.income.isChecked) updateCurrency(false)
             binding.spinnerBudget.setSelection(0)
             whatIsChecked()
         }
@@ -1243,6 +1247,7 @@ class NewTransactionFragment : Fragment() {
 
     private fun checkAllFilledIncome(){
         binding.buttonAddIncome.isEnabled = binding.savingsValue.text.isNotEmpty()&&binding.spinnerBudget.selectedItemPosition!=-1
+        Log.e("CheckAllFilled", (binding.savingsValue.text.isNotEmpty()&&binding.spinnerBudget.selectedItemPosition!=-1).toString())
     }
 
     private fun checkAllFilledExpence(){

@@ -189,17 +189,14 @@ class AnalysisFragment : Fragment() {
                             }
 
                             historyItem.isCategory == true -> {
-                                //планы не учитываем
-                                if (Calendar.getInstance().timeInMillis >= historyDate.timeInMillis) {
-                                    categoryResult += abs(
-                                        changeCurrencyAmount(
-                                            oldCurrency = baseCurrency,
-                                            newCurrency = baseCurrency,
-                                            newAmount = historyItem.baseAmount,
-                                            context = requireContext()
-                                        ).toDouble()
-                                    )
-                                }
+                                categoryResult += abs(
+                                    changeCurrencyAmount(
+                                        oldCurrency = baseCurrency,
+                                        newCurrency = baseCurrency,
+                                        newAmount = historyItem.baseAmount,
+                                        context = requireContext()
+                                    ).toDouble()
+                                )
                             }
 
                             historyItem.isLoan == true -> {
@@ -253,7 +250,7 @@ class AnalysisFragment : Fragment() {
                         month = historyItem.date.split(".")[1].toInt()-1,
                         day = historyItem.date.split(".")[0].toInt())
 
-                    if(historyItem.isCategory == true && Calendar.getInstance().timeInMillis>= historyDate.timeInMillis &&
+                    if(historyItem.isCategory == true  &&
                         historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis){
                         categoryResult = abs(changeCurrencyAmount(
                             oldCurrency = baseCurrency,
@@ -264,7 +261,7 @@ class AnalysisFragment : Fragment() {
 
                         if (categoryMap.containsKey(historyItem.placeId)) {
                             categoryMap[historyItem.placeId] =
-                                categoryMap[historyItem.placeId] ?: (0.0 + categoryResult)
+                                (categoryMap[historyItem.placeId] ?: 0.0) + categoryResult
                         } else {
                             categoryMap[historyItem.placeId] = categoryResult
                         }
@@ -311,7 +308,7 @@ class AnalysisFragment : Fragment() {
 
                             if (goalMap.containsKey(historyItem.placeId)) {
                                 goalMap[historyItem.placeId] =
-                                    goalMap[historyItem.placeId] ?: (0.0 + goalsResult)
+                                    (goalMap[historyItem.placeId] ?: 0.0) + goalsResult
                             } else {
                                 goalMap[historyItem.placeId] = goalsResult
                             }
@@ -361,7 +358,7 @@ class AnalysisFragment : Fragment() {
 
                             if (loanMap.containsKey(historyItem.placeId)) {
                                 loanMap[historyItem.placeId] =
-                                    loanMap[historyItem.placeId] ?: (0.0 + goalsResult)
+                                    (loanMap[historyItem.placeId] ?: 0.0) + goalsResult
                             } else {
                                 loanMap[historyItem.placeId] = goalsResult
                             }
@@ -398,7 +395,7 @@ class AnalysisFragment : Fragment() {
                         day = historyItem.date.split(".")[0].toInt())
                     if(historyItem.isSub == true && historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis){
                         financeViewModel.budgetLiveData.value?.find { it.key == historyItem.budgetId }?.budgetItem?.currency?.let {
-                            goalsResult = abs(changeCurrencyAmount(
+                            subsResult = abs(changeCurrencyAmount(
                                 oldCurrency = it,
                                 newCurrency = baseCurrency,
                                 newAmount = historyItem.baseAmount,
@@ -407,9 +404,9 @@ class AnalysisFragment : Fragment() {
 
                             if (subMap.containsKey(historyItem.placeId)) {
                                 subMap[historyItem.placeId] =
-                                    subMap[historyItem.placeId] ?: (0.0 + goalsResult)
+                                    (subMap[historyItem.placeId] ?: 0.0) + subsResult
                             } else {
-                                subMap[historyItem.placeId] = goalsResult
+                                subMap[historyItem.placeId] = subsResult
                             }
                         }
                     }
@@ -459,7 +456,7 @@ class AnalysisFragment : Fragment() {
 
                             if (budgetMap.containsKey(budgetId)) {
                                 budgetMap[budgetId] =
-                                    budgetMap[budgetId] ?: (0.0 + budgetResult)
+                                    (budgetMap[budgetId] ?: 0.0) + budgetResult
                             } else {
                                 budgetMap[budgetId] = budgetResult
                             }
@@ -508,7 +505,7 @@ class AnalysisFragment : Fragment() {
 
                             if (budgetMap.containsKey(historyItem.budgetId )) {
                                 budgetMap[historyItem.budgetId] =
-                                    budgetMap[historyItem.budgetId] ?: (0.0 + budgetResult)
+                                    (budgetMap[historyItem.budgetId] ?: 0.0) + budgetResult
                             } else {
                                 budgetMap[historyItem.budgetId] = budgetResult
                             }

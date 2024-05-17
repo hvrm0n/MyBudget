@@ -55,7 +55,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     notificationManager.notify(42, notification)
                 }
             }
-            if(delete && (channelID == Constants.CHANNEL_ID_GOAL || channelID == Constants.CHANNEL_ID_PLAN) || channelID == Constants.CHANNEL_ID_LOAN ) BudgetNotificationManager.cancelAlarmManager(context, placeId)
+            if(delete && (channelID == Constants.CHANNEL_ID_GOAL || channelID == Constants.CHANNEL_ID_PLAN || channelID == Constants.CHANNEL_ID_LOAN) ) BudgetNotificationManager.cancelAlarmManager(context, placeId)
         }
     }
 

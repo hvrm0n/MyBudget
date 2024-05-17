@@ -279,7 +279,11 @@ class FinanceFragment : Fragment() {
                         }
                         it
                     }.toSet().toList(), position, binding.viewpager, adapterCategory)
-                financeViewModel.updateDate(vpAdapter.getDate(binding.viewpager.currentItem))
+                try {
+                    financeViewModel.updateDate(vpAdapter.getDate(binding.viewpager.currentItem))
+                } catch (ex: IndexOutOfBoundsException){
+                    binding.viewpager.currentItem = 0
+                }
             }
             leftAndRightRows()
             }

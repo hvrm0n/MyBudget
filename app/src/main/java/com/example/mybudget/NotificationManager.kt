@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import java.security.MessageDigest
 import java.util.Calendar
 import kotlin.math.abs
@@ -60,6 +61,7 @@ object BudgetNotificationManager {
     }
 
      fun notification(context: Context, channelID:String, id:String, placeId:String?=null, time:String, dateOfExpence:Calendar, periodOfNotification:String){
+         Log.e("CheckPeriod", "yes")
          val periods = context.resources.getStringArray(R.array.periodicity)
          val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
              putExtra("channelID", channelID)
