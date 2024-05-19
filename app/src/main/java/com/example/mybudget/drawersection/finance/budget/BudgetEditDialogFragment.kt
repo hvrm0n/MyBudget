@@ -308,6 +308,7 @@ class BudgetEditDialogFragment:DialogFragment() {
             builder.setNegativeButton(resources.getString(R.string.delete)) { dialog, _ ->
                 if (base) Toast.makeText(context, resources.getString(R.string.error_budget_base_delete), Toast.LENGTH_LONG).show()
                 else if(financeViewModel.planLiveData.value!!.any { it.budgetId == key})Toast.makeText(context, resources.getString(R.string.error_budget_have_plan), Toast.LENGTH_LONG).show()
+                else if(financeViewModel.subLiveData.value!!.any { it.subItem.budgetId == key})Toast.makeText(context, resources.getString(R.string.error_budget_have_sub), Toast.LENGTH_LONG).show()
                 else {
                     AlertDialog.Builder(context)
                         .setTitle(resources.getString(R.string.delete_budget))
@@ -408,7 +409,7 @@ class BudgetEditDialogFragment:DialogFragment() {
                     }
                     etName.text.isEmpty() || etAmount.text.isEmpty() -> Toast.makeText(context, resources.getString(R.string.error_not_all_data), Toast.LENGTH_LONG).show()}
             }
-            builder.setNegativeButton(resources.getString(R.string.cancel),) { dialog, _ ->
+            builder.setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
         }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.MultiSelectListPreference
@@ -162,53 +163,50 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun restoreTransaction(){
-        var channelID: String
-        var placeId = ""
-        var cancel = false
         val calendar = Calendar.getInstance()
 
-        for ((key, _) in notificationPrefs.all){
-            channelID = when{
-                financeViewModel.planLiveData.value?.find { it.key == key } !=null -> {
-                    financeViewModel.planLiveData.value?.find { it.key == key }?.let {
-                        placeId = it.placeId
-                        calendar.apply {
-                            set(it.date.split(".")[2].toInt(),
-                                it.date.split(".")[1].toInt()-1,
-                                it.date.split(".")[0].toInt(),0,0,0)
-                        }
-                    }
-                    Constants.CHANNEL_ID_PLAN
-                }
-                financeViewModel.subLiveData.value?.find { it.key == key } !=null -> {
-                    financeViewModel.subLiveData.value?.find { it.key == key }?.let {
-                        placeId = it.key
-                        it.subItem.date.let { date->
-                            calendar.apply {
-                                set(date.split(".")[2].toInt(),
-                                    date.split(".")[1].toInt()-1,
-                                    date.split(".")[0].toInt(),0,0,0)
-                            }
-                        }
-                        if (it.subItem.isDeleted || it.subItem.isCancelled) cancel = true
-                    }
-                    Constants.CHANNEL_ID_SUB
-                }
-                else->""
+        financeViewModel.planLiveData.value?.forEach {
+            calendar.apply {
+                set(it.date.split(".")[2].toInt(),
+                    it.date.split(".")[1].toInt()-1,
+                    it.date.split(".")[0].toInt(),0,0,0)
             }
-            if (calendar.timeInMillis<Calendar.getInstance().timeInMillis) cancel = true
-            if(channelID.isNotEmpty() && placeId.isNotEmpty() && !cancel) {
+
+            if (calendar.timeInMillis>=Calendar.getInstance().timeInMillis)
+            {
                 BudgetNotificationManager.setAutoTransaction(
                     context = requireContext(),
-                    id = key.toString(),
-                    placeId = placeId,
+                    id = it.key,
+                    placeId = it.placeId,
                     year = calendar.get(Calendar.YEAR),
                     month = calendar.get(Calendar.MONTH)+1,
                     dateOfExpence = calendar,
-                    type = channelID)
+                    type =  Constants.CHANNEL_ID_PLAN)
             }
-            placeId = ""
-            cancel = false
+        }
+
+        financeViewModel.subLiveData.value?.forEach{
+            it.subItem.date.let { date->
+                calendar.apply {
+                    set(date.split(".")[2].toInt(),
+                        date.split(".")[1].toInt()-1,
+                        date.split(".")[0].toInt(),0,0,0)
+                }
+            }
+            if (!it.subItem.isDeleted && !it.subItem.isCancelled
+                && calendar.timeInMillis>=Calendar.getInstance().timeInMillis
+                ) {
+                if (!financeViewModel.budgetLiveData.value?.find {budget-> it.subItem.budgetId == budget.key }?.key.isNullOrEmpty()){
+                        BudgetNotificationManager.setAutoTransaction(
+                            context = requireContext(),
+                            id = it.key,
+                            placeId = it.key,
+                            year = calendar.get(Calendar.YEAR),
+                            month = calendar.get(Calendar.MONTH)+1,
+                            dateOfExpence = calendar,
+                            type = Constants.CHANNEL_ID_SUB)
+                }
+            }
         }
     }
 }

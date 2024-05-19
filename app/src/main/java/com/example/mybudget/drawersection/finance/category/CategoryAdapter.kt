@@ -81,7 +81,6 @@ class CategoryAdapter(
                 snapshot.children.forEach {snap->
                     snap.getValue(HistoryItem::class.java)?.let {
                         if (it.placeId == categories[position].key){
-                            planReference.child(it.key).removeValue()
                             BudgetNotificationManager.cancelAutoTransaction(
                                 context = context,
                                 id = it.key
@@ -89,6 +88,7 @@ class CategoryAdapter(
                             BudgetNotificationManager.cancelAlarmManager(
                                 context = context, id = it.key
                             )
+                            planReference.child(it.key).removeValue()
                         }
                     }
                 }

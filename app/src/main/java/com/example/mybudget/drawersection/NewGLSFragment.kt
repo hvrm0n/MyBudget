@@ -430,6 +430,12 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun initSub(){
+
+        if(financeViewModel.budgetLiveData.value?.filter { it.budgetItem.type == resources.getStringArray(R.array.budget_types)[1] }.isNullOrEmpty()){
+            Toast.makeText(context, resources.getString(R.string.error_sub_budget_notexist), Toast.LENGTH_LONG).show()
+            findNavController().popBackStack()
+        }
+
         binding.radioGroupGLS.visibility = View.GONE
         binding.calendarViewGLS.visibility = View.VISIBLE
         binding.budgetGLS.visibility = View.VISIBLE

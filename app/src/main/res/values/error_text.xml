@@ -32,6 +32,7 @@
     <string name="error_budget_edit_delete">"Вы собираетесь удалить отредактированный бюджет!</string>
     <string name="error_budget_exists">Счет с таким названием уже существует!</string>
     <string name="error_budget_have_plan">У Вас есть запланированные операции с этим бюджетом!</string>
+    <string name="error_budget_have_sub">У Вас есть подписки, привязанные к этому бюджету!</string>
     <string name="error_budget_not_choose">Вы не выбрали бюджет</string>
     <string name="error_budget_not_exists_cant_change">Такого бюджета больше нет, операцию нельзя изменить!</string>
     <string name="error_budget_not_exists_cant_delete">Такого бюджета больше нет, операцию нельзя удалить!</string>
@@ -45,6 +46,7 @@
     <string name="error_goal_repair">У Вас уже была такая цель!\nХотите восстановить?</string>
 
     <string name="error_sub_exists">Такая подписка уже существует.</string>
+    <string name="error_sub_budget_notexist">У Вас нет счетов с типом "Карта"!</string>
     <string name="error_sub_not_exists">Такой подписки больше нет, операцию нельзя изменить.</string>
     <!--<string name="error_goal_not_exists_delete">Такой цели больше нет, операцию нельзя удалить.</string>
     <string name="error_goal_minus">При изменении Вы уйдете в минус в цели!</string>-->
