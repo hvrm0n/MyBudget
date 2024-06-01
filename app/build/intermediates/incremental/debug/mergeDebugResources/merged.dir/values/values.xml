@@ -2928,6 +2928,7 @@
     <string name="error_budget_edit_delete">"Вы собираетесь удалить отредактированный бюджет!</string>
     <string name="error_budget_exists">Счет с таким названием уже существует!</string>
     <string name="error_budget_have_plan">У Вас есть запланированные операции с этим бюджетом!</string>
+    <string name="error_budget_have_sub">У Вас есть подписки, привязанные к этому бюджету!</string>
     <string name="error_budget_minus_change">При изменении Вы уйдете в минус в бюджете!</string>
     <string name="error_budget_minus_new">После совершения данной операции вы уйдете в минус!\nПродолжить?</string>
     <string name="error_budget_not_choose">Вы не выбрали бюджет</string>
@@ -2961,6 +2962,7 @@
     <string name="error_not_value">Вы не ввели сумму начисления.</string>
     <string name="error_not_value_expence">Вы не ввели сумму списания.</string>
     <string name="error_sign_in">Не удалось войти в аккаунт!</string>
+    <string name="error_sub_budget_notexist">У Вас нет счетов с типом "Карта"!</string>
     <string name="error_sub_exists">Такая подписка уже существует.</string>
     <string name="error_sub_not_exists">Такой подписки больше нет, операцию нельзя изменить.</string>
     <string name="every_months">Каждый месяц</string>

@@ -1063,7 +1063,6 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun saveLoan(){
-
         if (financeViewModel.loansLiveData.value?.filter { !it.loanItem.isDeleted }?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false)
             Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_loan_exists), Snackbar.LENGTH_LONG).show()
         else if (financeViewModel.loansLiveData.value?.filter { it.loanItem.isDeleted }?.all{it.loanItem.name !=  binding.nameGLSEdit.text.toString()}==false){

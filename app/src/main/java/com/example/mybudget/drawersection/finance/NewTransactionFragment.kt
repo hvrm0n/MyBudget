@@ -400,8 +400,8 @@ class NewTransactionFragment : Fragment() {
             else ->0.0
         }
         val nameBudget = binding.spinnerBudget.selectedItem.toString()
-
         val budget = financeViewModel.budgetLiveData.value?.filter { it.budgetItem.name == nameBudget}?.get(0)!!
+
         if(binding.income.isChecked){
             when(binding.spinnerBudget.selectedItemPosition){
                 0 ->{

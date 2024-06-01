@@ -3,7 +3,6 @@ package com.example.mybudget.drawersection.finance
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -33,17 +32,12 @@ import com.example.mybudget.databinding.PageFinanceBinding
 import com.example.mybudget.drawersection.finance.budget.BudgetAdapter
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.category.CategoryAdapter
-import com.example.mybudget.drawersection.finance.category.CategoryItemWithKey
 import com.example.mybudget.drawersection.finance.category.SwipeHelper
 import com.example.mybudget.drawersection.finance.category._CategoryBegin
-import com.example.mybudget.drawersection.finance.category._CategoryItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -59,7 +53,7 @@ class FinanceFragment : Fragment() {
     private lateinit var table: DatabaseReference
 
     private lateinit var financeViewModel:FinanceViewModel
-    private val category = mutableListOf<CategoryItemWithKey>()
+
 
     private var isExpanded = false
 
@@ -97,13 +91,17 @@ class FinanceFragment : Fragment() {
         vpAdapter = DateViewPagerAdapter(requireContext())
         binding.viewpager.adapter = vpAdapter
 
-        val sharedPreferences = requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
 
-        when(sharedPreferences.getBoolean("isDistributed", false)){
+        when (sharedPreferences.getBoolean("isDistributed", false)) {
             false -> binding.calculate.text = resources.getString(R.string.fab_calculate)
             else -> {
                 val time = sharedPreferences.getString("isDistributedDay", "")
-                if (time?.isNotEmpty() == true && time.split(".")[0].toInt() == Calendar.getInstance().get(Calendar.MONTH) && time.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.YEAR) ) {
+                if (time?.isNotEmpty() == true && time.split(".")[0].toInt() == Calendar.getInstance()
+                        .get(Calendar.MONTH) && time.split(".")[1].toInt() == Calendar.getInstance()
+                        .get(Calendar.YEAR)
+                ) {
                     binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
                 } else {
                     binding.calculate.text = resources.getString(R.string.fab_calculate)
@@ -116,7 +114,7 @@ class FinanceFragment : Fragment() {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            if (isExpanded){
+            if (isExpanded) {
                 hideFabs {}
             } else showFabs()
             isExpanded = !isExpanded
@@ -128,28 +126,29 @@ class FinanceFragment : Fragment() {
         }
 
         binding.fabHistory.setOnClickListener {
-            if (!financeViewModel.historyLiveData.value.isNullOrEmpty() || !financeViewModel.planLiveData.value.isNullOrEmpty()){
+            if (!financeViewModel.historyLiveData.value.isNullOrEmpty() || !financeViewModel.planLiveData.value.isNullOrEmpty()) {
                 findNavController().navigate(R.id.action_nav_finance_to_historyFragment)
-            } else Toast.makeText(requireContext(), getString(R.string.error_history_not_exists), Toast.LENGTH_LONG).show()
+            } else Toast.makeText(
+                requireContext(),
+                getString(R.string.error_history_not_exists),
+                Toast.LENGTH_LONG
+            ).show()
             isExpanded = false
         }
 
         binding.fabCalculate.setOnClickListener {
-            hideFabs{
+            hideFabs {
                 isExpanded = false
                 binding.viewpager.currentItem = adapterCategory.getCurrentDate()
                 lifecycleScope.launch {
-                    updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){
-                }
-                    when(sharedPreferences.getBoolean("isDistributed", false)){
-                        false -> {
-                            binding.viewpager.currentItem = adapterCategory.getCurrentDate()
-                            lifecycleScope.launch {
-                                updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){}
-                            }
-                            distributeMoney()
+                    financeViewModel.updateCategoryOnce(
+                        vpAdapter.getDate(binding.viewpager.currentItem).first,
+                        vpAdapter.getDate(binding.viewpager.currentItem).second
+                    ) {
+                        when (sharedPreferences.getBoolean("isDistributed", false)) {
+                            false -> distributeMoney()
+                            else -> cancelDistribution()
                         }
-                        else -> cancelDistribution()
                     }
                 }
             }
@@ -195,7 +194,11 @@ class FinanceFragment : Fragment() {
 
         ExchangeRateManager.request(table, auth, requireContext(), lifecycleScope, requireView(), requireActivity(), false)
 
-        activity?.let {financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java] }
+        activity?.let {financeViewModel = ViewModelProvider(it, FinanceViewModelFactory(
+            table = table,
+            auth = auth,
+            context = requireContext()
+        ))[FinanceViewModel::class.java] }
 
         adapterCategory = CategoryAdapter(requireContext(), emptyList(), viewLifecycleOwner, table, auth, requireActivity())
         adapterBudget = BudgetAdapter(requireContext(), emptyList(), lifecycleScope, table, auth)
@@ -222,10 +225,6 @@ class FinanceFragment : Fragment() {
         financeViewModel.categoryLiveData.observe(viewLifecycleOwner){
             lifecycleScope.launch {
                 adapterCategory.updateData(it)
-                category.apply{
-                    clear()
-                    addAll(it)
-                }
             }
         }
 
@@ -295,7 +294,7 @@ class FinanceFragment : Fragment() {
                 adapterCategory.updateNewDate(binding.viewpager.currentItem)
                 financeViewModel.updateDate(vpAdapter.getDate(binding.viewpager.currentItem))
                 lifecycleScope.launch {
-                    updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){}
+                    financeViewModel.updateCategoryOnce(vpAdapter.getDate(binding.viewpager.currentItem).first, vpAdapter.getDate(binding.viewpager.currentItem).second){}
                 }
             }
         }
@@ -403,6 +402,7 @@ class FinanceFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                     else {
+
                         table.child("Users").child(auth.currentUser!!.uid).child("Categories")
                             .child("Categories base").child(category!!.key).setValue(_CategoryBegin(newName, newPath))
                         category.categoryItem.priority = newPriority
@@ -434,167 +434,16 @@ class FinanceFragment : Fragment() {
     }
 
     private fun cancelDistribution(){
-        if(category.isNotEmpty()){
-                for (categoryItem in category){
-                    categoryItem.categoryItem.total = "%.2f".format(categoryItem.categoryItem.total.toDouble() - categoryItem.categoryItem.remainder.toDouble()).replace(',','.')
-                    categoryItem.categoryItem.remainder = "0"
-
-                    table.child("Users").child(auth.currentUser!!.uid)
-                        .child("Categories").child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}")
-                        .child("ExpenseCategories").child(categoryItem.key).setValue(categoryItem.categoryItem)
-
-                    val sharedPreferences = requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putBoolean("isDistributed", false)
-                    editor.putString("isDistributedDay", "")
-                    editor.apply()
-                    binding.calculate.text = resources.getString(R.string.fab_calculate)
-                }
-        } else Toast.makeText(context, resources.getString(R.string.error_category_not_choosen), Toast.LENGTH_LONG).show()
+        if (financeViewModel.cancelDistribution()) binding.calculate.text = resources.getString(R.string.fab_calculate)
+        else Toast.makeText(context, resources.getString(R.string.error_category_not_choosen), Toast.LENGTH_LONG).show()
     }
 
     private fun distributeMoney(){
-            if(category.isNotEmpty()){
-                val highPriorityCategories = category.filter { it.categoryItem.priority == 2 }
-                val mediumPriorityCategories = category.filter { it.categoryItem.priority == 1 }
-                val lowPriorityCategories = category.filter { it.categoryItem.priority == 0 }
-
-                val totalHighPriorityCategories = highPriorityCategories.size
-                val totalMediumPriorityCategories = mediumPriorityCategories.size
-                val totalLowPriorityCategories = lowPriorityCategories.size
-
-                var highPriorityCoefficient = 0.0
-                var mediumPriorityCoefficient = 0.0
-                var lowPriorityCoefficient = 0.0
-
-
-                if(totalHighPriorityCategories !=0){
-                    if(totalMediumPriorityCategories!=0 && totalLowPriorityCategories!=0){
-                        mediumPriorityCoefficient = totalMediumPriorityCategories/category.size.toDouble()
-                        highPriorityCoefficient = (1.0-mediumPriorityCoefficient) * ((totalMediumPriorityCategories+totalHighPriorityCategories)/category.size.toDouble())
-                        lowPriorityCoefficient = 1.0-highPriorityCoefficient-mediumPriorityCoefficient
-                    } else if (totalLowPriorityCategories!=0){
-                        lowPriorityCoefficient = 0.33*totalLowPriorityCategories/category.size.toDouble()
-                        highPriorityCoefficient = 1.0-lowPriorityCoefficient
-                    } else if (totalMediumPriorityCategories!=0){
-                        mediumPriorityCoefficient = 0.66*totalMediumPriorityCategories/category.size.toDouble()
-                        highPriorityCoefficient = 1.0-mediumPriorityCoefficient
-                    } else highPriorityCoefficient = 1.0
-
-                } else if (totalMediumPriorityCategories!=0){
-                    if(totalLowPriorityCategories!=0){
-                        lowPriorityCoefficient = 0.66 * totalLowPriorityCategories/category.size.toDouble()
-                        mediumPriorityCoefficient = 1.0 - lowPriorityCoefficient
-                    }
-                    else{
-                        mediumPriorityCoefficient = 1.0
-                    }
-
-                }
-                else if(totalLowPriorityCategories!=0){
-                    lowPriorityCoefficient = 1.0
-                }
-
-                totalMoney{ totalMoney->
-                    val highPriorityBudget:Double = totalMoney * highPriorityCoefficient / totalHighPriorityCategories
-                    val mediumPriorityBudget:Double = totalMoney * mediumPriorityCoefficient/ totalMediumPriorityCategories
-                    val lowPriorityBudget:Double = totalMoney * lowPriorityCoefficient / totalLowPriorityCategories
-                    var totalCheck = 0.0
-                    for (categoryItem in category){
-                        val expence = if(categoryItem.categoryItem.remainder.toDouble() == 0.0) categoryItem.categoryItem.total.toDouble() else categoryItem.categoryItem.total.toDouble()-categoryItem.categoryItem.remainder.toDouble()
-                        categoryItem.categoryItem.total = "%.2f".format(when(categoryItem.categoryItem.priority){
-                            0  -> lowPriorityBudget
-                            1 -> mediumPriorityBudget
-                            else -> highPriorityBudget
-                        }).replace(',','.')
-                        categoryItem.categoryItem.remainder = "%.2f".format(categoryItem.categoryItem.total.toDouble()-expence).replace(',','.')
-                        totalCheck+=categoryItem.categoryItem.total.toDouble()
-
-                        table.child("Users").child(auth.currentUser!!.uid)
-                            .child("Categories").child("${Calendar.getInstance().get(Calendar.YEAR)}/${Calendar.getInstance().get(Calendar.MONTH)+1}")
-                            .child("ExpenseCategories").child(categoryItem.key).setValue(categoryItem.categoryItem)
-
-                        val sharedPreferences = requireContext().getSharedPreferences("preference_distribute", Context.MODE_PRIVATE)
-                        val editor = sharedPreferences.edit()
-                        editor.putBoolean("isDistributed", true)
-                        editor.putString("isDistributedDay", "${Calendar.getInstance().get(Calendar.MONTH)}.${Calendar.getInstance().get(Calendar.YEAR)}")
-                        editor.apply()
-                        binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
-
-                    }
-                }
-            } else Toast.makeText(context, getString(R.string.error_category_not_exists), Toast.LENGTH_LONG).show()
-        }
-
-    private fun totalMoney(callback: (Double) -> Unit) {
-        var total = 0.0
-        val baseCurrency = financeViewModel.budgetLiveData.value!!.find {budget-> budget.key == "Base budget" }!!.budgetItem.currency
-
-        showBudgetSelectionDialog{
-           it.forEach{budgetItem->
-               when(budgetItem.budgetItem.currency){
-                   baseCurrency -> {
-                       total += budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key)
-                   }
-                   else ->{
-                       val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(requireContext())
-                       if(currencyConvertor!=null){
-                           total += when(currencyConvertor.baseCode){
-                               baseCurrency -> (budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key))/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!
-                               else->{
-                                   val newValueToBase = ((budgetItem.budgetItem.amount.toDouble() - withSub(budgetItem.key))/currencyConvertor.conversionRates[budgetItem.budgetItem.currency]!!)
-                                   newValueToBase*currencyConvertor.conversionRates[baseCurrency]!!
-                               }
-                           }
-                       }
-                   }
-               }
-           }
-           callback(total - withLoan(baseCurrency))
+        showBudgetSelectionDialog {
+            if(financeViewModel.distributeMoney(selectedBudget = it)) binding.calculate.text = resources.getString(R.string.fab_cancel_calculate)
+            else Toast.makeText(context, getString(R.string.error_category_not_exists), Toast.LENGTH_LONG).show()
         }
     }
-
-    private fun withSub(budgetItemKey:String) = financeViewModel.subLiveData.value?.filter { !it.subItem.isCancelled
-            && !it.subItem.isDeleted
-            && it.subItem.budgetId == budgetItemKey
-            && it.subItem.date.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
-            && it.subItem.date.split(".")[2].toInt() == Calendar.getInstance().get(Calendar.YEAR)}
-        ?.sumOf { it.subItem.amount.toDouble() } ?: 0.0
-
-    private fun withLoan(baseCurrency : String) = financeViewModel.loansLiveData.value?.filter {
-        if(it.loanItem.period!=null) {
-            !it.loanItem.isFinished
-                    && !it.loanItem.isDeleted
-                    && it.loanItem.dateNext!!.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
-        }
-        else{
-            !it.loanItem.isFinished
-                    && !it.loanItem.isDeleted
-                    && it.loanItem.dateOfEnd.split(".")[1].toInt() == Calendar.getInstance().get(Calendar.MONTH)+1
-        }
-    }?.sumOf {
-        when(it.loanItem.currency){
-            baseCurrency -> {
-                it.loanItem.amount.toDouble()
-            }
-            else ->{
-                val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(requireContext())
-                if(currencyConvertor!=null){
-                    when(currencyConvertor.baseCode){
-                        baseCurrency ->
-                            it.loanItem.amount.toDouble()/currencyConvertor.conversionRates[it.loanItem.currency]!!
-                        else->{
-                            val newValueToBase = ((it.loanItem.amount.toDouble())/currencyConvertor.conversionRates[it.loanItem.currency]!!)
-                            newValueToBase*currencyConvertor.conversionRates[baseCurrency]!!
-                        }
-                    }
-                } else {
-                    0.0
-                }
-            }
-        }
-    }?:0.0
-
 
     private fun showBudgetSelectionDialog(callback:(List<BudgetItemWithKey>)->Unit) {
         val alertDialogBuilder = AlertDialog.Builder(requireContext())
@@ -661,24 +510,5 @@ class FinanceFragment : Fragment() {
         val dialog = alertDialogBuilder.create()
         dialog.window?.setBackgroundDrawableResource(R.drawable.listview_shadow)
         dialog.show()
-    }
-
-    private  fun updateCategoryOnce(month:Int, year:Int, doAfter: (Unit)->Unit) {
-        table.child("Users").child(auth.currentUser!!.uid).child("Categories")
-            .child("$year/${month}").child("ExpenseCategories").addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    category.clear()
-                    for (expenseCategory in snapshot.children){
-                        expenseCategory.getValue(_CategoryItem::class.java)?.let {
-                            category.add(CategoryItemWithKey(expenseCategory.key.toString(), it))
-                        }
-                    }
-                    financeViewModel.updateCategoryData(category.sortedByDescending { it.categoryItem.priority })
-                    doAfter(Unit)
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("errorLog", error.toException().toString())
-                }
-            })
     }
 }

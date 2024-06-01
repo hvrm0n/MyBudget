@@ -4999,6 +4999,7 @@ int string error_budget_base_delete 0x7f1301d7
 int string error_budget_edit_delete 0x7f1301d8
 int string error_budget_exists 0x7f1301d9
 int string error_budget_have_plan 0x7f1301da
+int string error_budget_have_sub 0x7f1302f8
 int string error_budget_minus_change 0x7f1301db
 int string error_budget_minus_new 0x7f1301dc
 int string error_budget_not_choose 0x7f1301dd
@@ -5032,6 +5033,7 @@ int string error_not_more_goal 0x7f1301f8
 int string error_not_value 0x7f1301f9
 int string error_not_value_expence 0x7f1301fa
 int string error_sign_in 0x7f1301fb
+int string error_sub_budget_notexist 0x7f1302f7
 int string error_sub_exists 0x7f1301fc
 int string error_sub_not_exists 0x7f1301fd
 int string every_months 0x7f1301fe

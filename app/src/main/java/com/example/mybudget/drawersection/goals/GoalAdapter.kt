@@ -302,7 +302,7 @@ class GoalsAdapter(private val context: Context, private var goals: List<GoalIte
         private fun expense(budgetItem:BudgetItemWithKey, goalItem: GoalItemWithKey, goalValue:Double, budgetValue:Double){
             goalItem.goalItem.current = "%.2f".format(goalItem.goalItem.current.toDouble() - goalValue).replace(",", ".")
             budgetItem.budgetItem.amount = "%.2f".format( budgetItem.budgetItem.amount.toDouble() + budgetValue).replace(",", ".")
-            if(goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble()){
+            if(goalItem.goalItem.current.toDouble()<goalItem.goalItem.target.toDouble() && goalItem.goalItem.isReached){
                 goalItem.goalItem.isReached = false
                 Toast.makeText(context, R.string.history_renotify, Toast.LENGTH_SHORT).show()
             }

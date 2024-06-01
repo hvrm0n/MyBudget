@@ -164,7 +164,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun restoreTransaction(){
         val calendar = Calendar.getInstance()
-
         financeViewModel.planLiveData.value?.forEach {
             calendar.apply {
                 set(it.date.split(".")[2].toInt(),

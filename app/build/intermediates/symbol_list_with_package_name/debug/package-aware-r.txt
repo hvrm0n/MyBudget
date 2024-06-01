@@ -5000,6 +5000,7 @@ string error_budget_base_delete
 string error_budget_edit_delete
 string error_budget_exists
 string error_budget_have_plan
+string error_budget_have_sub
 string error_budget_minus_change
 string error_budget_minus_new
 string error_budget_not_choose
@@ -5033,6 +5034,7 @@ string error_not_more_goal
 string error_not_value
 string error_not_value_expence
 string error_sign_in
+string error_sub_budget_notexist
 string error_sub_exists
 string error_sub_not_exists
 string every_months
