@@ -25,7 +25,6 @@ class NotificationReceiver : BroadcastReceiver() {
         val channelID = intent.getStringExtra("channelID")
         val placeId = intent.getStringExtra("placeId")
         val delete = intent.getBooleanExtra("deletePrefs", false)
-
         if (channelID!=null&&placeId!=null){
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("notifications_enabled", false)) {
                 val date = Calendar.getInstance()
@@ -39,7 +38,6 @@ class NotificationReceiver : BroadcastReceiver() {
                 }
 
                 getName(channelID, placeId,/* date,*/ notificationText) {
-
                     val notification: Notification = NotificationCompat.Builder(context, channelID)
                         .setSmallIcon(R.drawable.piggybank_18)
                         .setContentTitle(

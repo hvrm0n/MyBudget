@@ -16,22 +16,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.mybudget.R
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
 
 class CurrencyFragment : Fragment() {
 
     private lateinit var nextPageButton: Button
     private lateinit var listViewCurrency: ListView
     private lateinit var search: SearchView
-    private lateinit var auth: FirebaseAuth
-    private lateinit var table: DatabaseReference
+/*    private lateinit var auth: FirebaseAuth
+    private lateinit var table: DatabaseReference*/
     private lateinit var currencyCodes: Array<String>
-    private  var selection: Triple<String, String, String>? = Triple("","", "")
+    /*private  var selection: Triple<String, String, String>? = Triple("","", "")*/
     private  var positionOfSelection = -1
+    private lateinit var viewModel:CurrencyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +42,7 @@ class CurrencyFragment : Fragment() {
         listViewCurrency = view.findViewById(R.id.listViewBasicCurrencyStart)
         search = view.findViewById(R.id.searchCurrencyBegin)
 
-        val viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
+        viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
 
         currencyCodes = resources.getStringArray(R.array.currency_values)
         val currencyList = ArrayList<Triple<String, String, String>>()
@@ -67,16 +63,15 @@ class CurrencyFragment : Fragment() {
             } else adapter.setSelectedPosition(-1)
 
             positionOfSelection = adapter.getPosition(it)
-            selection = it
+            viewModel.updateSelection(it)
         }
 
         listViewCurrency.setOnItemClickListener { _, _, position, _ ->
             nextPageButton.isEnabled = true
-            selection = adapter.getItem(position)
             positionOfSelection = position
             listViewCurrency.setSelection(position)
             adapter.setSelectedPosition(position)
-            viewModel.selection.value = selection
+            viewModel.updateSelection(adapter.getItem(position))
         }
 
         search.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
@@ -84,8 +79,8 @@ class CurrencyFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 adapter.filter.filter(newText) {
-                    if (adapter.getPosition(selection)!=-1 && listViewCurrency.getItemAtPosition(adapter.getPosition(selection))==selection) {
-                        adapter.setSelectedPosition(adapter.getPosition(selection))
+                    if (adapter.getPosition(viewModel.selection.value)!=-1 && listViewCurrency.getItemAtPosition(adapter.getPosition(viewModel.selection.value))==viewModel.selection.value) {
+                        adapter.setSelectedPosition(adapter.getPosition(viewModel.selection.value))
                     } else adapter.setSelectedPosition(-1)
                 }
                 return true
@@ -97,10 +92,8 @@ class CurrencyFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        auth = Firebase.auth
-        table = Firebase.database.reference
         nextPageButton.setOnClickListener {
-            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("currency").setValue(selection?.first.toString())
+            viewModel.addCurency()
             Navigation.findNavController(requireView()).navigate(R.id.action_currencyFragment_to_basicBudgetFragment) }
     }
 }

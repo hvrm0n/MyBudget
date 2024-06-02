@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +54,7 @@ import java.util.Locale
 class NewGLSFragment : Fragment() {
     private lateinit var binding: PageNewGlsBinding
     private lateinit var financeViewModel: FinanceViewModel
+    private lateinit var glsViewModel: GLSViewModel
     private lateinit var periodList: Array<String>
     private lateinit var adapterPeriod: ArrayAdapter<String>
     private lateinit var budgetAdapter: ArrayAdapter<String>
@@ -81,7 +81,10 @@ class NewGLSFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = PageNewGlsBinding.bind(view)
 
-        activity?.let {financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java]}
+        activity?.let {
+            financeViewModel = ViewModelProvider(it)[FinanceViewModel::class.java]
+            glsViewModel = ViewModelProvider(it)[GLSViewModel::class.java]
+        }
         key = requireArguments().getString("key")
         type =  requireArguments().getString("type")
 
@@ -789,11 +792,7 @@ class NewGLSFragment : Fragment() {
                 .setTitle(resources.getString(R.string.repair))
                 .setMessage(resources.getString(R.string.error_goal_repair))
                 .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
-                    table.child("Users")
-                        .child(auth.currentUser!!.uid)
-                        .child("Goals")
-                        .child(financeViewModel.goalsData.value!!.find { it.goalItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
-                        .child("deleted").setValue(false)
+                    glsViewModel.saveGoal(financeViewModel.goalsData.value!!.find { it.goalItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
@@ -813,35 +812,25 @@ class NewGLSFragment : Fragment() {
             Snackbar.make(binding.buttonAddGLS, resources.getString(R.string.error_goal_exists), Snackbar.LENGTH_LONG).show()
         else{
             val beginItem = financeViewModel.goalsData.value?.find { it.key == key }!!.goalItem
-            table.child("Users")
-                .child(auth.currentUser!!.uid)
-                .child("Goals")
-                .child(key!!)
-                .setValue(
-                    GoalItem(
-                        name = binding.nameGLSEdit.text.toString(),
-                        target = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
-                        current = changeCurrencyAmount(beginItem.currency,
-                            selection.first.ifEmpty { beginItem.currency },
-                            beginItem.current,
-                            context),
-                        currency = selection.first.ifEmpty { financeViewModel.goalsData.value?.find { it.key == key }!!.goalItem.currency },
-                        date =  if (binding.withouthDate.isChecked) null else SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfEnd.time),
-                        path = binding.imageOfGLM.tag.toString(),
-                        isDeleted = false)
-                )
-            BudgetNotificationManager.cancelAlarmManager(context, key!!)
-            if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-                BudgetNotificationManager.notification(
-                    context = requireContext(),
-                    channelID = Constants.CHANNEL_ID_GOAL,
-                    placeId = null,
-                    id = key!!,
-                    time = binding.timeOfNotificationsGLS.text.toString(),
-                    dateOfExpence = dateOfEnd,
-                    periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
-                )
-            }
+            glsViewModel.updateGoal(
+                key = key!!,
+                goalItem = GoalItem(
+                    name = binding.nameGLSEdit.text.toString(),
+                    target = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
+                    current = changeCurrencyAmount(beginItem.currency,
+                        selection.first.ifEmpty { beginItem.currency },
+                        beginItem.current,
+                        context),
+                    currency = selection.first.ifEmpty { financeViewModel.goalsData.value?.find { it.key == key }!!.goalItem.currency },
+                    date =  if (binding.withouthDate.isChecked) null else SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfEnd.time),
+                    path = binding.imageOfGLM.tag.toString(),
+                    isDeleted = false),
+                context = context,
+                periodOfNotificationPosition = binding.periodOfNotificationGLS.selectedItemPosition,
+                time = binding.timeOfNotificationsGLS.text.toString(),
+                dateOfEnd = dateOfEnd,
+                periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
+            )
 
 
             table.child("Users")
@@ -882,31 +871,21 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun makeNewGoal(){
-        val goalReference = table.child("Users")
-            .child(auth.currentUser!!.uid)
-            .child("Goals")
-            .push()
-        goalReference.setValue(GoalItem(
+        glsViewModel.makeNewGoal(
+            goalItem = GoalItem(
                 name = binding.nameGLSEdit.text.toString(),
                 target = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
                 currency = selection.first.ifEmpty { financeViewModel.budgetLiveData.value?.find { it.key == "Base budget" }!!.budgetItem.currency },
                 date = if (binding.withouthDate.isChecked) null else SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateOfEnd.time),
                 path = binding.imageOfGLM.tag.toString(),
-                isDeleted = false)
-            ).addOnCompleteListener {
-                if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-                    BudgetNotificationManager.notification(
-                        context = requireContext(),
-                        channelID = Constants.CHANNEL_ID_GOAL,
-                        id = goalReference.key.toString(),
-                        placeId = null,
-                        time = binding.timeOfNotificationsGLS.text.toString(),
-                        dateOfExpence = dateOfEnd,
-                        periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
-                    )
-                }
-                findNavController().popBackStack()
-            }
+                isDeleted = false),
+            periodOfNotificationPosition = binding.periodOfNotificationGLS.selectedItemPosition,
+            context = requireContext(),
+            time = binding.timeOfNotificationsGLS.text.toString(),
+            dateOfEnd = dateOfEnd,
+            periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
+        )
+        findNavController().popBackStack()
     }
 
     private fun saveSub(){
@@ -917,11 +896,7 @@ class NewGLSFragment : Fragment() {
                 .setTitle(resources.getString(R.string.repair))
                 .setMessage(resources.getString(R.string.repair_sub))
                 .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
-                    table.child("Users")
-                        .child(auth.currentUser!!.uid)
-                        .child("Subs")
-                        .child(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
-                        .child("deleted").setValue(false)
+                    glsViewModel.restoreSub(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
@@ -938,11 +913,7 @@ class NewGLSFragment : Fragment() {
                 .setTitle(resources.getString(R.string.repair))
                 .setMessage(resources.getString(R.string.resub_sub))
                 .setPositiveButton(resources.getString(R.string.renew)) { dialog, _ ->
-                    table.child("Users")
-                        .child(auth.currentUser!!.uid)
-                        .child("Subs")
-                        .child(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
-                        .child("cancelled").setValue(false)
+                    glsViewModel.cancelledSub(financeViewModel.subLiveData.value!!.find { it.subItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
@@ -973,52 +944,28 @@ class NewGLSFragment : Fragment() {
                 )
             }
 
-            table.child("Users")
-                .child(auth.currentUser!!.uid)
-                .child("Subs")
-                .child(key!!)
-                .setValue(
-                    SubItem(
-                        name = binding.nameGLSEdit.text.toString(),
-                        amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
-                        date =  SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time),
-                        path = binding.imageOfGLM.tag.toString(),
-                        isCancelled = subItemWithKey.subItem.isCancelled,
-                        budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
-                        isDeleted = false,
-                        period = periodLS ?: "1 m")
-                )
-            BudgetNotificationManager.cancelAlarmManager(context, subItemWithKey.key)
-            BudgetNotificationManager.cancelAutoTransaction(context, subItemWithKey.key)
-
-            BudgetNotificationManager.notification(
+            glsViewModel.updateSub(
+                key = key!!,
+                subItem = SubItem(
+                    name = binding.nameGLSEdit.text.toString(),
+                    amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
+                    date =  SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time),
+                    path = binding.imageOfGLM.tag.toString(),
+                    isCancelled = subItemWithKey.subItem.isCancelled,
+                    budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
+                    isDeleted = false,
+                    period = periodLS ?: "1 m"),
+                subItemWithKey = subItemWithKey,
                 context = context,
-                channelID = Constants.CHANNEL_ID_SUB,
-                id = subItemWithKey.key,
-                placeId = subItemWithKey.key,
                 time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                dateOfExpence = dateLS,
+                dateLS = dateLS,
                 periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
-            )
-            BudgetNotificationManager.setAutoTransaction(
-                context = context,
-                id = subItemWithKey.key,
-                placeId = subItemWithKey.key,
-                year = dateLS.get(Calendar.YEAR),
-                month = dateLS.get(Calendar.MONTH)-1,
-                dateOfExpence = dateLS,
-                type = Constants.CHANNEL_ID_SUB
             )
             findNavController().popBackStack()
         }
     }
 
     private fun makeNewSub(){
-        val subReference = table.child("Users")
-            .child(auth.currentUser!!.uid)
-            .child("Subs")
-            .push()
-
         while(dateLS.timeInMillis<Calendar.getInstance().timeInMillis){
             dateLS.add(
                 when ((periodLS ?: "1 m").split(" ")[1]) {
@@ -1029,37 +976,23 @@ class NewGLSFragment : Fragment() {
                 }, (periodLS ?: "1 m").split(" ")[0].toInt()
             )
         }
+        glsViewModel.makeNewSub(
+            subItem = SubItem(
+                name = binding.nameGLSEdit.text.toString(),
+                amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
+                date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time),
+                path = binding.imageOfGLM.tag.toString(),
+                budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
+                isDeleted = false,
+                isCancelled = false,
+                period = periodLS ?: "1 m"),
+            context = requireContext(),
+            time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
+            dateLS = dateLS,
+            periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
+        )
+        findNavController().popBackStack()
 
-        subReference.setValue(SubItem(
-            name = binding.nameGLSEdit.text.toString(),
-            amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
-            date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time),
-            path = binding.imageOfGLM.tag.toString(),
-            budgetId = financeViewModel.budgetLiveData.value?.find { it.budgetItem.name == binding.spinnerBudgetGLS.selectedItem.toString() }!!.key,
-            isDeleted = false,
-            isCancelled = false,
-            period = periodLS ?: "1 m")
-        ).addOnCompleteListener {
-            BudgetNotificationManager.notification(
-                context = requireContext(),
-                channelID = Constants.CHANNEL_ID_SUB,
-                id = subReference.key!!,
-                placeId =  subReference.key!!,
-                time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                dateOfExpence = dateLS,
-                periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
-            )
-            BudgetNotificationManager.setAutoTransaction(
-                context = requireContext(),
-                id = subReference.key!!,
-                placeId = subReference.key!!,
-                year = dateLS.get(Calendar.YEAR),
-                month = dateLS.get(Calendar.MONTH)-1,
-                dateOfExpence = dateLS,
-                type = Constants.CHANNEL_ID_SUB
-            )
-            findNavController().popBackStack()
-        }
     }
 
     private fun saveLoan(){
@@ -1070,11 +1003,7 @@ class NewGLSFragment : Fragment() {
                 .setTitle(resources.getString(R.string.repair))
                 .setMessage(resources.getString(R.string.error_loan_renew))
                 .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
-                    table.child("Users")
-                        .child(auth.currentUser!!.uid)
-                        .child("Loans")
-                        .child(financeViewModel.loansLiveData.value!!.find { it.loanItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
-                        .child("deleted").setValue(false)
+                    glsViewModel.restoreLoan(financeViewModel.loansLiveData.value!!.find { it.loanItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
@@ -1090,11 +1019,6 @@ class NewGLSFragment : Fragment() {
     }
 
     private fun makeNewLoan(){
-        val loanReference = table.child("Users")
-            .child(auth.currentUser!!.uid)
-            .child("Loans")
-            .push()
-
         val beginDate:List<String>
         val beginCalendar = Calendar.getInstance()
         val endDate:List<String>
@@ -1122,29 +1046,24 @@ class NewGLSFragment : Fragment() {
                 }
             }
         }
-
-        loanReference.setValue(LoanItem(
-            name = binding.nameGLSEdit.text.toString(),
-            amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
-            dateOfEnd = if (binding.withDate.isChecked) binding.periodOfLoan.text.toString().split("-")[1] else {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time)},
-            dateNext = if (binding.withDate.isChecked){SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(beginCalendar.time)} else null,
-            path = binding.imageOfGLM.tag.toString(),
-            currency = selection.first.ifEmpty { financeViewModel.budgetLiveData.value?.find { it.key == "Base budget" }!!.budgetItem.currency },
-            isDeleted = false,
-            isFinished = false,
-            period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
-        )).addOnCompleteListener {
-            BudgetNotificationManager.notification(
-                context = requireContext(),
-                channelID = Constants.CHANNEL_ID_LOAN,
-                id = loanReference.key!!,
-                placeId =  loanReference.key!!,
-                time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                dateOfExpence = beginCalendar,
-                periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
-            )
-            findNavController().popBackStack()
-        }
+        glsViewModel.makeLoan(
+            loanItem = LoanItem(
+                name = binding.nameGLSEdit.text.toString(),
+                amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
+                dateOfEnd = if (binding.withDate.isChecked) binding.periodOfLoan.text.toString().split("-")[1] else {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time)},
+                dateNext = if (binding.withDate.isChecked){SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(beginCalendar.time)} else null,
+                path = binding.imageOfGLM.tag.toString(),
+                currency = selection.first.ifEmpty { financeViewModel.budgetLiveData.value?.find { it.key == "Base budget" }!!.budgetItem.currency },
+                isDeleted = false,
+                isFinished = false,
+                period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
+            ),
+            context = requireContext(),
+            time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
+            beginCalendar = beginCalendar,
+            periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
+        )
+        findNavController().popBackStack()
     }
 
     private fun updateLoan(context: Context, beginItem: LoanItem){
@@ -1179,26 +1098,19 @@ class NewGLSFragment : Fragment() {
                 }
             }
 
-            table.child("Users")
-                .child(auth.currentUser!!.uid)
-                .child("Loans")
-                .child(key!!)
-                .setValue(
-                    LoanItem(
-                        name = binding.nameGLSEdit.text.toString(),
-                        amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
-                        dateOfEnd =  if (binding.withDate.isChecked) binding.periodOfLoan.text.toString().split("-")[1] else {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time)},
-                        dateNext = if (binding.withDate.isChecked){SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(beginCalendar.time)} else null,
-                        path = binding.imageOfGLM.tag.toString(),
-                        currency =  selection.first.ifEmpty {  beginItem.currency },
-                        isDeleted = beginItem.isDeleted,
-                        isFinished = beginItem.isFinished,
-                        period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
-                    )
-                )
+            glsViewModel.updateLoan(key!!, LoanItem(
+                name = binding.nameGLSEdit.text.toString(),
+                amount = "%.2f".format(binding.glsValue.text.toString().toDouble()).replace(",", "."),
+                dateOfEnd =  if (binding.withDate.isChecked) binding.periodOfLoan.text.toString().split("-")[1] else {SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(dateLS.time)},
+                dateNext = if (binding.withDate.isChecked){SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(beginCalendar.time)} else null,
+                path = binding.imageOfGLM.tag.toString(),
+                currency =  selection.first.ifEmpty {  beginItem.currency },
+                isDeleted = beginItem.isDeleted,
+                isFinished = beginItem.isFinished,
+                period = if(binding.withDate.isChecked) periodLS ?: "1 m" else null
+            ))
             BudgetNotificationManager.cancelAlarmManager(context, key!!)
             if (binding.periodOfNotificationGLS.selectedItemPosition!=-1){
-                Log.e("CheckDate", beginCalendar.time.toString())
                 BudgetNotificationManager.notification(
                     context = requireContext(),
                     channelID = Constants.CHANNEL_ID_LOAN,

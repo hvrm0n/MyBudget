@@ -61,7 +61,8 @@ object BudgetNotificationManager {
     }
 
      fun notification(context: Context, channelID:String, id:String, placeId:String?=null, time:String, dateOfExpence:Calendar, periodOfNotification:String){
-         Log.e("CheckPeriod", "yes")
+         Log.e("CheckPeriod", dateOfExpence.time.toString())
+
          val periods = context.resources.getStringArray(R.array.periodicity)
          val notificationIntent = Intent(context, NotificationReceiver::class.java).apply {
              putExtra("channelID", channelID)

@@ -207,6 +207,13 @@ class FinanceFragment : Fragment() {
 
         financeViewModel.budgetLiveData.observe(viewLifecycleOwner){
             adapterBudget.updateData(it.filter {budgetItemWithKey ->  !budgetItemWithKey.budgetItem.isDeleted })
+            binding.viewpager.currentItem = adapterCategory.getCurrentDate()
+            lifecycleScope.launch {
+                financeViewModel.updateCategoryOnce(
+                    vpAdapter.getDate(binding.viewpager.currentItem).first,
+                    vpAdapter.getDate(binding.viewpager.currentItem).second
+                ) {}
+            }
         }
 
         binding.categoryList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

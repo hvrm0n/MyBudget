@@ -8,4 +8,5 @@ class SignUpViewModel: ViewModel() {
     val passwordText = MutableLiveData<String>()
     val hintEmailState = MutableLiveData<Int>()
     val hintPasswordState = MutableLiveData<Int>()
+
 }

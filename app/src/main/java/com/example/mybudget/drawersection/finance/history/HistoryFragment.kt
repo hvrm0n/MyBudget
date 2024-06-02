@@ -115,6 +115,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun isTransactionExists(){
+
         if (historyAdapter.itemCount == 0){
             binding.noTransactionImage.visibility = View.VISIBLE
             binding.noTransactionText.visibility = View.VISIBLE
@@ -143,9 +144,8 @@ class HistoryFragment : Fragment() {
             1 -> {
                 historyAdapter.checkPlan(false)
                 when {
-                    financeViewModel.budgetLiveData.value==null-> {
-                        historyList = emptyList()
-                        historyAdapter.notifyDataSetChanged()
+                    financeViewModel.budgetLiveData.value.isNullOrEmpty()-> {
+                        historyAdapter.sortByDate(null,null, emptyList())
                         isTransactionExists()
                     }
                     else -> {
@@ -187,9 +187,8 @@ class HistoryFragment : Fragment() {
             2->{
                 historyAdapter.checkPlan(false)
                 when{
-                    financeViewModel.categoryLiveData.value == null ->{
-                        historyList = emptyList()
-                        historyAdapter.notifyDataSetChanged()
+                    financeViewModel.categoryLiveData.value.isNullOrEmpty() ->{
+                        historyAdapter.sortByDate(null,null, emptyList())
                         isTransactionExists()
                     }
                     else->{
@@ -229,9 +228,8 @@ class HistoryFragment : Fragment() {
             4 -> {
                 historyAdapter.checkPlan(false)
                 when{
-                    financeViewModel.goalsData.value == null ->{
-                        historyList = emptyList()
-                        historyAdapter.notifyDataSetChanged()
+                    financeViewModel.goalsData.value.isNullOrEmpty() ->{
+                        historyAdapter.sortByDate(null,null, emptyList())
                         isTransactionExists()
                     }
                     else->{
@@ -263,16 +261,15 @@ class HistoryFragment : Fragment() {
             5 ->{
                 historyAdapter.checkPlan(false)
                 when{
-                    financeViewModel.loansLiveData.value == null ->{
-                        historyList = emptyList()
-                        historyAdapter.notifyDataSetChanged()
+                    financeViewModel.loansLiveData.value.isNullOrEmpty() ->{
+                        historyAdapter.sortByDate(null,null, emptyList())
                         isTransactionExists()
                     }
                     else->{
                         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, historyList
                             .filter {place-> place.placeId.isNotEmpty() && place.isLoan==true}.map {placeItem-> financeViewModel.loansLiveData.value!!.filter { it.key == placeItem.placeId }[0].loanItem.name}.toSet().toList())
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        if(historyList.all { place -> place.isSub == false }){
+                        if(historyList.all { place -> place.isLoan == false }){
                             historyAdapter.sortByDate(startDate, endDate, emptyList())
                         }
                         binding.spinnerTypeOfHistory.adapter = adapter
@@ -297,9 +294,8 @@ class HistoryFragment : Fragment() {
             6->{
                 historyAdapter.checkPlan(false)
                 when{
-                    financeViewModel.subLiveData.value == null ->{
-                        historyList = emptyList()
-                        historyAdapter.notifyDataSetChanged()
+                    financeViewModel.subLiveData.value.isNullOrEmpty() ->{
+                        historyAdapter.sortByDate(null,null, emptyList())
                         isTransactionExists()
                     }
                     else->{
@@ -327,5 +323,6 @@ class HistoryFragment : Fragment() {
                 }
             }
         }
+        isTransactionExists()
     }
 }

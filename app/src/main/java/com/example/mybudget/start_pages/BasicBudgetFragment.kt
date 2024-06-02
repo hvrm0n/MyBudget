@@ -33,9 +33,7 @@ class BasicBudgetFragment : Fragment() {
     private lateinit var spinnerTypeOfBudget: Spinner
     private lateinit var nameBudget: EditText
     private lateinit var savings: EditText
-    private lateinit var auth: FirebaseAuth
-    private lateinit var table: DatabaseReference
-
+    private lateinit var viewModel:BasicBudgetViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,8 +52,7 @@ class BasicBudgetFragment : Fragment() {
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.budget_types, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTypeOfBudget.adapter = adapter
-
-        val viewModel = ViewModelProvider(this)[BasicBudgetViewModel::class.java]
+        viewModel = ViewModelProvider(this)[BasicBudgetViewModel::class.java]
 
         viewModel.name.value?.let {
             nameBudget.setText(it)
@@ -98,13 +95,13 @@ class BasicBudgetFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        auth = Firebase.auth
-        table = Firebase.database.reference
+
         endButton.setOnClickListener {
-            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("name").setValue(nameBudget.text.toString())
+           /* table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("name").setValue(nameBudget.text.toString())
             table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("amount").setValue(savings.text.toString())
             table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("type").setValue(spinnerTypeOfBudget.selectedItem.toString())
-            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("count").setValue(0)
+            table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Base budget").child("count").setValue(0)*/
+            viewModel.createBaseBudget(nameBudget = nameBudget.text.toString(), savings = savings.text.toString(), type = spinnerTypeOfBudget.selectedItem.toString())
             Navigation.findNavController(requireView()).navigate(R.id.action_basicBudgetFragment_to_homePageActivity)
         }
     }

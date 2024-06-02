@@ -6,6 +6,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.findNavController
 import com.example.mybudget.ExchangeRateManager
 import com.example.mybudget.drawersection.finance.budget.BudgetItemWithKey
 import com.example.mybudget.drawersection.finance.budget._BudgetItem
@@ -679,5 +680,16 @@ class FinanceViewModel(private val table: DatabaseReference, private val auth: F
         })
     }
 
+    //создание категории
+    fun addCategory(name:String, spinnerPriority:Int){
+        table.child("Users").child(auth.currentUser!!.uid).child("Categories")
+            .child("${financeDate.value!!.second}/${financeDate.value!!.first}")
+            .child("ExpenseCategories")
+            .child( categoryBeginLiveData.value!!.filter { it.categoryBegin.name == name }[0].key).setValue(_CategoryItem("0", "0.00", spinnerPriority,
+                isPlanned = (Calendar.getInstance().get(Calendar.YEAR)<financeDate.value!!.second||Calendar.getInstance().get(Calendar.MONTH)+1<financeDate.value!!.first))).addOnSuccessListener {
+            }.addOnFailureListener { ex->
+                Log.e("SaveError", ex.message.toString())
+            }
+    }
 
 }
