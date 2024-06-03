@@ -57,6 +57,7 @@ class LoansFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerLoans, adapterLoans, "loan") {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 if(position == adapterLoans.itemCount-1){return emptyList() }
+                else if (position >= adapterLoans.placeFinished() && adapterLoans.placeFinished()!=-1) {return listOf(deleteButton(position))}
                 val deleteButton = deleteButton(position)
                 val editButton = editButton(position)
                 return listOf(deleteButton, editButton)

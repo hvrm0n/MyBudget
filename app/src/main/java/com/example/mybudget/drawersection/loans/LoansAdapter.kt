@@ -56,6 +56,8 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
         }
     }
 
+    fun placeFinished() = finished
+
     fun updateData(newLoan: List<LoanItemWithKey>) {
         loans = newLoan
         finished = -1
