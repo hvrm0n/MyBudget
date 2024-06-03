@@ -146,6 +146,8 @@ class HistoryFragment : Fragment() {
                 when {
                     financeViewModel.budgetLiveData.value.isNullOrEmpty()-> {
                         historyAdapter.sortByDate(null,null, emptyList())
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         isTransactionExists()
                     }
                     else -> {
@@ -189,6 +191,8 @@ class HistoryFragment : Fragment() {
                 when{
                     financeViewModel.categoryLiveData.value.isNullOrEmpty() ->{
                         historyAdapter.sortByDate(null,null, emptyList())
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         isTransactionExists()
                     }
                     else->{
@@ -230,6 +234,8 @@ class HistoryFragment : Fragment() {
                 when{
                     financeViewModel.goalsData.value.isNullOrEmpty() ->{
                         historyAdapter.sortByDate(null,null, emptyList())
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         isTransactionExists()
                     }
                     else->{
@@ -263,6 +269,8 @@ class HistoryFragment : Fragment() {
                 when{
                     financeViewModel.loansLiveData.value.isNullOrEmpty() ->{
                         historyAdapter.sortByDate(null,null, emptyList())
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         isTransactionExists()
                     }
                     else->{
@@ -296,6 +304,8 @@ class HistoryFragment : Fragment() {
                 when{
                     financeViewModel.subLiveData.value.isNullOrEmpty() ->{
                         historyAdapter.sortByDate(null,null, emptyList())
+                        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, emptyList())
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         isTransactionExists()
                     }
                     else->{

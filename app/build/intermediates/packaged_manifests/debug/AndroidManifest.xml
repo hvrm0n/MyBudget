@@ -35,7 +35,7 @@
 
     <application
         android:name="com.example.mybudget.MApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:debuggable="true"
@@ -45,7 +45,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/Theme.MyBudget"
         android:usesCleartextTraffic="true" >
         <receiver

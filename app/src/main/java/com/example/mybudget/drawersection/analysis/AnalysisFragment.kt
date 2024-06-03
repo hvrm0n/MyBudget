@@ -3,6 +3,7 @@ package com.example.mybudget.drawersection.analysis
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -443,8 +444,7 @@ class AnalysisFragment : Fragment() {
                         day = historyItem.date.split(".")[0].toInt())
 
                     if((historyItem.placeId == "" || historyItem.isTransfer == true || historyItem.isGoal == true && historyItem.amount.toDouble()<0.0)
-                        && historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis &&
-                        historyDate.timeInMillis<=Calendar.getInstance().timeInMillis){
+                        && historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis){
                         budgetId = if (historyItem.isGoal==true) historyItem.budgetId else historyItem.placeId.ifEmpty { historyItem.budgetId }
                         financeViewModel.budgetLiveData.value?.find { it.key == budgetId}?.budgetItem?.currency?.let {
                             budgetResult = abs(changeCurrencyAmount(
@@ -493,9 +493,11 @@ class AnalysisFragment : Fragment() {
                         month = historyItem.date.split(".")[1].toInt()-1,
                         day = historyItem.date.split(".")[0].toInt())
                     if(historyItem.placeId != "" && !(historyItem.isGoal == true && historyItem.amount.toDouble()<0.0)
-                        && historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis &&
-                        historyDate.timeInMillis<=Calendar.getInstance().timeInMillis){
+                        && historyDate.timeInMillis>=startDate.timeInMillis && historyDate.timeInMillis<=endDate.timeInMillis){
                         financeViewModel.budgetLiveData.value?.find { it.key == historyItem.budgetId}?.budgetItem?.currency?.let {
+                            Log.e("CheckENter", "yes")
+                            Log.e("CheckENter", historyItem.toString())
+
                             budgetResult = abs(changeCurrencyAmount(
                                 oldCurrency = it,
                                 newCurrency = baseCurrency,

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,6 +76,8 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
             val intent = Intent(this, StartActivity::class.java)
             intent.putExtra("exit", true)
             startActivity(intent)
+            cacheDir.deleteRecursively()
+            filesDir.deleteRecursively()
             this.finishAffinity()
         }
 
@@ -96,6 +99,7 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
         if (PreferenceManager.getDefaultSharedPreferences(this).all.isEmpty()){
             getNotificationPermission()
             PreferenceManager.getDefaultSharedPreferences(this).edit().putStringSet("sumOfFinance", setOf("Base budget")).apply()
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("transaction_enabled",  true).apply()
         }
     }
 
@@ -140,7 +144,7 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("notifications_enabled",  isGranted)
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("notifications_enabled",  isGranted).apply()
         }
 
     private fun getNotificationPermission() {
@@ -154,6 +158,8 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("notifications_enabled",  true).apply()
         }
     }
 

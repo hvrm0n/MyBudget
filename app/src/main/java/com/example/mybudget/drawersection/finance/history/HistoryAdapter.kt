@@ -1020,7 +1020,10 @@ class HistoryAdapter(private val context: Context, private var history: List<His
                         }
                     }
 
-                    if (loanItem.loanItem.isFinished) loanItem.loanItem.isFinished = false
+                    if (loanItem.loanItem.isFinished) {
+                        loanItem.loanItem.isFinished = false
+                        Toast.makeText(context, context.resources.getString(R.string.history_renotify), Toast.LENGTH_SHORT).show()
+                    }
 
                     table.child("Users")
                         .child(auth.currentUser!!.uid)

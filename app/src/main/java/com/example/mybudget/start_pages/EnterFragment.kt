@@ -119,7 +119,8 @@ class EnterFragment : Fragment() {
                     if (currentUser != null){
                         table.child("Users").child(currentUser!!.uid).get().addOnSuccessListener {
                             if(it.exists() && it!=null){
-                                if(it.child("Budgets").child("Base budget").child("Name").exists()){
+                                Log.e("CheckExist", it.child("Budgets").child("Base budget").child("name").exists().toString())
+                                if(it.child("Budgets").child("Base budget").child("name").exists()){
                                     Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_homePageActivity)
                                     requireActivity().finish()
                                 } else Navigation.findNavController(requireView()).navigate(R.id.action_enterFragment_to_currencyFragment)

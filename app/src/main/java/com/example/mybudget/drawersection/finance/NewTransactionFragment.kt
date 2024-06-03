@@ -5,6 +5,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -331,22 +332,30 @@ class NewTransactionFragment : Fragment() {
                                     "string",
                                     requireContext().packageName
                                 ))
+
                         binding.currencyNew.visibility = View.VISIBLE
                         binding.translateValueNew.visibility = View.VISIBLE
                         binding.equalSymbolNewExpence.visibility = View.VISIBLE
+
                         updateCurrency(true)
                         checkAllFilledIncome()
                     }
 
                     else -> {
-                        binding.currencyNew.visibility = View.VISIBLE
-                        binding.translateValueNew.visibility = View.VISIBLE
-                        binding.equalSymbolNewExpence.visibility = View.VISIBLE
                         newCurrency = financeViewModel.budgetLiveData.value!!.filter { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString()}[0].budgetItem.currency
                         binding.currencyNew.text = requireContext().resources.getString(requireContext().resources.getIdentifier(newCurrency, "string", requireContext().packageName))
                         binding.currencyExpence.setOnClickListener(null)
                         binding.currencyNew.setOnClickListener(null)
                         beginCurrency = baseCurrency
+                        if(newCurrency!=baseCurrency){
+                            binding.currencyNew.visibility = View.VISIBLE
+                            binding.translateValueNew.visibility = View.VISIBLE
+                            binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                        } else {
+                            binding.currencyNew.visibility = View.GONE
+                            binding.translateValueNew.visibility = View.GONE
+                            binding.equalSymbolNewExpence.visibility = View.GONE
+                        }
                         updateCurrency(true)
                         checkAllFilledExpence()
                     }
@@ -918,12 +927,19 @@ class NewTransactionFragment : Fragment() {
                 binding.periodOfNotificationTitle.visibility = View.GONE
                 binding.periodOfNotification.visibility = View.GONE
 
-                binding.currencyNew.visibility = View.VISIBLE
-                binding.translateValueNew.visibility = View.VISIBLE
-                binding.equalSymbolNewExpence.visibility = View.VISIBLE
-
                 beginCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudgetTo.selectedItem.toString() }!!.budgetItem.currency
                 newCurrency = budgetList.find { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString() }!!.budgetItem.currency
+
+
+                if(newCurrency!=baseCurrency){
+                    binding.currencyNew.visibility = View.VISIBLE
+                    binding.translateValueNew.visibility = View.VISIBLE
+                    binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                } else {
+                    binding.currencyNew.visibility = View.GONE
+                    binding.translateValueNew.visibility = View.GONE
+                    binding.equalSymbolNewExpence.visibility = View.GONE
+                }
 
                 binding.currencyNew.text = requireContext().resources.getString(
                     requireContext().resources.getIdentifier(
@@ -961,9 +977,16 @@ class NewTransactionFragment : Fragment() {
                 binding.calendarViewCategory.visibility = View.VISIBLE
                 binding.categoryTitle.visibility = View.VISIBLE
                 binding.spinnerCategory.visibility = View.VISIBLE
-                binding.currencyNew.visibility = View.VISIBLE
-                binding.translateValueNew.visibility = View.VISIBLE
-                binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                if(newCurrency!=baseCurrency){
+                    binding.currencyNew.visibility = View.VISIBLE
+                    binding.translateValueNew.visibility = View.VISIBLE
+                    binding.equalSymbolNewExpence.visibility = View.VISIBLE
+                } else {
+                    binding.currencyNew.visibility = View.GONE
+                    binding.translateValueNew.visibility = View.GONE
+                    binding.equalSymbolNewExpence.visibility = View.GONE
+                }
+
                 binding.timeOfNotificationsTitle.visibility = View.INVISIBLE
                 binding.timeOfNotifications.visibility = View.INVISIBLE
                 binding.periodOfNotificationTitle.visibility = View.GONE
@@ -1010,6 +1033,7 @@ class NewTransactionFragment : Fragment() {
     }
 
     private fun updateCurrency(expence:Boolean){
+        Log.e("CheckCurrency", beginCurrency+ " "+ newCurrency)
         if(beginCurrency == newCurrency){
             newCurrency = financeViewModel.budgetLiveData.value!!.filter { it.budgetItem.name == binding.spinnerBudget.selectedItem.toString()}[0].budgetItem.currency
         }

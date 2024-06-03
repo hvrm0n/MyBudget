@@ -1004,6 +1004,7 @@ class NewGLSFragment : Fragment() {
                 .setMessage(resources.getString(R.string.error_loan_renew))
                 .setPositiveButton(resources.getString(R.string.repair_agree)) { dialog, _ ->
                     glsViewModel.restoreLoan(financeViewModel.loansLiveData.value!!.find { it.loanItem.name ==  binding.nameGLSEdit.text.toString()}!!.key)
+                    Toast.makeText(context, requireContext().resources.getString(R.string.history_renotify), Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                     dialog.dismiss()
                 }
@@ -1060,7 +1061,7 @@ class NewGLSFragment : Fragment() {
             ),
             context = requireContext(),
             time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-            beginCalendar = beginCalendar,
+            beginCalendar = if (binding.withDate.isChecked) beginCalendar else dateLS,
             periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
         )
         findNavController().popBackStack()
@@ -1117,7 +1118,7 @@ class NewGLSFragment : Fragment() {
                     placeId = null,
                     id = key!!,
                     time = if (binding.timeOfNotificationsGLS.visibility == View.VISIBLE) binding.timeOfNotificationsGLS.text.toString() else "",
-                    dateOfExpence = beginCalendar,
+                    dateOfExpence = if (binding.withDate.isChecked) beginCalendar else dateLS,
                     periodOfNotification = binding.periodOfNotificationGLS.selectedItem.toString()
                 )
             }

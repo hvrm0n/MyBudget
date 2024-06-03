@@ -162,7 +162,7 @@ class LoansAdapter(private val context: Context, private var loans: List<LoanIte
                             set(Calendar.HOUR_OF_DAY,0)
                             set(Calendar.MINUTE,0)
                             set(Calendar.SECOND,0)
-                        }.timeInMillis > calendar.timeInMillis && !loanItem.loanItem.isDeleted) {
+                        }.timeInMillis >= calendar.timeInMillis && !loanItem.loanItem.isDeleted) {
                         if (notReached==-1 || notReached == position){
                             loanFinished.text = context.resources.getString(R.string.expence_date)
                             loanFinished.visibility = View.VISIBLE

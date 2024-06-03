@@ -28,7 +28,7 @@ class GLSViewModel:ViewModel() {
         table.child("Users")
             .child(auth.currentUser!!.uid)
             .child("Loans")
-            .child(key!!)
+            .child(key)
             .setValue(loanItem)
     }
 
@@ -151,13 +151,13 @@ class GLSViewModel:ViewModel() {
             .child("Goals")
             .child(key)
             .setValue(goalItem)
-        BudgetNotificationManager.cancelAlarmManager(context, key!!)
+        BudgetNotificationManager.cancelAlarmManager(context, key)
         if (periodOfNotificationPosition!=-1){
             BudgetNotificationManager.notification(
                 context = context,
                 channelID = Constants.CHANNEL_ID_GOAL,
                 placeId = null,
-                id = key!!,
+                id = key,
                 time = time,
                 dateOfExpence = dateOfEnd,
                 periodOfNotification = periodOfNotification

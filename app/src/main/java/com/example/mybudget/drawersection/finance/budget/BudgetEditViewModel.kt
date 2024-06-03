@@ -317,7 +317,7 @@ class BudgetEditViewModel: ViewModel() {
                             .addOnCompleteListener {
                                 val referenceBaseOld =
                                 table.child("Users").child(auth.currentUser!!.uid).child("Budgets").child("Other budget").push()
-                                    referenceBaseOld.setValue(baseOld).addOnCompleteListener {
+                                referenceBaseOld.setValue(baseOld).addOnCompleteListener {
                                         selectedBudgetViewModel.selectedBudget.value?.map{
                                             when (it){
                                                 "Base budget" -> referenceBaseOld.key.toString()
@@ -490,7 +490,6 @@ class BudgetEditViewModel: ViewModel() {
     }
 
     private fun changeCurrency(oldCurrency:String, newCurrency:String, budgetKey:String, context: Context, baseChanged: Boolean, checkBox: Boolean, newSelection:Boolean, oldBaseCurrency:String?, financeViewModel: FinanceViewModel):String{
-        Log.e("CheckCurrency", oldCurrency + " " + newCurrency + " " + newSelection)
         val currencyConvertor = ExchangeRateManager.getExchangeRateResponse(context)
         if((oldCurrency!=newCurrency || checkBox || baseChanged) && currencyConvertor!=null){
             table.child("Users").child(auth.currentUser!!.uid)
@@ -692,7 +691,7 @@ class BudgetEditViewModel: ViewModel() {
                                                 if (budgetKey == plan.budgetId){
                                                     table.child("Users")
                                                         .child(auth.currentUser!!.uid)
-                                                        .child("History")
+                                                        .child("Plan")
                                                         .child(years.key.toString())
                                                         .child(months.key.toString())
                                                         .child(plan.key)

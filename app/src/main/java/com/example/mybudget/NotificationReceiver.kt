@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.example.mybudget.drawersection.finance.category._CategoryBegin
@@ -26,6 +27,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val placeId = intent.getStringExtra("placeId")
         val delete = intent.getBooleanExtra("deletePrefs", false)
         if (channelID!=null&&placeId!=null){
+            Log.e("CheckNotification", PreferenceManager.getDefaultSharedPreferences(context).getBoolean("notifications_enabled", false).toString())
             if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("notifications_enabled", false)) {
                 val date = Calendar.getInstance()
                 date.timeInMillis = intent.getLongExtra("date", 0)
@@ -37,7 +39,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     else -> context.resources.getStringArray(R.array.notification_loans)
                 }
 
-                getName(channelID, placeId,/* date,*/ notificationText) {
+                getName(channelID, placeId, notificationText) {
                     val notification: Notification = NotificationCompat.Builder(context, channelID)
                         .setSmallIcon(R.drawable.piggybank_18)
                         .setContentTitle(
@@ -53,7 +55,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     notificationManager.notify(42, notification)
                 }
             }
-            if(delete && (channelID == Constants.CHANNEL_ID_GOAL || channelID == Constants.CHANNEL_ID_PLAN || channelID == Constants.CHANNEL_ID_LOAN) ) BudgetNotificationManager.cancelAlarmManager(context, placeId)
+            if(delete && (channelID == Constants.CHANNEL_ID_GOAL || channelID == Constants.CHANNEL_ID_PLAN) ) BudgetNotificationManager.cancelAlarmManager(context, placeId)
         }
     }
 

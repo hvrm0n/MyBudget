@@ -256,7 +256,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\ju
 	android:icon
 		ADDED from C:\Users\julia\AndroidStudioProjects\MyBudget\app\src\main\AndroidManifest.xml:15:9-38
 	android:allowBackup
-		ADDED from C:\Users\julia\AndroidStudioProjects\MyBudget\app\src\main\AndroidManifest.xml:11:9-35
+		ADDED from C:\Users\julia\AndroidStudioProjects\MyBudget\app\src\main\AndroidManifest.xml:11:9-36
 	android:theme
 		ADDED from C:\Users\julia\AndroidStudioProjects\MyBudget\app\src\main\AndroidManifest.xml:19:9-46
 	android:dataExtractionRules
