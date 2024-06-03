@@ -1,11 +1,17 @@
 package com.example.mybudget.drawersection
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -50,6 +56,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 BudgetNotificationManager.cancelAlarmManager(requireContext(), key.toString(), false)
             }
             if(newValue == true){
+                getNotificationPermission()
                 restoreNotification()
             }
             true
@@ -71,6 +78,25 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().putBoolean("notifications_enabled",  isGranted).apply()
+        }
+
+    private fun getNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().putBoolean("notifications_enabled",  true).apply()
+        }
+    }
+
 
     private fun restoreNotification(){
         var channelID: String

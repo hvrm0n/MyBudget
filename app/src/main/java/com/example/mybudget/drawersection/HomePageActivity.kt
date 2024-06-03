@@ -103,6 +103,16 @@ class HomePageActivity : AppCompatActivity(), Observer<List<BudgetItemWithKey>> 
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ){
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("notifications_enabled",  false).apply()
+        }
+    }
+
 
     override fun onStart() {
         super.onStart()
