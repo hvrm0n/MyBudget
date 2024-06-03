@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardBudget"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="16dp"
+    android:backgroundTint="@color/very_light_green"
+    android:layout_marginEnd="16dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/budgetName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/subtitle"
+            android:textStyle="bold"
+            android:textColor="@color/dark_green"
+            android:layout_marginBottom="2dp"
+            tools:text="Название"/>
+
+        <TextView
+            android:id="@+id/budgetType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/regText"
+            android:textColor="@color/dark_green"
+            android:layout_marginBottom= "4dp"
+            tools:text="Карта (основной)"/>
+
+        <TextView
+            android:id="@+id/budgetRemainder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/subtitle"
+            android:textColor="@color/dark_green"
+            android:textStyle="bold"
+            android:layout_marginBottom= "8dp"
+            tools:text="150Р"/>
+
+        <TextView
+            android:id="@+id/budgetCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/regText"
+            android:textColor="@color/dark_green"
+            tools:text="2 операции"/>
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

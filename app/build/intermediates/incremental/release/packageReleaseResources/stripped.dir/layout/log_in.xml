@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/light">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/icon"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/enter"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/title"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_margin="32dp"/>
+
+
+    <TextView
+        android:id="@+id/email_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/email"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/subtitle"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/hintEmailLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/emailWrong"
+        android:textColor="@color/dark_orange"
+        android:textSize="@dimen/regText"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/email_edittext_login"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="64dp"
+        android:background="@drawable/edittext_background"
+        android:ems="10"
+        android:focusable="true"
+        android:hint="@string/enter_email"
+        android:inputType="textEmailAddress"
+        android:padding="4dp"
+        android:textSize="@dimen/subtitle" />
+
+    <TextView
+        android:id="@+id/password_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:text="@string/password"
+        android:textColor="@color/dark_green"
+        android:textSize="@dimen/subtitle"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/hintPasswordLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/passwordWrong"
+        android:textColor="@color/dark_orange"
+        android:textSize="@dimen/regText"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/password_edittext_login"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/edittext_background"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/enter_pass"
+        android:padding="4dp"
+        android:textSize="@dimen/subtitle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:backgroundTint="@color/light_green"
+        android:enabled="false"
+        android:focusable="true"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/log_in"
+        android:textSize="@dimen/subtitle"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>

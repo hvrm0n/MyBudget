@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/wave"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:backgroundTint="@color/light_green"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:src="@drawable/personiconpng"
+        android:contentDescription="@string/nav_header_desc"
+        android:layout_marginEnd="32dp"
+        app:strokeWidth="12dp"
+        app:strokeColor="@color/light_green"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/userNameHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:paddingBottom="@dimen/nav_header_vertical_spacing"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="Имя Фамилия"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textColor="@color/light"
+            android:textSize="@dimen/regText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/nav_header_subtitle"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/light"
+            android:textSize="@dimen/regText"/>
+
+        <TextView
+            android:id="@+id/currentBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            tools:text="235000Р"
+            android:textStyle="bold"
+            android:textColor="@color/light"
+            android:layout_gravity="center"
+            android:textSize="@dimen/regText"/>
+    </LinearLayout>
+
+</LinearLayout>

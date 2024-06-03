@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/light"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".start_pages.CurrencyFragment">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:text="@string/basic_budget"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/subtitle"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:text="@string/basic_budget_name"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/nameBasicBudget"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/basic_budget_name_edit"
+        android:padding="8dp"
+        android:background="@drawable/edittext_background" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/subtitle"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:text="@string/basic_budget_savings"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/savingsBasicBudget"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/basic_budget_savings_edit"
+        android:padding="8dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/edittext_background" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/subtitle"
+        android:textStyle="bold"
+        android:textColor="@color/dark_green"
+        android:text="@string/basic_budget_type"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerTypeOfBudget"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:popupBackground="@color/very_light_green"/>
+
+</LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonCurrencyNext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/light_green"
+        android:enabled="false"
+        android:focusable="true"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/finish"
+        android:layout_gravity="bottom"
+        android:textSize="@dimen/subtitle"
+        app:cornerRadius="8dp" />
+
+</FrameLayout>

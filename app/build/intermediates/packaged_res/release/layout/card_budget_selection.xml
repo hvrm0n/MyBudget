@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center"
+    android:weightSum="5">
+
+    <CheckBox
+        android:id="@+id/checkBoxBudget"
+        android:layout_weight="0.2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"/>
+    <TextView
+        android:id="@+id/nameBudgetSelection"
+        android:layout_weight="4.4"
+        android:layout_width="0dp"
+        android:textColor="@color/light_green"
+        android:textSize="@dimen/subtitle"
+        android:textStyle="bold"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

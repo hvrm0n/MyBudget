@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:backgroundTint="@color/very_light_green">
+
+    <SearchView
+        android:id="@+id/searchNewCurrency"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="@string/enterCurrencyName" />
+
+    <ListView
+        android:id="@+id/recyclerNewBudgetCurrency"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/very_light_green"
+        android:choiceMode="singleChoice"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

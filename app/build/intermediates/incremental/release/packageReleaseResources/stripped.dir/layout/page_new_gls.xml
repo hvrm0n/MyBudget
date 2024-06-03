@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/very_light_green">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="64dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            >
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/glsValue"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:ems="10"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:hint="@string/card_value"
+                    android:inputType="numberDecimal"
+                    android:padding="4dp"
+                    android:textSize="@dimen/subtitle" />
+
+                <TextView
+                    android:id="@+id/currencyGLS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/dark_green"
+                    android:textSize="@dimen/subtitle"
+                    android:textStyle="bold"
+                    tools:text="Р" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/nameGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:text="@string/goalsName"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/nameGLSEdit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:ems="10"
+                android:hint="@string/basic_budget_name_edit"
+                android:inputType="text"
+                android:padding="4dp"
+                android:textSize="@dimen/subtitle" />
+
+            <TextView
+                android:id="@+id/budgetGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/budget"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold"/>
+
+            <Spinner
+                android:id="@+id/spinnerBudgetGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/iconChooseGLS"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/choose_icon"
+                    android:textColor="@color/dark_green"
+                    android:textSize="@dimen/subtitle"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/imageOfGLM"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/choose"
+                    app:tint="@color/dark_green" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/glsDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/dateExpence"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold"/>
+
+            <RadioGroup
+                android:id="@+id/radioGroupGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/withouthDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/withouthDate"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/withDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/withDate"/>
+            </RadioGroup>
+
+            <CalendarView
+                android:id="@+id/calendarViewGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:id="@+id/periodOfLoan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/periodLoans"
+                android:textColor="@color/dark_orange"
+                android:textSize="@dimen/regText" />
+
+            <TextView
+                android:id="@+id/billingPeriodTitleGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="@string/billingPeriodTitle"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/billingPeriodGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="@string/every_months"
+                android:textColor="@color/dark_orange"
+                android:textSize="@dimen/regText"/>
+
+            <TextView
+                android:id="@+id/periodTitleGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/periodTitle"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold" />
+
+
+            <Spinner
+                android:id="@+id/periodOfNotificationGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"/>
+
+
+            <TextView
+                android:id="@+id/timeTitleGLS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/timeTitle"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/subtitle"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/timeOfNotificationsGLS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/defaultTime"
+                android:layout_marginBottom="64dp"
+                android:textColor="@color/dark_orange"
+                android:textSize="@dimen/regText"/>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAddGLS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center|bottom"
+        android:backgroundTint="@color/light_green"
+        android:elevation="12dp"
+        android:enabled="false"
+        android:focusable="true"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/add"
+        android:textSize="@dimen/subtitle"
+        app:cornerRadius="8dp" />
+</FrameLayout>
